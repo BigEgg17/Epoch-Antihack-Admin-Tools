@@ -3,6 +3,8 @@
 /*                By BigEgg and Movinggun                  */
 /* ******************************************************* */
 
+_ver = "1.0.6.2";
+
 /* ***************** Staff Configuration ***************** */
 
 _menuKey = 0x3C; //---Key that will open the menu.

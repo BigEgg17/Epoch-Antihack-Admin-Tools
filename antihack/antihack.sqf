@@ -10,13 +10,21 @@ private [
 	"_badSkins", "_badWeapons", "_discord", "_teamspeak", "_website", "_chatcmds", "_chatbanned", "_debug", "_dkey", "_drestart", "_dtext", "_safezones",
 	"_bubbles", "_antized", "_antitheft", "_speedlimit", "_timer", "_disableWeps", "_dropWeps", "_escTopT", "_escTopC", "_escMidT", "_escLUPT", "_escLUPC",
 	"_escLBOT", "_escLBOC", "_starterBox", "_smallBox", "_mediumBox", "_largeBox", "_starterSafe", "_smallSafe", "_mediumSafe", "_largeSafe", "_missionFiles",
-	"_badChat", "_badFiles", "_badVars", "_kfc_sz", "_kfc_re", "_kfc_sz1", "_kfc_sz2", "_kfc_sz3", "_kfc_mic", "_kfc_msg", "_kfc_get", "_kfc_got",
-	"_kfc_ban", "_kfc_oef", "_kfc_pvs", "_kfc_pveh", "_kfc_msg1", "_kfc_pvar", "_kfc_gvar", "_kfc_init", "_kfc_gtrd", "_kfc_atrd", "_kfc_ntrd",
+	"_badChat", "_badFiles", "_badVars", "_kfc_sz", "_kfc_re", "_kfc_sz1", "_kfc_sz2", "_kfc_sz3", "_kfc_mic", "_kfc_msg", "_kfc_get", "_kfc_got", "_bankvar",
+	"_kfc_ban", "_kfc_oef", "_kfc_pvs", "_kfc_pveh", "_kfc_msg1", "_kfc_pvar", "_kfc_gvar", "_kfc_init", "_kfc_gtrd", "_kfc_atrd", "_kfc_ntrd", "_var",
 	"_kfc_akey", "_kfc_strd", "_kfc_info", "_kfc_keys", "_kfc_gclnt", "_kfc_sclnt", "_kfc_nclnt", "_kfc_rekey", "_kfc_atrd_cfg", "_kfc_strd_cfg", "_cashvar"
 ];
 
 #include "config.sqf"
-_cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
+
+if (_ver == "1.0.6.2") then {
+	_cashvar = Z_MoneyVariable;
+} else {
+	_cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
+};
+
+_bankvar = if (_ver == "1.0.6.2") then {Z_BankVariable} else {"bankMoney"};
+
 diag_log (_diag_prefix + "Initializing Epoch Antihack/Admin Tools");
 
 //---Adds chat commands based on config
@@ -550,7 +558,7 @@ _AH_Global = _AH_Global + ("
 			[format['You were given backpack ""%1"" by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 		};
 		if (_id == 6) exitWith {
-			player setVariable ['bankMoney', (player getVariable ['bankMoney', 0]) + (_param select 1), true];
+			player setVariable ["+str _bankvar+", (player getVariable ["+str _bankvar+", 0]) + (_param select 1), true];
 			call player_forceSave;
 			[format['%1 %2 were added to your bank by admin ""%3.""', [_param select 1] call BIS_fnc_numberText, CurrencyName, _info], 4] call "+_kfc_msg+";
 		};
@@ -1504,7 +1512,7 @@ _AH_Admin = _AH_Admin + ("
 		if (admin_adjbank) then {
 			(_display displayCtrl 1406) ctrlSetEventHandler ['KeyDown', ""
 				if ((_this select 1) == 0x1C) then {
-					[parseNumber ctrlText(_this select 0), 'bankMoney', 'bank'] call AH_fnc_adjust;
+					[parseNumber ctrlText(_this select 0), "+str _bankvar+", 'bank'] call AH_fnc_adjust;
 				};
 			""];
 		};
@@ -1684,7 +1692,7 @@ _AH_Admin = _AH_Admin + ("
 			[(_tar getVariable ['USEC_BloodQty', 0])] call BIS_fnc_numberText,
 			[(_tar getVariable ['humanity', 0])] call BIS_fnc_numberText,
 			[(_tar getVariable ["+str _cashvar+", 0])] call BIS_fnc_numberText,
-			[(_tar getVariable ['bankMoney', 0])] call BIS_fnc_numberText,
+			[(_tar getVariable ["+str _bankvar+", 0])] call BIS_fnc_numberText,
 			getPosATL _tar,
 			mapGridPosition _tar,
 			_grp call AH_fnc_noBrackets,
@@ -1786,7 +1794,7 @@ _AH_Admin = _AH_Admin + ("
 				[8, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the bank of """"%1 (%2).""""', 4] call "+_kfc_msg+";
 				'Added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the bank of """"%1 (%2)""""' call AH_fnc_adminLog;
-			"", _name, _puid], 'Adjust', format['Target: %1 (%2)', _name, _puid], format['Current: %1', [_target getVariable ['bankMoney', 0]] call BIS_fnc_numberText]] call AH_fnc_display;
+			"", _name, _puid], 'Adjust', format['Target: %1 (%2)', _name, _puid], format['Current: %1', [_target getVariable ["+str _bankvar+", 0]] call BIS_fnc_numberText]] call AH_fnc_display;
 		};
 		if (_this == 'Adjust Target Wallet') exitWith {
 			['Adjusting Wallet', 'Amount:', format[""
@@ -1823,7 +1831,7 @@ _AH_Admin = _AH_Admin + ("
 					[format[""<t size='0.5'>%1 (%2)</t><br/><t size='0.5'>Bank: %3 - Wallet: %4 - Blood: %5 - Humanity: %6</t><br/><t size='0.5'>Position: %7 - Weapon: %8</t>"",
 						name admin_specTarget,
 						getPlayerUID admin_specTarget,
-						[admin_specTarget getVariable ['bankMoney', 0]] call BIS_fnc_numberText,
+						[admin_specTarget getVariable ["+str _bankvar+", 0]] call BIS_fnc_numberText,
 						[admin_specTarget getVariable ["+str _cashvar+", 0]] call BIS_fnc_numberText,
 						[admin_specTarget getVariable ['USEC_BloodQty', 0]] call BIS_fnc_numberText,
 						[admin_specTarget getVariable ['humanity', 0]] call BIS_fnc_numberText,
