@@ -131,12 +131,12 @@ _AH_Admin = _AH_Admin + ("
 	_spwn set [count _spwn, ['>> Small Build Safe', 10, []]];
 	_spwn set [count _spwn, ['>> Medium Build Safe', 10, []]];
 	_spwn set [count _spwn, ['>> Large Build Safe', 10, []]];
-	if (EpochUseEvents && {count EpochEvents > 0}) then {
+	if (count "+str EpochEvents+" > 0) then {
 		_spwn set [count _spwn, ['===============================================================', 0, []]];
 		_spwn set [count _spwn, ['                            Spawn Events', 0, []]];
 		{
 			_spwn set [count _spwn, [format['>> %1', _x select 5], 13, []]];
-		} count EpochEvents;
+		} count "+str EpochEvents+";
 	};
 
 	_envi set [count _envi, ['===============================================================', 0, []]];
