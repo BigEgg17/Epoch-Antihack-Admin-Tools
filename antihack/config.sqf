@@ -3,7 +3,7 @@
 /*                By BigEgg and Movinggun                  */
 /* ******************************************************* */
 
-_ver = "1.0.6.2";
+_ver = "1.0.6.2"; //---Change to 1.0.7 for compatibility
 
 /* ***************** Staff Configuration ***************** */
 
