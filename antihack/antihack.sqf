@@ -17,6 +17,7 @@ private [
 
 #include "config.sqf"
 
+_cashvar = "";
 if (_ver == "1.0.6.2") then {
 	_cashvar = Z_MoneyVariable;
 } else {
