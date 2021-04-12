@@ -1506,14 +1506,14 @@ _AH_Admin = _AH_Admin + ("
 		if (admin_adjcoins) then {
 			(_display displayCtrl 1405) ctrlSetEventHandler ['KeyDown', ""
 				if ((_this select 1) == 0x1C) then {
-					[parseNumber ctrlText(_this select 0), "+str _cashvar+", 'wallet'] call AH_fnc_adjust;
+					[parseNumber ctrlText(_this select 0), "+_cashvar+", 'wallet'] call AH_fnc_adjust;
 				};
 			""];
 		};
 		if (admin_adjbank) then {
 			(_display displayCtrl 1406) ctrlSetEventHandler ['KeyDown', ""
 				if ((_this select 1) == 0x1C) then {
-					[parseNumber ctrlText(_this select 0), "+str _bankvar+", 'bank'] call AH_fnc_adjust;
+					[parseNumber ctrlText(_this select 0), "+_bankvar+", 'bank'] call AH_fnc_adjust;
 				};
 			""];
 		};
