@@ -25,6 +25,7 @@ if (_ver == "1.0.6.2") then {
 };
 
 _bankvar = if (_ver == "1.0.6.2") then {Z_BankVariable} else {"bankMoney"};
+if (_ver == "1.0.7") then {_mev = false}; //---Restrict skins removed
 
 diag_log (_diag_prefix + "Initializing Epoch Antihack/Admin Tools");
 
