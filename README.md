@@ -211,6 +211,8 @@ There are some useful features included in the menu:
 - None
 
 ##### Changes:
+- Removed all ```private``` arrays and converted to more efficient ```local _var```.
+- Updated README.md with more documentation and additional instruction for ```dayz_antihack```.
 - Staff members can now have an empty name field, such that any name grants admin permissions.
 - Staff members can now have a registered player name if their required name field is blank, giving them no powers when on the player name.
 
