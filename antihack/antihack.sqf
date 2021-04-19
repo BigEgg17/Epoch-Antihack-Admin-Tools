@@ -3,29 +3,10 @@
 /*                By BigEgg and Movinggun                  */
 /* ******************************************************* */
 
-private [
-	"_sorted", "_fnc_random", "_AH_Global", "_AH_Normal", "_AH_Admin", "_AH_Server", "_menuKey", "_mod", "_admin", "_headAdmin", "_owner",
-	"_diag_prefix", "_rptall", "_headless", "_apj", "_bvc", "_egb", "_vehWhiteList", "_voteplayers", "_votedelay", "_votetime", "_votepercent",
-	"_chat_prefix", "_viewDistance", "_grassLevel", "_bfs", "_bvs", "_oef", "_bdc", "_bsc", "_upc", "_mic", "_bwc", "_mev", "_sev", "_badDisplays",
-	"_badSkins", "_badWeapons", "_discord", "_teamspeak", "_website", "_chatcmds", "_chatbanned", "_debug", "_dkey", "_drestart", "_dtext", "_safezones",
-	"_bubbles", "_antized", "_antitheft", "_speedlimit", "_timer", "_disableWeps", "_dropWeps", "_escTopT", "_escTopC", "_escMidT", "_escLUPT", "_escLUPC",
-	"_escLBOT", "_escLBOC", "_starterBox", "_smallBox", "_mediumBox", "_largeBox", "_starterSafe", "_smallSafe", "_mediumSafe", "_largeSafe", "_missionFiles",
-	"_badChat", "_badFiles", "_badVars", "_kfc_sz", "_kfc_re", "_kfc_sz1", "_kfc_sz2", "_kfc_sz3", "_kfc_mic", "_kfc_msg", "_kfc_get", "_kfc_got", "_bankvar",
-	"_kfc_ban", "_kfc_oef", "_kfc_pvs", "_kfc_pveh", "_kfc_msg1", "_kfc_pvar", "_kfc_gvar", "_kfc_init", "_kfc_gtrd", "_kfc_atrd", "_kfc_ntrd", "_var",
-	"_kfc_akey", "_kfc_strd", "_kfc_info", "_kfc_keys", "_kfc_gclnt", "_kfc_sclnt", "_kfc_nclnt", "_kfc_rekey", "_kfc_atrd_cfg", "_kfc_strd_cfg", "_cashvar"
-];
-
 #include "config.sqf"
 
-_cashvar = "";
-if (_ver == "1.0.6.2") then {
-	_cashvar = Z_MoneyVariable;
-} else {
-	_cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
-};
-
-_bankvar = if (_ver == "1.0.6.2") then {Z_BankVariable} else {"bankMoney"};
-if (_ver == "1.0.7") then {_mev = false}; //---Restrict skins removed
+local _cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
+local _bankvar = "bankMoney";
 
 diag_log (_diag_prefix + "Initializing Epoch Antihack/Admin Tools");
 
@@ -42,23 +23,21 @@ if (_egb) then {"Antihack" callExtension "Init"; diag_log (_diag_prefix + "Globa
 /* ********************* Sort Staff ********************** */
 
 //---Moderators = 0 | Admins = 1 | Head Admins = 2 | Owners = 3
-//---Names + UIDs = 4 | Hidden = 5 | No logs = 6 | Execute = 7
+//---Names + UIDs = 4 | Hidden = 5 | No logs = 6 | Execute = 7 | Test account = 8
 
-_sorted = [[],[],[],[],[],[],[],[]];
+local _sorted = [[],[],[],[],[],[],[],[],[]];
 {
-	private "_sel";
-
-	_sel = _sorted select _forEachIndex;
+	local _sel = _sorted select _forEachIndex;
 	{
-		private ["_name", "_puid", "_hide", "_logs", "_exec"];
-
-		_name = _x select 0;
-		_puid = _x select 1;
-		_hide = _x select 2;
-		_logs = _x select 3;
-		_exec = _x select 4;
+		local _name = _x select 0;
+		local _puid = _x select 1;
+		local _hide = _x select 2;
+		local _logs = _x select 3;
+		local _exec = _x select 4;
+		local _noad = _x select 5;
 
 		if (typeName _name != "ARRAY") then {_name = [_name]};
+		if (_noad != "") then {(_sorted select 8) set [count (_sorted select 8), _noad + _puid]};
 
 		{
 			_sel set [count _sel, _x + _puid];
@@ -76,15 +55,14 @@ _sorted = [[],[],[],[],[],[],[],[]];
 	} forEach _x;
 } forEach [_mod, _admin, _headAdmin, _owner];
 diag_log (_diag_prefix + "Admins sorted successfully");
+diag_log _sorted;
 
 /* ******************* Random Variables ****************** */
 
 _fnc_random = { //---Generates random variable
-	private ["_ret", "_arr"];
+	local _ret = [];
 
-	_ret = [];
-
-	_arr = toArray "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //---Add letters to the beginning
+	local _arr = toArray "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //---Add letters to the beginning
 	{_ret set [_x, _arr select (random((count _arr)-1))]} count [0,1];
 
 	_arr = toArray "1234567890aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890";
@@ -98,58 +76,54 @@ _fnc_random = { //---Generates random variable
 	_ret
 };
 
-_kfc_sz = "_kfc_sz" call _fnc_random;
-_kfc_re = "_kfc_re" call _fnc_random;
-_kfc_sz1 = "_kfc_sz1" call _fnc_random;
-_kfc_sz2 = "_kfc_sz2" call _fnc_random;
-_kfc_sz3 = "_kfc_sz3" call _fnc_random;
-_kfc_mic = "_kfc_mic" call _fnc_random;
-_kfc_msg = "_kfc_msg" call _fnc_random;
-_kfc_get = "AHPV_Get" + ("_kfc_get" call _fnc_random);
-_kfc_got = "_kfc_got" call _fnc_random;
-_kfc_ban = "_kfc_ban" call _fnc_random;
-_kfc_oef = "_kfc_oef" call _fnc_random;
-_kfc_pvs = "_kfc_pvs" call _fnc_random;
-_kfc_msg1 = "_kfc_msg1" call _fnc_random;
-_kfc_pvar = "AHPV_AReq" + ("_kfc_pvar" call _fnc_random);
-_kfc_gvar = "_kfc_gvar" call _fnc_random;
-_kfc_init = "_kfc_init" call _fnc_random;
-_kfc_gtrd = "_kfc_gtrd" call _fnc_random;
-_kfc_atrd = "_kfc_atrd" call _fnc_random;
-_kfc_ntrd = "_kfc_ntrd" call _fnc_random;
-_kfc_akey = "_kfc_akey" call _fnc_random;
-_kfc_strd = "_kfc_strd" call _fnc_random;
-_kfc_info = "_kfc_info" call _fnc_random;
-_kfc_pveh = "_kfc_pveh" call _fnc_random;
-_kfc_keys = "_kfc_keys" call _fnc_random;
-_kfc_gclnt = "_kfc_gclnt" call _fnc_random;
-_kfc_sclnt = "_kfc_sclnt" call _fnc_random;
-_kfc_nclnt = "_kfc_nclnt" call _fnc_random;
-_kfc_rekey = "_kfc_rekey" call _fnc_random;
-_kfc_atrd_cfg = "_kfc_atrd_cfg" call _fnc_random;
-_kfc_strd_cfg = "_kfc_strd_cfg" call _fnc_random;
+local _kfc_sz = "_kfc_sz" call _fnc_random;
+local _kfc_re = "_kfc_re" call _fnc_random;
+local _kfc_sz1 = "_kfc_sz1" call _fnc_random;
+local _kfc_sz2 = "_kfc_sz2" call _fnc_random;
+local _kfc_sz3 = "_kfc_sz3" call _fnc_random;
+local _kfc_mic = "_kfc_mic" call _fnc_random;
+local _kfc_msg = "_kfc_msg" call _fnc_random;
+local _kfc_get = "AHPV_Get" + ("_kfc_get" call _fnc_random);
+local _kfc_got = "_kfc_got" call _fnc_random;
+local _kfc_ban = "_kfc_ban" call _fnc_random;
+local _kfc_oef = "_kfc_oef" call _fnc_random;
+local _kfc_pvs = "_kfc_pvs" call _fnc_random;
+local _kfc_msg1 = "_kfc_msg1" call _fnc_random;
+local _kfc_pvar = "AHPV_AReq" + ("_kfc_pvar" call _fnc_random);
+local _kfc_gvar = "_kfc_gvar" call _fnc_random;
+local _kfc_init = "_kfc_init" call _fnc_random;
+local _kfc_gtrd = "_kfc_gtrd" call _fnc_random;
+local _kfc_atrd = "_kfc_atrd" call _fnc_random;
+local _kfc_ntrd = "_kfc_ntrd" call _fnc_random;
+local _kfc_akey = "_kfc_akey" call _fnc_random;
+local _kfc_strd = "_kfc_strd" call _fnc_random;
+local _kfc_info = "_kfc_info" call _fnc_random;
+local _kfc_pveh = "_kfc_pveh" call _fnc_random;
+local _kfc_keys = "_kfc_keys" call _fnc_random;
+local _kfc_gclnt = "_kfc_gclnt" call _fnc_random;
+local _kfc_sclnt = "_kfc_sclnt" call _fnc_random;
+local _kfc_nclnt = "_kfc_nclnt" call _fnc_random;
+local _kfc_rekey = "_kfc_rekey" call _fnc_random;
+local _kfc_atrd_cfg = "_kfc_atrd_cfg" call _fnc_random;
+local _kfc_strd_cfg = "_kfc_strd_cfg" call _fnc_random;
 
 /* ********** Global Code (sent to all clients) ********** */
 
-_AH_Global = ("
-	private '_queue'; _queue = [];
+local _AH_Global = ("
+	local _queue = [];
 
 	"+_kfc_keys+"_fnc = {
-		private ['_key', '_run'];
+		local _key = _this select 1;
 
-		_key = _this select 1;
-
-		_run = "+_kfc_keys+" select _key;
+		local _run = "+_kfc_keys+" select _key;
 		if (!isNil '_run') then {call _run};
 
 		_this call DZ_KeyDown_EH
 	};
 
 	"+_kfc_gvar+" = {
-		private ['_exp', '_val'];
-
-		_exp = _this select 2;
-		_val = (_this select 0) getVariable [_this select 1, _exp];
+		local _exp = _this select 2;
+		local _val = (_this select 0) getVariable [_this select 1, _exp];
 
 		if (typeName _val != typeName _exp) exitWith {_exp};
 
@@ -157,10 +131,8 @@ _AH_Global = ("
 	};
 
 	"+_kfc_msg+" = {
-		private ['_msg', '_opt'];
-
-		_msg = _this select 0;
-		_opt = _this select 1;
+		local _msg = _this select 0;
+		local _opt = _this select 1;
 
 		if (_opt == 1) exitWith {diag_log format['"+_diag_prefix+"%1', _msg]};
 		if (_opt == 2) exitWith {systemChat format['"+_chat_prefix+"%1', _msg]};
@@ -180,10 +152,8 @@ _AH_Global = ("
 	'"+_kfc_msg1+"' addPublicVariableEventHandler {"+_kfc_msg1+" = nil; [toString(_this select 1), 2] call "+_kfc_msg+"};
 
 	"+_kfc_pvs+" = {
-		private ['_fnc', '_prm'];
-
-		_fnc = toUpper (_this select 0);
-		_prm = _this select 1;
+		local _fnc = toUpper (_this select 0);
+		local _prm = _this select 1;
 
 		call {
 			if (_fnc == 'LOG') exitWith {_prm set [0, toArray (_prm select 0)]};
@@ -202,15 +172,14 @@ _AH_Global = ("
 	};
 
 	AH_fnc_toChat = {
-		private '_ctrl';
 		disableSerialization;
 		(findDisplay 46) createDisplay 'RscDisplayChat';
-		_ctrl = (findDisplay 24) displayCtrl 101;
+		local _ctrl = (findDisplay 24) displayCtrl 101;
 		_ctrl ctrlSetText _this;
 	};
 
 	_queue set [count _queue, [{
-		private '_display'; _display = findDisplay 49;
+		local _display = findDisplay 49;
 
 		if (isNull _display) exitWith {};
 		if (ctrlText (_display displayCtrl 523) == "+str _escTopT+") exitWith {};
@@ -237,30 +206,28 @@ _AH_Global = ("
 //---Debug Monitor
 if (_debug) then {_AH_Global = _AH_Global + ("
 	_queue set [count _queue, [{
-		private ['_time', '_hours', '_minutes', '_humanity', '_pic', '_txt'];
-
 		if (isNil 'BIS_fnc_numberText') exitWith {};
 		if (isNil 'AH_debugMonitor') then {AH_debugMonitor = true;};
 		if (!AH_debugMonitor) exitWith {};
 
-		_time = round("+str _drestart+" - serverTime / 60);
-		_hours = floor(_time / 60);
-		_minutes = _time - (_hours * 60);
+		local _time = round("+str _drestart+" - serverTime / 60);
+		local _hours = floor(_time / 60);
+		local _minutes = _time - (_hours * 60);
 
 		if (_minutes < 10) then {
 			_minutes = '0' + str _minutes;
 		};
 
-		_humanity = [player, 'humanity', 0] call "+_kfc_gvar+";
+		local _humanity = [player, 'humanity', 0] call "+_kfc_gvar+";
 		_humanity = call {
 			if (_humanity >= 5000) exitWith {'#008CED'};
 			if (_humanity <= -5000) exitWith {'#FF0000'};
 			'#FFFFFF'
 		};
 
-		_pic = if (vehicle player == player) then {getText(configFile >> 'CfgWeapons' >> currentWeapon player >> 'picture')} else {getText(configFile >> 'CfgVehicles' >> typeOf (vehicle player) >> 'picture')};
+		local _pic = if (vehicle player == player) then {getText(configFile >> 'CfgWeapons' >> currentWeapon player >> 'picture')} else {getText(configFile >> 'CfgVehicles' >> typeOf (vehicle player) >> 'picture')};
 
-		_txt = format[""<t size='1.3' font='Bitstream' align='center'>%1</t><br/>"", name player];
+		local _txt = format[""<t size='1.3' font='Bitstream' align='center'>%1</t><br/>"", name player];
 		_txt = _txt + format[""<img size='3.5' image='%1'/><br/>"", _pic];
 		_txt = _txt + format[""<t size='1' font='Bitstream' align='left'>Players Online: </t><t size='1' font='Bitstream' align='right'>%1</t><br/>"", count playableUnits];
 		_txt = _txt + format[""<t size='1' font='Bitstream' align='left'>Headshots: </t><t size='1' font='Bitstream' align='right'>%1</t><br/>"", [player, 'headShots', 0] call "+_kfc_gvar+"];
@@ -279,7 +246,7 @@ if (_debug) then {_AH_Global = _AH_Global + ("
 ");};
 //---Safe Zones
 if (_safezones) then {_AH_Global = _AH_Global + ("
-	private '_szqueue'; _szqueue = [];
+	local _szqueue = [];
 	"+_kfc_sz1+" = {
 		isInTraderCity = true; canbuild = false; sz_time = diag_tickTime;
 		if (isNil 'fnc_veh_handleDam2') then {
@@ -291,7 +258,7 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 		};
 		if (!DZE_BackpackAntiTheft) then {DZE_BackpackAntiTheft = true};
 
-		private '_msg'; _msg = 'You entered a safe zone!';
+		local _msg = 'You entered a safe zone!';
 		taskHint [_msg, [0,1,0,1], 'taskDone']; [_msg, 2] call "+_kfc_msg+";
 
 		['LOG', [format['Entered the safe zone @ %1', mapGridPosition player], 4]] call "+_kfc_pvs+";
@@ -303,10 +270,10 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 			};
 		};");
 		if (_antitheft) then {_AH_Global = _AH_Global + ("
-			private '_veh'; _veh = vehicle player;
+			local _veh = vehicle player;
 
 			if (_veh != player && {driver _veh == player}) then {
-				private '_owner'; _owner = [];
+				local _owner = [];
 				_owner set [0, getPlayerUID player];
 				{
 					if !(getPlayerUID _x in _owner) then {
@@ -320,19 +287,16 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 			if (isNil 'fn_gearMenuChecks1') then {fn_gearMenuChecks1 = fn_gearMenuChecks};
 			fn_gearMenuChecks = {
 				if (vehicle player == player) then {
-					private ['_ct', '_dis'];
 					disableSerialization;
 
-					_display = _this select 0;
-					_ct = cursorTarget;
-					_dis = if (_ct isKindOf 'USEC_ch53_E' || {_ct isKindOf 'MV22'}) then {25} else {12};
+					local _display = _this select 0;
+					local _ct = cursorTarget;
+					local _dis = if (_ct isKindOf 'USEC_ch53_E' || {_ct isKindOf 'MV22'}) then {25} else {12};
 
 					if ((player distance _ct <= _dis) && {_ct isKindOf 'Air' || {_ct isKindOf 'LandVehicle'} || {_ct isKindOf 'Ship'}}) then {
-						private ['_owner', '_deny'];
+						local _owner = [_ct, 'Owner', []] call "+_kfc_gvar+";
 
-						_owner = [_ct, 'Owner', []] call "+_kfc_gvar+";
-
-						_deny = true;
+						local _deny = true;
 						{
 							if (getPlayerUID _x == (_owner select 0)) exitWith {_deny = false;};
 						} count (units group player);
@@ -367,15 +331,13 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 	};
 	"+_kfc_sz2+" = {
 		"+_kfc_sz3+" = false; isInTraderCity = false; canbuild = true;
-		private ['_msg', '_time', '_veh'];
-
-		_msg = 'You left the safe zone!';
+		local _msg = 'You left the safe zone!';
 		taskHint [_msg, [1,0,0,1], 'taskFailed']; [_msg, 2] call "+_kfc_msg+";
 
-		_time = diag_tickTime - sz_time;
+		local _time = diag_tickTime - sz_time;
 		['LOG', [format['Left the safe zone @ %1 after %2 minute(s)', mapGridPosition player, round(_time/60)], 4]] call "+_kfc_pvs+";
 
-		_veh = vehicle player;"); if (_timer > 0) then {_AH_Global = _AH_Global + ("
+		local _veh = vehicle player;"); if (_timer > 0) then {_AH_Global = _AH_Global + ("
 			if (_time >= 60) then {
 				if (_veh != player) then {
 					[_veh, "+str _timer+"] spawn {
@@ -406,7 +368,7 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 	};
 	sz_combatcnt = 0; _szqueue set [count _szqueue, [{if (sz_combatcnt > 0) then {sz_combatcnt = sz_combatcnt - 1}}, 120, 0]];
 	_szqueue set [count _szqueue, [{
-		private '_veh'; _veh = vehicle player;
+		local _veh = vehicle player;
 		if (isNil '"+_kfc_sz3+"') then {"+_kfc_sz3+" = false};
 		if (!"+_kfc_sz3+") then {
 			if ({_veh distance (_x select 0) <= (_x select 1)} count DZE_SafeZonePosArray > 0) then {call "+_kfc_sz1+"};
@@ -419,27 +381,26 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 		{player setVariable [_x, false, false]} count ['NORRN_unconscious', 'USEC_isCardiac'];
 		r_player_unconscious = false; r_player_cardiac = false;");
 		if (_disableWeps) then {_AH_Global = _AH_Global + ("
-			private '_wep'; _wep = currentWeapon player;
+			local _wep = currentWeapon player;
 			if (_wep in "+str _dropWeps+") then {
 				player action ['dropWeapon', player, _wep];
 			};
 		")};
 		_AH_Global = _AH_Global + ("
-			private '_veh'; _veh = vehicle player;
+			local _veh = vehicle player;
 			if (_veh != player) then {");
 				if (_speedlimit > 0) then {_AH_Global = _AH_Global + ("
 					if !(_veh isKindOf 'Air') then {
-						private '_speed'; _speed = abs(speed _veh);
+						local _speed = abs(speed _veh);
 						if (_speed > "+str _speedlimit+") then {
-							private ['_vel', '_mod'];
-							_vel = velocity _veh;
-							_mod = if (_speed > 50) then {0.1} else {0.8};
+							local _vel = velocity _veh;
+							local _mod = if (_speed > 50) then {0.1} else {0.8};
 							_veh setVelocity [(_vel select 0) * _mod, (_vel select 1) * _mod, (_vel select 2) * _mod];
 						};
 					};
 				")};
 				if (_antitheft) then {_AH_Global = _AH_Global + ("
-					private '_owner'; _owner = [_veh, 'Owner', []] call "+_kfc_gvar+";
+					local _owner = [_veh, 'Owner', []] call "+_kfc_gvar+";
 
 					if (driver _veh == player && {count _owner == 0}) then {
 						_owner set [0, getPlayerUID player];
@@ -448,7 +409,7 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 					};
 
 					if (count _owner > 0) then {
-						private '_deny'; _deny = true;
+						local _deny = true;
 						{
 							if (getPlayerUID _x == (_owner select 0)) exitWith {_deny = false};
 						} count (units group player);
@@ -481,16 +442,15 @@ if (_safezones) then {_AH_Global = _AH_Global + ("
 //---Client RE
 _AH_Global = _AH_Global + ("
 	'"+_kfc_rekey+"' addPublicVariableEventHandler {
-		private ['_in', '_sender', '_param', '_id', '_info'];
 		"+_kfc_rekey+" = nil;
 
-		_in = _this select 1;
+		local _in = _this select 1;
 
-		_sender = _in select 0;
-		_param = _in select 1;
-		_id = _in select 2;
+		local _sender = _in select 0;
+		local _param = _in select 1;
+		local _id = _in select 2;
 
-		_info = name _sender + ' ' + '(' + getPlayerUID _sender + ')';
+		local _info = name _sender + ' ' + '(' + getPlayerUID _sender + ')';
 
 		comment 'We authenticate the request by sending the client key from the server to the respective client. Since only the server and client have this, if it matches, it is a legitimate request.';
 		if (dayz_authKey != toString(_in select 3)) exitWith {
@@ -500,9 +460,7 @@ _AH_Global = _AH_Global + ("
 		if (getPlayerUID player in "+str _headless+") exitWith {}; comment 'Admins should not be manipulating headless clients';
 
 		if (_id == 1) exitWith {
-			private '_veh';
-
-			_veh = vehicle player;
+			local _veh = vehicle player;
 
 			_veh setPosATL (_param select 1);
 			_veh setDir (_param select 2);
@@ -575,7 +533,7 @@ _AH_Global = _AH_Global + ("
 			[format['You were given %1 humanity by admin ""%2.""', [_param select 1] call BIS_fnc_numberText, _info], 4] call "+_kfc_msg+";
 		};
 		if (_id == 9) exitWith {
-			private '_mags'; _mags = getArray(configFile >> 'CfgWeapons' >> currentWeapon(vehicle player) >> 'magazines');
+			local _mags = getArray(configFile >> 'CfgWeapons' >> currentWeapon(vehicle player) >> 'magazines');
 			if (count _mags > 0) then {
 				for '_x' from 1 to (_param select 1) do {
 					(vehicle player) addMagazine (_mags select 0);
@@ -588,19 +546,15 @@ _AH_Global = _AH_Global + ("
 			[format['You were moved into the vehicle of admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
 		if (_id == 11) exitWith {
-			private ['_veh', '_hit'];
-
-			_veh = vehicle player;
-			_hit = _veh call vehicle_getHitpoints;
+			local _veh = vehicle player;
+			local _hit = _veh call vehicle_getHitpoints;
 
 			{
-				private ['_dam', '_sel', '_var'];
-
-				_dam = [_veh, _x] call object_getHit;
+				local _dam = [_veh, _x] call object_getHit;
 
 				if (_dam > 0) then {
-					_sel = getText(configFile >> 'CfgVehicles' >> typeOf _veh >> 'HitPoints' >> _x >> 'name');
-					_var = 'hit_' + _sel;
+					local _sel = getText(configFile >> 'CfgVehicles' >> typeOf _veh >> 'HitPoints' >> _x >> 'name');
+					local _var = 'hit_' + _sel;
 					_veh setHit [_sel, 0];
 					_veh setVariable [_var, 0, true];
 				};
@@ -632,7 +586,7 @@ _AH_Global = _AH_Global + ("
 			[format['Your gear was removed by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
 		if (_id == 16) exitWith {
-			private _pos; _pos = [vehicle player] call FNC_getPos;
+			local _pos = [vehicle player] call FNC_getPos;
 			(vehicle player) setPos [_pos select 0, _pos select 1, (_pos select 2) + (_param select 1)];
 			[format['You were sent %1 meters into the air by admin ""%2.""', [_param select 1] call BIS_fnc_numberText, _info], 4] call "+_kfc_msg+";
 		};
@@ -670,19 +624,20 @@ _AH_Global = _AH_Global + ("
 //---Chat commands
 _AH_Global = _AH_Global + ("
 	_queue set [count _queue, [{
-		private '_display'; _display = findDisplay 24;
+		local _display = findDisplay 24;
 		if (isNull _display) exitWith {};
 
-		if (getPlayerUID player in "+str _chatbanned+") exitWith {
+		local _puid = getPlayerUID player;
+		if (_puid in "+str _chatbanned+") exitWith {
 			_display closeDisplay 0;
 			['You are chat banned!', 2] call "+_kfc_msg+";
 		};
 
-		private '_txt'; _txt = ctrlText (_display displayCtrl 101);
+		local _txt = ctrlText (_display displayCtrl 101);
 		if (_txt == '') exitWith {};
 
 		_txt = toLower _txt;
-		if (_txt in "+str _badChat+" && {!((name player + getPlayerUID player) in "+str (_sorted select 4)+")}) then {
+		if (_txt in "+str _badChat+" && {!((name player + _puid) in "+str (_sorted select 4)+")} && {!(_puid in "+str (_sorted select 4)+")}) then {
 			_display closeDisplay 0; ['LOG', [format['Bad chat: %1', _txt], 9]] call "+_kfc_pvs+";
 		};"); if ("day/night" in _chatcmds) then {_AH_Global = _AH_Global + ("
 		if (_txt in ['!day', '!night', '/day', '/night']) then {
@@ -691,7 +646,7 @@ _AH_Global = _AH_Global + ("
 			['VOTE', if (['night', _txt] call fnc_inString) then {0} else {1}] call "+_kfc_pvs+";
 		};")}; if ("suicide" in _chatcmds) then {_AH_Global = _AH_Global + ("
 		if (_txt in ['!suicide', '/suicide', '!killme', '/killme']) then {
-			private '_time'; _time = diag_tickTime - AH_Login;
+			local _time = diag_tickTime - AH_Login;
 			_display closeDisplay 0;
 			if (_time < 180) exitWith {[format['You need to wait %1 second(s)!', round(180 - _time)], 2] call "+_kfc_msg+"};
 			if (isInTraderCity) exitWith {['You cannot commit suicide in a safe zone!', 2] call "+_kfc_msg+"};
@@ -753,10 +708,8 @@ _AH_Global = _AH_Global + ("
 		if (PVCDZ_plr_Login select 8) then {['LOG', [format['New player connected: %1 (%2)', name player, getPlayerUID player], 10]] call "+_kfc_pvs+"};
 
 		local_lockUnlock = {
-			private ['_veh', '_lock'];
-
-			_veh = _this select 0;
-			_lock = if (_this select 1) then {'LOCKED'} else {'UNLOCKED'};
+			local _veh = _this select 0;
+			local _lock = if (_this select 1) then {'LOCKED'} else {'UNLOCKED'};
 
 			if (local _veh) then {
 				_veh setVehicleLock _lock;
@@ -794,8 +747,8 @@ diag_log (_diag_prefix + "Global client compiled successfully");
 
 /* ***** Player Code (sent to normal player clients) ***** */
 
-_AH_Normal = ("
-	private '_queue'; _queue = [];
+local _AH_Normal = ("
+	local _queue = [];
 	"+_kfc_ban+" = {['BAN', _this] call "+_kfc_pvs+"};
 ");
 if (_bfs) then {
@@ -804,7 +757,7 @@ if (_bfs) then {
 		{
 			preprocessFile 'scan completed. Bad content was';
 			{
-				private '_file'; _file = preprocessFile _x;
+				local _file = preprocessFile _x;
 				if (_file != '') exitWith {format['Bad file: %1 - Contents: %2', _x, _file] call "+_kfc_ban+"};
 			} count "+str _badFiles+";
 		} spawn {call _this};
@@ -847,7 +800,7 @@ if (_bsc) then {
 	//---Let's make sure the player isn't wearing a forbidden skin
 	_AH_Normal = _AH_Normal + ("
 		_queue set [count _queue, [{
-			private '_type'; _type = typeOf player;
+			local _type = typeOf player;
 			{
 				if (_type == _x || {_type isKindOf 'CAAnimalBase'}) exitWith {
 					format['Bad skin: %1', _type] call "+_kfc_ban+";
@@ -885,6 +838,8 @@ if (_bwc) then {
 		}, 3.5, diag_tickTime]];
 	");
 };
+/*
+A lot of this was moved to client only in Epoch 107, so cannot be monitored for infraction :(
 if (_mev) then {
 	//---Let's make sure unsecure variables aren't changed
 	_AH_Normal = _AH_Normal + ("
@@ -907,6 +862,7 @@ if (_mev) then {
 		}, 4.9, 0, {!isNull findDisplay 46}]];
 	");
 };
+*/
 //---Let's make sure player info isn't changing
 _AH_Normal = _AH_Normal + ("
 	if (("+_kfc_info+" select 1) == '') then {"+_kfc_info+" = [name player, getPlayerUID player]};
@@ -940,16 +896,12 @@ _AH_Normal = _AH_Normal + ("
 if (_mic) then {_AH_Normal = _AH_Normal + ("
 	[] spawn {
 		waitUntil {uiSleep 1; !isNil '"+_kfc_mic+"'};
-		private ['_missionFiles', '_counts'];
-
-		_missionFiles = "+str _missionFiles+";
-
-		_counts = [];
+		
+		local _missionFiles = "+str _missionFiles+";
+		local _counts = [];
 		{
-			private ['_arr', '_file'];
-
-			_arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
-			_file = toArray(preprocessFile _x);
+			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
+			local _file = toArray(preprocessFile _x);
 
 			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
 			_arr set [128, 0];
@@ -959,7 +911,7 @@ if (_mic) then {_AH_Normal = _AH_Normal + ("
 
 		{
 			if (str _x != str ("+_kfc_mic+" select _forEachIndex)) exitWith {
-				private '_file'; _file = _missionFiles select _forEachIndex;
+				local _file = _missionFiles select _forEachIndex;
 				format['Mission file modified: %1 - Contents: %2', _file, preprocessFile _file] call "+_kfc_ban+";
 			};
 		} forEach _counts;
@@ -988,7 +940,7 @@ diag_log (_diag_prefix + "Normal client compiled successfully");
 
 /* ********* Staff Code (sent to staff clients) ********* */
 
-_AH_Admin = ("
+local _AH_Admin = ("
 	"+_kfc_atrd_cfg+" = [];
 	"+_kfc_atrd+" = [] spawn {
 		waitUntil {!isNil 'Dayz_loginCompleted'};
@@ -1012,19 +964,16 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_addCommands = {
-		private ['_display', '_ctrl'];
 		disableSerialization;
 
-		_display = findDisplay 6969;
-		_ctrl = _display displayCtrl 1501;
+		local _display = findDisplay 6969;
+		local _ctrl = _display displayCtrl 1501;
 
 		{
-			private ['_txt', '_clr', '_index'];
+			local _txt = _x select 0;
+			local _clr = _x select 2;
 
-			_txt = _x select 0;
-			_clr = _x select 2;
-
-			_index = _ctrl lbAdd _txt;
+			local _index = _ctrl lbAdd _txt;
 			if (count _clr > 0) then {
 				_ctrl lbSetColor [_index, _clr];
 			};
@@ -1047,28 +996,27 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_addTargets = {
-		private ['_display', '_ctrl', '_curSel', '_players', '_sort', '_targets', '_toAdd', '_fnc_removeHidden', '_rank'];
 		disableSerialization;
 
-		_display = findDisplay 6969;
-		_ctrl = _display displayCtrl 1500;
+		local _display = findDisplay 6969;
+		local _ctrl = _display displayCtrl 1500;
 
-		_curSel = lbCurSel 1500;
+		local _curSel = lbCurSel 1500;
 		_curSel = if (_curSel > -1) then {_ctrl lbData _curSel} else {''};
 		_ctrl lbSetCurSel -1;
 		lbClear _ctrl;
 
-		_players = playableUnits;
-		_sort = [];
+		local _players = playableUnits;
+		local _sort = [];
 		{
 			_sort set [count _sort, name _x + getPlayerUID _x];
 		} count _players;
 
 		_sort = [_sort, [6969, 1500]] call AH_fnc_sortArray;
 
-		_targets = [];
+		local _targets = [];
 		{
-			private '_sel'; _sel = _x;
+			local _sel = _x;
 			{
 				if ((name _x + getPlayerUID _x) == _sel) then {
 					_targets set [count _targets, _x];
@@ -1076,16 +1024,16 @@ _AH_Admin = ("
 			} forEach _players;
 		} forEach _sort;
 
-		_toAdd = [];
+		local _toAdd = [];
 		{
-			_toAdd set [count _toAdd, [_x, (name _x + getPlayerUID _x) in ("+str _sorted+" select 5), vehicle _x != _x, _x call AH_fnc_rank]];
+			_toAdd set [count _toAdd, [_x, ((name _x + getPlayerUID _x) in ("+str _sorted+" select 5) || {(getPlayerUID _x) in ("+str _sorted+" select 5)}), vehicle _x != _x, _x call AH_fnc_rank]];
 		} count _targets;
 
 		{if ((_x select 3) == 'Player' && {_x select 2}) then {_x set [3, 'Players in Vehicle']}} count _toAdd;
 
-		_fnc_removeHidden = {
+		local _fnc_removeHidden = {
 			{
-				private '_sel'; _sel = _x;
+				local _sel = _x;
 				{
 					if (_sel == (_x select 3) && {_x select 1}) then {
 						_toAdd set [_forEachIndex, ''];
@@ -1095,7 +1043,7 @@ _AH_Admin = ("
 			} forEach _this;
 		};
 
-		_rank = player call AH_fnc_rank;
+		local _rank = player call AH_fnc_rank;
 		call
 		{
 			if (_rank == 'Head Admin') exitWith {['Owner'] call _fnc_removeHidden};
@@ -1104,14 +1052,13 @@ _AH_Admin = ("
 		};
 
 		{
-			private '_adding'; _adding = _x;
+			local _adding = _x;
 			if ({(_x select 3) == _adding} count _toAdd > 0) then {
-				private '_index'; _index = _ctrl lbAdd (_adding + 's:');
+				local _index = _ctrl lbAdd (_adding + 's:');
 				{
-					private '_tar'; _tar = _x select 0;
+					local _tar = _x select 0;
 					if ((_x select 3) == _adding) then {
-						private ['_name', '_info'];
-						_name = name _tar; _info = _name + (getPlayerUID _tar);
+						local _name = name _tar; local _info = _name + (getPlayerUID _tar);
 
 						_index = _ctrl lbAdd _name;
 						_ctrl lbSetData [_index, _info];
@@ -1120,9 +1067,8 @@ _AH_Admin = ("
 						if (_x select 2) then {
 							_ctrl lbSetPicture [_index, getText(configFile >> 'CfgVehicles' >> typeOf (vehicle _tar) >> 'picture')];
 						} else {
-							private '_wep';
 							comment 'For some reason, currentWeapon as well as other commands that retrieve the weapons of the player seem to fail from time to time.';
-							_wep = call
+							local _wep = call
 							{
 								if (currentWeapon _tar != '') exitWith {currentWeapon _tar};
 								if (primaryWeapon _tar != '') exitWith {primaryWeapon _tar}; comment 'Using this in case currentWeapon fails';
@@ -1139,14 +1085,14 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_adjust = {
-		private ['_target', '_name', '_puid', '_qty', '_adj'];
-
-		_target = call AH_fnc_getTarget;
+		local _target = call AH_fnc_getTarget;
 		if (isNull _target) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
 
-		_name = name _target; _puid = getPlayerUID _target;
+		local _name = name _target;
+		local _puid = getPlayerUID _target;
+		local _qty = _this select 0;
+		local _adj = _this select 2;
 
-		_qty = _this select 0; _adj = _this select 2;
 		[29, [_target, _qty, _this select 1, _adj]] call AH_fnc_adminReq;
 
 		[format['You adjusted the %1 of ""%2 (%3)"" to %4.', _adj, _name, _puid, [_qty] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
@@ -1172,13 +1118,12 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_display = {
-		private ['_display', '_ctrl'];
 		disableSerialization;
 
 		createDialog 'InputDialog';
-		_display = findDisplay 6970;
+		local _display = findDisplay 6970;
 
-		_ctrl = _display displayCtrl 1001;
+		local _ctrl = _display displayCtrl 1001;
 		_ctrl ctrlSetText (_this select 0);
 
 		_ctrl = _display displayCtrl 1002;
@@ -1200,16 +1145,14 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_exeCMD = {
-		private ['_txt', '_opt', '_data'];
+		local _txt = lbText [1501, lbCurSel 1501];
 
-		_txt = lbText [1501, lbCurSel 1501];
-
-		_opt = [];
+		local _opt = [];
 		{
 			if ((_x select 0) == _txt) exitWith {_opt = _x};
 		} count admin_options;
 
-		_data = _opt select 1;
+		local _data = _opt select 1;
 
 		if (typeName _data == 'SCALAR') exitWith {
 			if (isNil 'admin_targetSpawn') then {admin_targetSpawn = false};
@@ -1217,7 +1160,7 @@ _AH_Admin = ("
 			call {
 				if (_data == 0) exitWith {
 					if (count _opt > 3) then {
-						private '_data'; _data = _opt select 3;
+						local _data = _opt select 3;
 						if (typeName _data == 'CODE') then {call _data} else {call compile _data};
 					};
 				};
@@ -1239,10 +1182,8 @@ _AH_Admin = ("
 	};
 
 	AH_fnc_getTarget = {
-		private ['_tar', '_sel'];
-
-		_tar = objNull;
-		_sel = lbData [1500, lbCurSel 1500];
+		local _tar = objNull;
+		local _sel = lbData [1500, lbCurSel 1500];
 
 		{
 			if ((name _x + getPlayerUID _x) == _sel) exitWith {_tar = _x};
@@ -1260,15 +1201,13 @@ _AH_Admin = ("
 //---Pull menu code from respective files
 _AH_Admin = _AH_Admin + ("
 	AH_fnc_initialize = {
-		private ['_rank', '_keys', '_main', '_targ', '_logs', '_spwn', '_envi'];
-
 		admin_toggled = []; admin_spectating = false; admin_tempSpawn = false;
 		admin_tpkeybind = false; admin_flykeybind = false; admin_vehBoost = false;
 
-		_rank = player call AH_fnc_rank;
+		local _rank = player call AH_fnc_rank;
 		[format['Welcome %1! Loading admin tools...', _rank], 2] call "+_kfc_msg+";
 
-		_main = []; _targ = []; _logs = []; _spwn = []; _envi = [];
+		local _keys = []; local _main = []; local _targ = []; local _logs = []; local _spwn = []; local _envi = [];
 
 		if (_rank == 'Owner') then {
 ");
@@ -1297,7 +1236,7 @@ _AH_Admin = _AH_Admin + ("
 		if (admin_forceTemp) then {admin_tempSpawn = true};
 
 		if ({(_x select 0) == '>> Cache Toggle Configuration'} count _main > 0) then {
-			private '_cache'; _cache = profileNameSpace getVariable ['ATCACHE', []];
+			local _cache = profileNameSpace getVariable ['ATCACHE', []];
 			if (typeName _cache == 'ARRAY' && {count _cache > 0}) then {
 				{_x call AH_fnc_toggle} forEach _cache;
 			};
@@ -1333,19 +1272,20 @@ _AH_Admin = _AH_Admin + ("
 		"+_kfc_keys+" set [0x06, admin_forward];
 		"+_kfc_keys+" set [0x44, AH_fnc_cancelSpec];
 		"+_kfc_keys+" set [0x12, {
-			private ['_veh', '_vel']; _veh = vehicle player; _vel = velocity _veh;
+			local _veh = vehicle player; local _vel = velocity _veh;
 			if (admin_vehBoost && {isEngineOn _veh}) then {
 				_veh setVelocity [(_vel select 0) * 1.035, (_vel select 1) * 1.035, _vel select 2];
 			};
 		}];
 		"+_kfc_keys+" set [0x39, {
-			private ['_veh', '_vel']; _veh = vehicle player; _vel = velocity _veh;
+			local _veh = vehicle player; local _vel = velocity _veh;
 			if (admin_vehBoost && {isEngineOn _veh}) then {
 				_veh setVelocity [(_vel select 0) * 0.97, (_vel select 1) * 0.97, _vel select 2];
 			};
 		}];
 
-		if ((name player + getPlayerUID player) in "+str (_sorted select 7)+") then {
+		local _puid = getPlayerUID player;
+		if (((name player + _puid) in "+str (_sorted select 7)+") || {_puid in "+str (_sorted select 7)+"}) then {
 			"+_kfc_keys+" set [0x29, admin_execute];
 		};
 
@@ -1359,7 +1299,7 @@ _AH_Admin = _AH_Admin + ("
 		if (isNil 'admin_logs') then {
 			admin_logs = [];
 			'AHPV_Logs' addPublicVariableEventHandler {
-				private ['_in', '_add']; AHPV_Logs = nil; _in = _this select 1; _add = [];
+				AHPV_Logs = nil; local _in = _this select 1; local _add = [];
 
 				_add set [count _add, ['===============================================================', 0, []]];
 				_add set [count _add, ['<< Back', 0, [], {'Log Menu' call admin_back}]];
@@ -1426,7 +1366,7 @@ _AH_Admin = _AH_Admin + ("
 			if (isNil _x) then {call compile (_x + '= [];')};
 		} forEach ['hack_logs', 'newPlayer_logs', 'safeZone_logs', 'trader_logs', 'lockUnlock_logs', 'maintenance_logs', 'player_logs', 'surveillance_logs', 'death_logs'];
 
-		private _get; _get = call {
+		local _get = call {
 			if (_this == 'Admin Logs') exitWith {count admin_logs};
 			if (_this == 'Hack Logs') exitWith {count hack_logs};
 			if (_this == 'New Player Logs') exitWith {count newPlayer_logs};
@@ -1444,9 +1384,7 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_noBrackets = {
-		private '_ret';
-
-		_ret = str _this;
+		local _ret = str _this;
 		_ret = toArray _ret;
 
 		{_ret = _ret - [_x]} count [91,93];
@@ -1456,22 +1394,19 @@ _AH_Admin = _AH_Admin + ("
 
 	AH_fnc_open = {
 		if (!isNull (findDisplay 6969)) exitWith {closeDialog 0};
-		private ['_display', '_rank', '_ctrl'];
 		disableSerialization;
 
 		createDialog 'StaffDialog';
-		_display = findDisplay 6969;
-		_rank = player call AH_fnc_rank;
+		local _display = findDisplay 6969;
+		local _rank = player call AH_fnc_rank;
 
-		_ctrl = _display displayCtrl 1001;
+		local _ctrl = _display displayCtrl 1001;
 		_ctrl ctrlSetText format['%1 Menu', _rank];
 
 		_ctrl = _display displayCtrl 2100;
 		_ctrl ctrlSetEventHandler ['LBSelChanged', '(_this select 1) call AH_fnc_switchMenu;'];
 		{
-			private '_index';
-
-			_index = _ctrl lbAdd (_x select 0);
+			local _index = _ctrl lbAdd (_x select 0);
 			if (_index == 0) then {
 				_ctrl lbSetCurSel _index;
 				_index call AH_fnc_switchMenu;
@@ -1542,7 +1477,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.0.9 | Compiled 08/24/2019 | By KFC Solutions'],
+			[1023, 'Antihack v1.0.1 | Compiled TBD | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -1562,26 +1497,24 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_rank = {
-		private '_plr';
+		local _puid = getPlayerUID _this;
+		local _plr = name _this + _puid;
 
-		_plr = name _this + getPlayerUID _this;
-
-		if (_plr in ("+str _sorted+" select 0)) exitWith {'Moderator'};
-		if (_plr in ("+str _sorted+" select 1)) exitWith {'Admin'};
-		if (_plr in ("+str _sorted+" select 2)) exitWith {'Head Admin'};
-		if (_plr in ("+str _sorted+" select 3)) exitWith {'Owner'};
+		if ((_plr in ("+str _sorted+" select 0)) || {_puid in ("+str _sorted+" select 0)}) exitWith {'Moderator'};
+		if ((_plr in ("+str _sorted+" select 1)) || {_puid in ("+str _sorted+" select 1)}) exitWith {'Admin'};
+		if ((_plr in ("+str _sorted+" select 2)) || {_puid in ("+str _sorted+" select 2)}) exitWith {'Head Admin'};
+		if ((_plr in ("+str _sorted+" select 3)) || {_puid in ("+str _sorted+" select 3)}) exitWith {'Owner'};
 
 		'Player'
 	};
 
 	AH_fnc_refresh = {
-		private ['_display', '_ctrl'];
 		disableSerialization;
 
-		_display = findDisplay 6969;
+		local _display = findDisplay 6969;
 		if (isNull _display) exitWith {};
 
-		_ctrl = _display displayCtrl 1002;
+		local _ctrl = _display displayCtrl 1002;
 		_ctrl ctrlSetText format['Players Online: %1', count playableUnits];
 
 		_ctrl = _display displayCtrl 1413;
@@ -1605,26 +1538,24 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_removePrefix = {
-		_this = toArray _this;
+		local _ret = toArray _this;
 
-		if ((_this select 0) == 32) then {
-			{_this set [_forEachIndex, -1]} forEach [0,1,2,3];
-			_this = _this - [-1];
+		if ((_ret select 0) == 32) then {
+			{_ret set [_forEachIndex, -1]} forEach [0,1,2,3];
+			_ret = _ret - [-1];
 		};
 
-		if ((_this select 0) == 62) then {
-			{_this set [_forEachIndex, -1]} forEach [0,1,2];
-			_this = _this - [-1];
+		if ((_ret select 0) == 62) then {
+			{_ret set [_forEachIndex, -1]} forEach [0,1,2];
+			_ret = _ret - [-1];
 		};
 
-		toString _this
+		toString _ret
 	};
 
 	AH_fnc_search = {
-		private ['_find', '_found'];
-
-		_find = _this;
-		_found = [];
+		local _find = _this;
+		local _found = [];
 
 		[format['Searching for all items containing ""%1"".', _find], 2] call "+_kfc_msg+";
 
@@ -1646,11 +1577,9 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_selCMD = {
-		private ['_txt', '_add'];
+		local _txt = lbText [1501, lbCurSel 1501];
 
-		_txt = lbText [1501, lbCurSel 1501];
-
-		_add = false;
+		local _add = false;
 		{
 			if (isClass(configFile >> _x >> _txt)) exitWith {_add = true};
 		} count ['CfgVehicles', 'CfgMagazines', 'CfgWeapons'];
@@ -1659,29 +1588,26 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_selTarget = {
-		private ['_tar', '_veh', '_grp', '_mag', '_ner'];
-
-		_tar = call AH_fnc_getTarget;
+		local _tar = call AH_fnc_getTarget;
 		if (isNull _tar) then {_tar = player};
 
-		_grp = [];
+		local _grp = [];
 		{
 			if (_x != _tar) then {
 				_grp set [count _grp, name _x + ' ' + format['(%1)', getPlayerUID _x]];
 			};
 		} count (units group _tar);
 
-		_mag = [];
+		local _mag = [];
 		{
 			if !(['Swing', _x] call fnc_inString) then {
 				_mag set [count _mag, _x];
 			};
 		} count (magazines _tar);
 
-		_ner = [];
+		local _ner = [];
 		{
-			private '_dis';
-			_dis = _x distance _tar;
+			local _dis = _x distance _tar;
 			if (_x != _tar && {_dis <= 500}) then {
 				_ner set [count _ner, name _x + ' ' + format['(%1)', getPlayerUID _x] + ' ' + format['%1m', round _dis]];
 			};
@@ -1705,16 +1631,15 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_sortArray = {
-		private ['_ctrl', '_ret'];
 		disableSerialization;
 
-		_ctrl = findDisplay ((_this select 1) select 0) displayCtrl ((_this select 1) select 1);
+		local _ctrl = findDisplay ((_this select 1) select 0) displayCtrl ((_this select 1) select 1);
 		lbClear _ctrl;
 
 		{_ctrl lbAdd _x} forEach (_this select 0);
 		lbSort _ctrl;
 
-		_ret = [];
+		local _ret = [];
 		for '_x' from 0 to (lbsize _ctrl)-1 do {
 			_ret set [count _ret, _ctrl lbText _x];
 		};
@@ -1724,40 +1649,34 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_switchMenu = {
-		private ['_opt', '_data'];
-
-		_opt = [];
+		local _opt = [];
 		{
 			if (_this == _forEachIndex) exitWith {
 				_opt = _x;
 			};
 		} forEach admin_menus;
 
-		_data = _opt select 1;
+		local _data = _opt select 1;
 		if (typeName _data == 'CODE') then {call _data} else {_data call AH_fnc_add};
 
 		call AH_fnc_refresh;
 	};
 
 	AH_fnc_target = {
-		private ['_target', '_name', '_puid'];
-
-		_target = call AH_fnc_getTarget;
+		local _target = call AH_fnc_getTarget;
 		if (isNull _target) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
 
-		_name = name _target;
-		_puid = getPlayerUID _target;
+		local _name = name _target;
+		local _puid = getPlayerUID _target;
 
 		_this = call AH_fnc_removePrefix;
 		if (_this == 'Teleport to Target') exitWith {
-			private ['_veh', '_veh2', '_pos', '_dir', '_dis'];
+			local _veh = vehicle _target;
+			local _veh2 = vehicle player;
 
-			_veh = vehicle _target;
-			_veh2 = vehicle player;
-
-			_pos = [_veh] call FNC_getPos;
-			_dir = getDir _veh;
-			_dis = if (_veh2 == player) then {-5} else {-10};
+			local _pos = [_veh] call FNC_getPos;
+			local _dir = getDir _veh;
+			local _dis = if (_veh2 == player) then {-5} else {-10};
 
 			_pos = [(_pos select 0) + _dis * sin(_dir), (_pos select 1) + _dis * cos(_dir), _pos select 2];
 			_veh2 setPosATL _pos;
@@ -1769,13 +1688,11 @@ _AH_Admin = _AH_Admin + ("
 			format['Teleported to ""%1 (%2)"" @ %3', _name, _puid, mapGridPosition player] call AH_fnc_adminLog;
 		};
 		if (_this == 'Teleport Target to You') exitWith {
-			private ['_veh', '_pos', '_dir', '_dis'];
+			local _veh = vehicle player;
 
-			_veh = vehicle player;
-
-			_pos = [_veh] call FNC_getPos;
-			_dir = getDir _veh;
-			_dis = if (vehicle _target == _target) then {5} else {10};
+			local _pos = [_veh] call FNC_getPos;
+			local _dir = getDir _veh;
+			local _dis = if (vehicle _target == _target) then {5} else {10};
 
 			_pos = [(_pos select 0) + _dis * sin(_dir), (_pos select 1) + _dis * cos(_dir), _pos select 2];
 
@@ -1791,7 +1708,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Adjust Target Bank') exitWith {
 			['Adjusting Bank', 'Amount:', format[""
-				private '_qty'; _qty = parseNumber(ctrlText 1400);
+				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
 				[8, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the bank of """"%1 (%2).""""', 4] call "+_kfc_msg+";
@@ -1800,7 +1717,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Adjust Target Wallet') exitWith {
 			['Adjusting Wallet', 'Amount:', format[""
-				private '_qty'; _qty = parseNumber(ctrlText 1400);
+				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
 				[9, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the wallet of """"%1 (%2).""""', 4] call "+_kfc_msg+";
@@ -1809,7 +1726,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Adjust Target Humanity') exitWith {
 			['Adjusting Humanity', 'Amount:', format[""
-				private '_qty'; _qty = parseNumber(ctrlText 1400);
+				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
 				[10, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You gave '+([_qty] call BIS_fnc_numberText)+' humanity to """"%1 (%2).""""', 4] call "+_kfc_msg+";
@@ -1818,7 +1735,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Give Target Ammo') exitWith {
 			['Giving Ammo', 'Amount:', format[""
-				private '_qty'; _qty = parseNumber(ctrlText 1400);
+				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
 				[11, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You gave '+([_qty] call BIS_fnc_numberText)+' mags to """"%1 (%2).""""', 4] call "+_kfc_msg+";
@@ -1902,7 +1819,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Send Target Up') exitWith {
 			['Launching', 'Distance:', format[""
-				private '_qty'; _qty = parseNumber(ctrlText 1400);
+				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
 				[19, ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You sent """"%1 (%2)"""" up '+([_qty] call BIS_fnc_numberText)+' meters.', 4] call "+_kfc_msg+";
@@ -1995,21 +1912,17 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_toggle = {
-		private ['_change', '_enabled', '_this', '_count', '_fn_alterLoop'];
-
 		_this = call AH_fnc_removePrefix;
 
-		_change = if (_this in admin_toggled) then {'Disabled'} else {'Enabled'};
-		_enabled = _change == 'Enabled';
+		local _change = if (_this in admin_toggled) then {'Disabled'} else {'Enabled'};
+		local _enabled = _change == 'Enabled';
 
 		if (_change == 'Disabled') then {admin_toggled = admin_toggled - [_this]} else {admin_toggled set [count admin_toggled, _this]};
 
-		_count = {count _x > 3 && {(_x select 4) == _this}} count "+_kfc_atrd_cfg+";
+		local _count = {count _x > 3 && {(_x select 4) == _this}} count "+_kfc_atrd_cfg+";
 
-		_fn_alterLoop = {
-			private '_bool';
-
-			_bool = if ((_this select 1) == 1) then {true} else {false};
+		local _fn_alterLoop = {
+			local _bool = if ((_this select 1) == 1) then {true} else {false};
 			{
 				if (count _x > 3 && {(_this select 0) == (_x select 4)}) exitWith {
 					if (!_bool) then {_x set [2, 0]}; comment 'Reset time so the code in the loop begins immediately when toggled';
@@ -2025,7 +1938,7 @@ _AH_Admin = _AH_Admin + ("
 					if (isNil 'BIS_Effects_EH_Killed1') then {BIS_Effects_EH_Killed1 = BIS_Effects_EH_Killed};
 					BIS_Effects_EH_Killed = {
 						comment 'Prevent player from dying in vehicle crashes';
-						private '_veh'; _veh = _this select 0;
+						local _veh = _this select 0;
 						if (({_veh isKindOf _x} count ['Helicopter','Plane','Tank','Car','Ship'] > 0) && {player in (crew _veh)}) then {
 							player action ['Eject', _veh];
 						};
@@ -2040,7 +1953,7 @@ _AH_Admin = _AH_Admin + ("
 					R3F_TIRED_Accumulator = 0;
 					if (_count == 0) then {
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
-							private '_veh'; _veh = vehicle player;
+							local _veh = vehicle player;
 							dayz_temperatur = 36;
 							dayz_hunger = 0;
 							dayz_thirst = 0;
@@ -2065,7 +1978,7 @@ _AH_Admin = _AH_Admin + ("
 				if (_enabled) then {
 					if (_count == 0) then {
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
-							private '_veh'; _veh = vehicle player;
+							local _veh = vehicle player;
 							if (_veh != player) then {_veh setDamage 0; _veh setFuel 1};
 						}, 0.1, 0, true, _this]];
 					} else {
@@ -2090,36 +2003,33 @@ _AH_Admin = _AH_Admin + ("
 			};
 			if (_this == 'No Zombie Aggro') exitWith {
 				if (_enabled) then {
-					player_zombieAttack1 = player_zombieAttack;
+					if (isNil 'player_alertZombies1') then {player_alertZombies1 = player_alertZombies};
+					player_alertZombies = {};
+					if (isNil 'player_zombieAttack1') then {player_zombieAttack1 = player_zombieAttack};
 					player_zombieAttack = {};
-					if (isNil 'player_zombieCheck1') then {
-						player_zombieCheck1 = player_zombieCheck;
-					};
+					if (isNil 'player_zombieCheck1') then {player_zombieCheck1 = player_zombieCheck};
 					player_zombieCheck = {false};
 				} else {
 					player_zombieAttack = player_zombieAttack1;
-					player_zombieAttack1 = nil;
 					player_zombieCheck = player_zombieCheck1;
+					player_alertZombies = player_alertZombies1;
 				};
 			};
 			if (_this == 'Invisibility') exitWith {
 				[1, if (_enabled) then {true} else {false}] call AH_fnc_adminReq;
 			};
 			if (_this == '[Alt + Left Click] Map Teleport') exitWith {
-				private '_ctrl';
 				disableSerialization;
 
-				_ctrl = (findDisplay 12) displayCtrl 51;
+				local _ctrl = (findDisplay 12) displayCtrl 51;
 				if (_enabled) then {
 					if !('ItemMap' in weapons player) then {player addWeapon 'ItemMap'};
 					_ctrl ctrlSetEventHandler ['MouseButtonUp', ""
 						if (_this select 6) then {
-							private ['_veh', '_ini', '_pos'];
+							local _veh = vehicle player;
+							local _ini = mapGridPosition player;
 
-							_veh = vehicle player;
-							_ini = mapGridPosition player;
-
-							_pos = (_this select 0) ctrlMapScreenToWorld [_this select 2, _this select 3];
+							local _pos = (_this select 0) ctrlMapScreenToWorld [_this select 2, _this select 3];
 							_pos = [_pos select 0, _pos select 1, if (_veh isKindOf 'Air' && {isEngineOn _veh}) then {150} else {1}];
 
 							preloadCamera _pos;
@@ -2140,22 +2050,20 @@ _AH_Admin = _AH_Admin + ("
 				if (_enabled) then {
 					if (_count == 0) then {
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
-							private '_layer'; _layer = 69;
+							local _layer = 69;
 							disableSerialization;
 							for '_x' from 69 to 169 do {_x cutText ['', 'PLAIN']}; comment 'cutRsc Default caused a lot of flickering';
 							{
-								private '_dis'; _dis = _x distance cameraOn;
+								local _dis = _x distance cameraOn;
 								if (!isNull _x && {alive _x} && {vehicle _x != cameraOn} && {!visibleMap} && {_dis <= viewDistance}) then {
-									private ['_pos', '_clr', '_prm', '_txt'];
-
-									_pos = [_x] call FNC_getPos;
+									local _pos = [_x] call FNC_getPos;
 									_pos = [_pos select 0, _pos select 1, (_pos select 2) + 2];
 									_pos = worldToScreen _pos;
 
 									if (count _pos > 0) then {
-										_clr = if (vehicle _x == _x) then {'#FFFFFF'} else {'#FFA500'};
-										_prm = if (vehicle _x == _x) then {getText(configFile >> 'CfgWeapons' >> currentWeapon _x >> 'displayName')} else {getText(configFile >> 'CfgVehicles' >> typeOf (vehicle _x) >> 'displayName')};
-										_txt = parseText format[""<t size='0.35' color='%1'>%2 [%3m]</t><br/><t size='0.35' color='%1'>(%4)</t>"", _clr, name _x, round _dis, _prm];
+										local _clr = if (vehicle _x == _x) then {'#FFFFFF'} else {'#FFA500'};
+										local _prm = if (vehicle _x == _x) then {getText(configFile >> 'CfgWeapons' >> currentWeapon _x >> 'displayName')} else {getText(configFile >> 'CfgVehicles' >> typeOf (vehicle _x) >> 'displayName')};
+										local _txt = parseText format[""<t size='0.35' color='%1'>%2 [%3m]</t><br/><t size='0.35' color='%1'>(%4)</t>"", _clr, name _x, round _dis, _prm];
 										_layer cutRsc ['RscDynamicText', 'PLAIN']; _layer = _layer + 1;
 										_ctrl = (uiNamespace getVariable 'BIS_dynamicText') displayCtrl 9999;
 										_ctrl ctrlSetPosition [(_pos select 0) - (safeZoneW / 2), _pos select 1, safeZoneW, safeZoneH];
@@ -2219,10 +2127,9 @@ _AH_Admin = _AH_Admin + ("
 					dze_buildChecks1 = dze_buildChecks;
 
 					dze_buildChecks = {
-						private ['_item', '_classname', '_isPole'];
-						_item =	_this select 1;
-						_classname = getText (configFile >> 'CfgMagazines' >> _item >> 'ItemActions' >> 'Build' >> 'create');
-						_isPole = (_classname == 'Plastic_Pole_EP1_DZ');
+						local _item =	_this select 1;
+						local _classname = getText (configFile >> 'CfgMagazines' >> _item >> 'ItemActions' >> 'Build' >> 'create');
+						local _isPole = (_classname == 'Plastic_Pole_EP1_DZ');
 
 						[true, _isPole]
 					};
@@ -2270,9 +2177,7 @@ _AH_Admin = _AH_Admin + ("
 				if (_enabled) then {
 					if (_count == 0) then {
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
-							private '_veh';
-
-							_veh = vehicle player;
+							local _veh = vehicle player;
 							_veh setWeaponReloadingTime [_veh, currentWeapon _veh, 0];
 						}, 0.01, 0, true, _this]];
 					} else {
@@ -2398,10 +2303,10 @@ _AH_Admin = _AH_Admin + ("
 								};
 							} count playableUnits;
 							[1, admin_units, 'Unit', 'ColorGreen', ""
-								private '_veh'; _veh = vehicle _x;
+								local _veh = vehicle _x;
 								if (_veh == _x) then {name _x} else {
 									if (effectiveCommander _veh == _x) then {
-										private '_crew'; _crew = [];
+										local _crew = [];
 										{
 											_crew set [count _crew, name _x];
 										} count (crew _veh);
@@ -2460,32 +2365,26 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	AH_fnc_traderItems = {
-		private ['_arr', '_ret'];
-
-		_arr = [];
+		local _arr = [];
 		{
-			private '_cat'; _cat = format['menu_%1', _x];
+			local _cat = format['menu_%1', _x];
 			if (!isNil _cat) then {
 				_cat = (call compile _cat) select 0;
 				{_arr set [count _arr, _x]} count _cat;
 			};
 		} forEach serverTraders;
 
-		_ret = [];
+		local _ret = [];
 		{
-			private '_inv';
-
-			_inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', _x select 1];
+			local _inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', _x select 1];
 			if (isNumber(_inv >> 'duplicate')) then {
 				_inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', getNumber(_inv >> 'duplicate')];
 			};
 
 			for '_i' from 0 to (count _inv)-1 do
 			{
-				private ['_item', '_type'];
-
-				_item = configName(_inv select _i);
-				_type = getText(_inv >> _item >> 'type');
+				local _item = configName(_inv select _i);
+				local _type = getText(_inv >> _item >> 'type');
 
 				if (_type == _this && {!(_item in _ret)}) then {
 					_ret set [count _ret, _item];
@@ -2497,7 +2396,7 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_back = {
-		private '_index'; _index = 0;
+		local _index = 0;
 		{
 			if ((_x select 0) == _this) exitWith {_index = _forEachIndex};
 		} forEach admin_menus;
@@ -2508,17 +2407,13 @@ _AH_Admin = _AH_Admin + ("
 		if (isNil 'admin_allBps') then {
 			admin_traderBps = 'trade_backpacks'	call AH_fnc_traderItems;
 			if (!admin_limitLists) then {
-				private '_cfg';
-
 				admin_allBps = [];
 
-				_cfg = configFile >> 'CfgVehicles';
+				local _cfg = configFile >> 'CfgVehicles';
 				for '_b' from 0 to (count _cfg)-1 do
 				{
-					private ['_bp', '_type'];
-
-					_bp = _cfg select _b;
-					_type = configName _bp;
+					local _bp = _cfg select _b;
+					local _type = configName _bp;
 
 					if (isClass _bp && {getNumber(_bp >> 'scope') >= 2} && {getText(_bp >> 'picture') != ''} && {getText(_bp >> 'vehicleClass') == 'Backpacks'} && {_type != 'IED_placement_BAF'}) then {
 						admin_allBps set [count admin_allBps, _type];
@@ -2531,9 +2426,7 @@ _AH_Admin = _AH_Admin + ("
 			admin_allBps = [admin_allBps, [6969, 1501]] call AH_fnc_sortArray;
 		};
 		if (isNil 'admin_bpMenu') then {
-			private '_backpacks';
-
-			_backpacks = [];
+			local _backpacks = [];
 			{
 				_backpacks set [count _backpacks, [_x, 5, if (!admin_limitLists && {_x in admin_traderBps}) then {[0,1,0,1]} else {[]}]];
 			} count admin_allBps;
@@ -2556,19 +2449,16 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_coords = {
-		private '_txt';
-		_txt = format['Coords: %1 - Direction: %2', [player] call FNC_getPos, getDir player];
+		local _txt = format['Coords: %1 - Direction: %2', [player] call FNC_getPos, getDir player];
 		_txt call AH_fnc_toChat;
 		[_txt, 1] call "+_kfc_msg+";
 	};
 
 	admin_delete = {
-		private ['_cursorTarget', '_fnc_delete'];
-
 		admin_cursorTarget = cursorTarget;
 		if (isNull admin_cursorTarget) exitWith {['Target is null!', 2] call "+_kfc_msg+";};
 
-		_fnc_delete = {
+		local _fnc_delete = {
 			[2, admin_cursorTarget] call AH_fnc_adminReq;
 			[format['Deleted ""%1"" successfully.', typeOf admin_cursorTarget], 4] call "+_kfc_msg+";
 			format['Deleted ""%1"" @ %2', typeOf admin_cursorTarget, mapGridPosition player] call AH_fnc_adminLog;
@@ -2599,14 +2489,13 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_execute = {
-		private ['_display', '_ctrl'];
 		disableSerialization;
 
 		createDialog 'InjectorDialog';
-		_display = findDisplay 6971;
+		local _display = findDisplay 6971;
 
 		comment 'Title text';
-		_ctrl = _display displayCtrl 1001;
+		local _ctrl = _display displayCtrl 1001;
 		_ctrl ctrlSetText 'Authorized SQF Injector';
 
 		comment 'Server button';
@@ -2642,7 +2531,6 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_fly = {
 		if (!admin_flykeybind) exitWith {};
-		private ['_veh', '_vel'];
 
 		if (isNil 'admin_flycnt') then {
 			admin_flycnt = 0;
@@ -2653,8 +2541,8 @@ _AH_Admin = _AH_Admin + ("
 			}, 30, 0]];
 		};
 
-		_veh = vehicle player;
-		_vel = velocity _veh;
+		local _veh = vehicle player;
+		local _vel = velocity _veh;
 		_veh setVelocity [_vel select 0, _vel select 1, 10];
 
 		admin_flycnt = admin_flycnt + 1;
@@ -2662,11 +2550,10 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_forward = {
 		if (!admin_tpkeybind) exitWith {};
-		private ['_veh', '_dir', '_pos'];
 
-		_veh = vehicle player;
-		_dir = getDir _veh;
-		_pos = getPos _veh;
+		local _veh = vehicle player;
+		local _dir = getDir _veh;
+		local _pos = getPos _veh;
 
 		_veh setPos [(_pos select 0) + 5 * sin(_dir), (_pos select 1) + 5 * cos(_dir), _pos select 2];
 
@@ -2683,15 +2570,12 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_generate = {
-		private '_ct'; _ct = cursorTarget;
+		local _ct = cursorTarget;
 		if (!isNull _ct && {player distance _ct < 10}) then {
 			if (_ct isKindOf 'Air' || {_ct isKindOf 'LandVehicle'} || {_ct isKindOf 'Ship'}) then {
-				private '_charID';
-				_charID = parseNumber(_ct getVariable ['CharacterID', '0']);
+				local _charID = parseNumber(_ct getVariable ['CharacterID', '0']);
 				if (_charID != 0) then {
-					private ['_key', '_isOk'];
-
-					_key = '';
+					local _key = '';
 					call {
 						if (_charID > 0 && {_charID <= 2500}) exitWith {_key = format['ItemKeyGreen%1', _charID]};
 						if (_charID > 2500 && {_charID <= 5000}) exitWith {_key = format['ItemKeyRed%1', _charID - 2500]};
@@ -2701,7 +2585,7 @@ _AH_Admin = _AH_Admin + ("
 					};
 
 					false call dz_fn_meleeMagazines;
-					_isOk = [player, _key] call BIS_fnc_invAdd;
+					local _isOk = [player, _key] call BIS_fnc_invAdd;
 					true call dz_fn_meleeMagazines;
 
 					if (_isOk) then {
@@ -2718,28 +2602,24 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_info = {
-		private ['_ct', '_type', '_charID', '_parse', '_coins', '_opuid', '_friends', '_fnc_getCombo', '_txt'];
-
-		_ct = cursorTarget;
+		local _ct = cursorTarget;
 		if (isNull _ct) exitWith {['Target is null!', 2] call "+_kfc_msg+"};
 
-		_type = typeOf _ct;
-		_charID = _ct getVariable ['CharacterID', '0'];
-		_parse = parseNumber _charID;
-		_coins = _ct getVariable ["+str _cashvar+", -1];
-		_opuid = _ct getVariable ['ownerPUID', '0'];
-		_friends = call {
+		local _type = typeOf _ct;
+		local _charID = _ct getVariable ['CharacterID', '0'];
+		local _parse = parseNumber _charID;
+		local _coins = _ct getVariable ["+str _cashvar+", -1];
+		local _opuid = _ct getVariable ['ownerPUID', '0'];
+		local _friends = call {
 			if (_type == 'Plastic_Pole_EP1_DZ') exitWith {_ct getVariable ['plotfriends', []]};
 			if (_type in DZE_DoorsLocked) exitWith {_ct getVariable ['doorfriends', []]};
 			[]
 		};
 
-		_fnc_getCombo = {
+		local _fnc_getCombo = {
 			if !(typeOf _this in ['LockboxStorage','LockboxStorageLocked']) exitWith {_charID};
-			private ['_combo', '_color'];
-
-			_combo = _parse - 10000;
-			_color = '';
+			local _combo = _parse - 10000;
+			local _color = '';
 
 			comment 'Credits to salival (https://www.github.com/oiad) for the formula';
 			if (_combo <= 99) then {_color = 'Red';};
@@ -2750,7 +2630,7 @@ _AH_Admin = _AH_Admin + ("
 			format['%1%2', _color, _combo]
 		};
 
-		_txt = format['Name: %1 ', if (isPlayer _ct) then {name _ct} else {_type}];
+		local _txt = format['Name: %1 ', if (isPlayer _ct) then {name _ct} else {_type}];
 		if (_type in DZE_LockableStorage || {_type in DZE_DoorsLocked}) then {
 			_txt = _txt + format['Combo: %1 ', _ct call _fnc_getCombo];
 		} else {
@@ -2761,12 +2641,11 @@ _AH_Admin = _AH_Admin + ("
 		_txt = _txt + format['UID: %1 ', if (isPlayer _ct) then {getPlayerUID _ct} else {_ct getVariable ['ObjectUID', '0']}];
 		if (_opuid != '0') then {_txt = _txt + format['OwnerUID: %1 ', _opuid]};
 		if ((_type isKindOf 'Air' || {_type isKindOf 'LandVehicle'} || {_type isKindOf 'Ship'}) && {_parse > 0}) then {
-			private '_key';
-			_key = format['ItemKey%1%2', DZE_keyColors select floor(_parse / 2500), _parse - (floor(_parse / 2500) * 2500)];
+			local _key = format['ItemKey%1%2', DZE_keyColors select floor(_parse / 2500), _parse - (floor(_parse / 2500) * 2500)];
 			_txt = _txt + format['Key: %1 (%2) ', getText(configFile >> 'CfgWeapons' >> _key >> 'displayName'), _key];
 		};
 		if (count _friends > 0) then {
-			private '_arr'; _arr = _friends;
+			local _arr = _friends;
 			_friends = [];
 			{
 				_friends set [count _friends, (toString(_x select 1) + format[' (%1)', _x select 0])];
@@ -2781,8 +2660,7 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_killai = {
 		['Killing AI', 'Radius:', ""
-			private '_rad';
-			_rad = parseNumber(ctrlText 1400);
+			local _rad = parseNumber(ctrlText 1400);
 			if (_rad == 0) exitWith {['You must enter a radius!', 2] call "+_kfc_msg+"};
 			[28, _rad] call AH_fnc_adminReq;
 			[format['You removed all AI within %1 meter(s) of your location.', [_rad] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
@@ -2790,10 +2668,8 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_lock = {
-		private ['_ct', '_type'];
-
-		_ct = cursorTarget;
-		_type = typeOf _ct;
+		local _ct = cursorTarget;
+		local _type = typeOf _ct;
 
 		if (!isNull _ct && {player distance _ct < 10}) then {
 			if !(locked _ct) then {
@@ -2820,17 +2696,13 @@ _AH_Admin = _AH_Admin + ("
 		if (isNil 'admin_allMags') then {
 			admin_traderMags = 'trade_items' call AH_fnc_traderItems;
 			if (!admin_limitLists) then {
-				private '_cfg';
-
 				admin_allMags = [];
 
-				_cfg = configFile >> 'CfgMagazines';
+				local _cfg = configFile >> 'CfgMagazines';
 				for '_m' from 0 to (count _cfg)-1 do
 				{
-					private ['_mag', '_type'];
-
-					_mag = _cfg select _m;
-					_type = configName _mag;
+					local _mag = _cfg select _m;
+					local _type = configName _mag;
 
 					if (isClass _mag && {getNumber(_mag >> 'scope') >= 2} && {getText(_mag >> 'picture') != ''}) then {
 						admin_allMags set [count admin_allMags, _type];
@@ -2843,9 +2715,7 @@ _AH_Admin = _AH_Admin + ("
 			admin_allMags = [admin_allMags, [6969, 1501]] call AH_fnc_sortArray;
 		};
 		if (isNil 'admin_magMenu') then {
-			private '_magazines';
-
-			_magazines = [];
+			local _magazines = [];
 			{
 				_magazines set [count _magazines, [_x, 4, if (!admin_limitLists && {_x in admin_traderMags}) then {[0,1,0,1]} else {[]}]];
 			} count admin_allMags;
@@ -2862,13 +2732,11 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_marker = {
-		private ['_id', '_arr'];
-		_id = _this select 0;
-		_arr = _this select 1;
+		local _id = _this select 0;
+		local _arr = _this select 1;
 		if (_id == 1) exitWith {
 			{
-				private '_marker';
-				_marker = createMarkerLocal [format['%1Marker%2', _this select 2, _forEachIndex], getPos _x];
+				local _marker = createMarkerLocal [format['%1Marker%2', _this select 2, _forEachIndex], getPos _x];
 				_marker setMarkerTypeLocal 'DestroyedVehicle';
 				_marker setMarkerColorLocal (_this select 3);
 				_marker setMarkerTextLocal (call compile (_this select 4));
@@ -2883,11 +2751,10 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_nets = {
 		['Removing Camo Nets', 'Radius:', ""
-			private ['_rad', '_nets'];
-			_rad = parseNumber(ctrlText 1400);
+			local _rad = parseNumber(ctrlText 1400);
 			if (_rad == 0) exitWith {['You must enter a radius!', 2] call "+_kfc_msg+"};
 			if (_rad > Z_VehicleDistance) exitWith {[format['Maximum radius is %1m. Please try again.', Z_VehicleDistance], 2] call "+_kfc_msg+"};
-			_nets = nearestObjects [player, ['DesertCamoNet_DZ', 'ForestCamoNet_DZ', 'DesertLargeCamoNet_DZ', 'ForestLargeCamoNet_DZ'], _rad];
+			local _nets = nearestObjects [player, ['DesertCamoNet_DZ', 'ForestCamoNet_DZ', 'DesertLargeCamoNet_DZ', 'ForestLargeCamoNet_DZ'], _rad];
 			if (count _nets < 1) exitWith {['There are no camo nets within the defined radius.', 2] call "+_kfc_msg+"};
 			{
 				PVDZ_obj_Destroy = [_x getVariable ['ObjectID', '0'], _x getVariable ['ObjectUID', '0'], player, _x, dayz_authKey];
@@ -2900,11 +2767,10 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_poles = {
 		['Removing Plot Poles', 'Radius:', ""
-			private ['_rad', '_poles'];
-			_rad = parseNumber(ctrlText 1400);
+			local _rad = parseNumber(ctrlText 1400);
 			if (_rad == 0) exitWith {['You must enter a radius!', 2] call "+_kfc_msg+"};
 			if (_rad > Z_VehicleDistance) exitWith {[format['Maximum radius is %1m. Please try again.', Z_VehicleDistance], 2] call "+_kfc_msg+"};
-			_poles = player nearEntities ['Plastic_Pole_EP1_DZ', _rad];
+			local _poles = player nearEntities ['Plastic_Pole_EP1_DZ', _rad];
 			if (count _poles < 1) exitWith {['There are no plot poles within the defined radius.', 2] call "+_kfc_msg+"};
 			{
 				PVDZ_obj_Destroy = [_x getVariable ['ObjectID', '0'], _x getVariable ['ObjectUID', '0'], player, _x, dayz_authKey];
@@ -2918,13 +2784,11 @@ _AH_Admin = _AH_Admin + ("
 	admin_search = {['Search', 'Find:', '(ctrlText 1400) call AH_fnc_search;', 'Search', '', ''] call AH_fnc_display};
 
 	admin_spawnBox = {
-		private ['_pos', '_dir', '_arrow'];
-
 		_this = call AH_fnc_removePrefix;
 
-		_pos = [player] call FNC_getPos;
-		_dir = getDir player;
-		_pos = [(_pos select 0) + 3 * sin(_dir), (_pos select 1) + 3 * cos(_dir), _pos select 2];
+		local _pos = [player] call FNC_getPos;
+		local _dir = getDir player;
+		local _pos = [(_pos select 0) + 3 * sin(_dir), (_pos select 1) + 3 * cos(_dir), _pos select 2];
 
 		_arrow = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
 		['DZ_CardboardBox', _arrow] call fn_waitForObject;
@@ -2958,9 +2822,7 @@ _AH_Admin = _AH_Admin + ("
 	admin_spawnMag = {
 		if (admin_targetSpawn && {isNull admin_curTarget}) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
 		['Spawning Magazine', 'Amount:', format[""
-			private '_qty';
-
-			_qty = parseNumber(ctrlText 1400);
+			local _qty = parseNumber(ctrlText 1400);
 			if (_qty == 0) then {_qty = 1};
 
 			if (admin_targetSpawn) then {
@@ -2980,20 +2842,18 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_spawnSafe = {
 		if (!DZE_permanentPlot) exitWith {['This feature currently requires that DZE_permanentPlot be enabled.', 2] call "+_kfc_msg+"};
-		private ['_target', '_pos', '_dir', '_combo', '_arrow'];
-
-		_target = call AH_fnc_getTarget;
+		local _target = call AH_fnc_getTarget;
 		if (isNull _target) exitWith {['Please select the target that will own the safe!', 2] call "+_kfc_msg+"};
 
 		_this = call AH_fnc_removePrefix;
 
-		_pos = [player] call FNC_getPos;
-		_dir = (getDir player);
+		local _pos = [player] call FNC_getPos;
+		local _dir = (getDir player);
 		_pos = [(_pos select 0) + 3 * sin(_dir), (_pos select 1) + 3 * cos(_dir), _pos select 2];
 
-		_combo = format['%1%2%3%4', floor(random 10), floor(random 10), floor(random 10), floor(random 10)];
+		local _combo = format['%1%2%3%4', floor(random 10), floor(random 10), floor(random 10), floor(random 10)];
 
-		_arrow = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
+		local _arrow = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
 		['VaultStorageLocked', _arrow] call fn_waitForObject;
 
 		[25, [_combo, _this, [_dir, _pos, getPlayerUID _target]]] call AH_fnc_adminReq;
@@ -3003,14 +2863,12 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_spawnVeh = {
 		if (vehicle player != player) exitWith {['You cannot spawn vehicles while you are in a vehicle.', 2] call "+_kfc_msg+";};
-		private ['_pos', '_dir', '_arr'];
-
-		_pos = [player] call fnc_getPos;
-		_dir = getDir player;
+		local _pos = [player] call fnc_getPos;
+		local _dir = getDir player;
 
 		_pos = [(_pos select 0) + 5 * sin(_dir), (_pos select 1) + 5 * cos(_dir), (_pos select 2) + 1];
 
-		_arr = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
+		local _arr = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
 		[_this, _arr] call fn_waitForObject;
 
 		if (admin_tempSpawn) then {
@@ -3018,7 +2876,7 @@ _AH_Admin = _AH_Admin + ("
 			[format['You spawned temporary vehicle ""%1"" nearby.', _this], 4] call "+_kfc_msg+";
 			format['Spawned a temporary ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 		} else {
-			private '_key'; _key = call epoch_generateKey;
+			local _key = call epoch_generateKey;
 			PVDZE_veh_Publish2 = [[0, _pos], _this, if (_this isKindOf 'Bicycle') then {true} else {false}, if (_this isKindOf 'Bicycle') then {'0'} else {_key select 1}, player, dayz_authKey];
 			publicVariableServer 'PVDZE_veh_Publish2';
 			[format['You spawned vehicle ""%1"" nearby.', _this], 4] call "+_kfc_msg+";
@@ -3028,9 +2886,7 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_spawnWep = {
 		if (admin_targetSpawn && {isNull admin_curTarget}) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
-		private '_mags';
-
-		_mags = getArray(configFile >> 'CfgWeapons' >> _this >> 'magazines');
+		local _mags = getArray(configFile >> 'CfgWeapons' >> _this >> 'magazines');
 
 		if (admin_targetSpawn) then {
 			[6, [admin_curTarget, _this, if (count _mags > 0) then {_mags select 0} else {'none'}]] call AH_fnc_adminReq;
@@ -3053,11 +2909,9 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_time = {
-		private '_hour';
-
 		_this = call AH_fnc_removePrefix;
 
-		_hour = call {
+		local _hour = call {
 			if (_this == '12:00 a.m.') exitWith {0};
 			if (_this == '02:00 a.m.') exitWith {2};
 			if (_this == '04:00 a.m.') exitWith {4};
@@ -3079,10 +2933,8 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_unlock = {
-		private ['_ct', '_type'];
-
-		_ct = cursorTarget;
-		_type = typeOf _ct;
+		local _ct = cursorTarget;
+		local _type = typeOf _ct;
 
 		if (!isNull _ct && {player distance _ct < 10}) then {
 			if (locked _ct || {_type in (DZE_LockedStorage + DZE_DoorsLocked)}) then {
@@ -3113,17 +2965,13 @@ _AH_Admin = _AH_Admin + ("
 				admin_traderVehs = admin_traderVehs + (_x call AH_fnc_traderItems);
 			} count DZE_tradeVehicle;
 			if (!admin_limitLists) then {
-				private '_cfg';
-
 				admin_allVehs = [];
 
-				_cfg = configFile >> 'CfgVehicles';
+				local _cfg = configFile >> 'CfgVehicles';
 				for '_v' from 0 to (count _cfg)-1 do
 				{
-					private ['_veh', '_type'];
-
-					_veh = _cfg select _v;
-					_type = configName _veh;
+					local _veh = _cfg select _v;
+					local _type = configName _veh;
 
 					if (isClass _veh && {getNumber(_veh >> 'scope') >= 2} && {getText(_veh >> 'picture') != ''} && {_type isKindOf 'Air' || {_type isKindOf 'LandVehicle'} || {_type isKindOf 'Ship'}}) then {
 						admin_allVehs set [count admin_allVehs, _type];
@@ -3136,13 +2984,9 @@ _AH_Admin = _AH_Admin + ("
 			admin_allVehs = [admin_allVehs, [6969, 1501]] call AH_fnc_sortArray;
 		};
 		if (isNil 'admin_vehMenu') then {
-			private ['_air', '_land', '_water'];
-
-			_air = [];_land = [];_water = [];
+			local _air = [];local _land = [];local _water = [];
 			{
-				private '_clr';
-
-				_clr = if (!admin_limitLists && {_x in admin_traderVehs}) then {[0,1,0,1]} else {[]};
+				local _clr = if (!admin_limitLists && {_x in admin_traderVehs}) then {[0,1,0,1]} else {[]};
 				call {
 					if (_x isKindOf 'Air') exitWith {_air set [count _air, [_x, 2, _clr]]};
 					if (_x isKindOf 'LandVehicle') exitWith {_land set [count _land, [_x, 2, _clr]]};
@@ -3173,17 +3017,13 @@ _AH_Admin = _AH_Admin + ("
 		if (isNil 'admin_allWeps') then {
 			admin_traderWeps = 'trade_weapons' call AH_fnc_traderItems;
 			if (!admin_limitLists) then {
-				private '_cfg';
-
 				admin_allWeps = [];
 
-				_cfg = configFile >> 'CfgWeapons';
+				local _cfg = configFile >> 'CfgWeapons';
 				for '_w' from 0 to (count _cfg)-1 do
 				{
-					private ['_wep', '_type'];
-
-					_wep = _cfg select _w;
-					_type = configName _wep;
+					local _wep = _cfg select _w;
+					local _type = configName _wep;
 
 					if (isClass _wep && {getNumber(_wep >> 'scope') >= 2} && {getText(_wep >> 'picture') != ''} && {!isNumber(_wep >> 'keyid') && {isNumber(_wep >> 'type')}}) then {
 						if !(['_base', _type] call fnc_inString) then {
@@ -3198,9 +3038,7 @@ _AH_Admin = _AH_Admin + ("
 			admin_allWeps = [admin_allWeps, [6969, 1501]] call AH_fnc_sortArray;
 		};
 		if (isNil 'admin_wepMenu') then {
-			private '_weapons';
-
-			_weapons = [];
+			local _weapons = [];
 			{
 				_weapons set [count _weapons, [_x, 3, if (!admin_limitLists && {_x in admin_traderWeps}) then {[0,1,0,1]} else {[]}]];
 			} count admin_allWeps;
@@ -3217,21 +3055,19 @@ _AH_Admin = _AH_Admin + ("
 	};
 
 	admin_weather = {
-		private '_sky';
-
 		_this = call AH_fnc_removePrefix;
 
-		_sky = call {
-			if (_this == 'Clear Weather') exitWith {[0,0,0,'',0,0,-1,-1]};
-			if (_this == 'Cloudy Weather') exitWith {[0.3,0,0,'',0,0,-1,-1]};
-			if (_this == 'Rainy Weather') exitWith {[0.8,0.25,0.5,'',0,0,-1,-1]};
-			if (_this == 'Stormy Weather') exitWith {[1,0.5,1,'',0,0,-1,-1]};
+		local _sky = call {
+			if (_this == 'Clear Weather') exitWith {[0,0,0,0,0,0,'OVERCAST',false]};
+			if (_this == 'Cloudy Weather') exitWith {[0.5,0,0,0,0,0,'OVERCAST',false]};
+			if (_this == 'Rainy Weather') exitWith {[0.8,0,0.25,0,0,0,'OVERCAST',false]};
+			if (_this == 'Stormy Weather') exitWith {[1,0,0.5,0,0,0,'OVERCAST',false]};
 		};
 
 		[27, _sky] call AH_fnc_adminReq;
 
-		[format['You changed the server to %1.', toLower _this], 4] call "+_kfc_msg+";
-		format['Changed the server to %1', toLower _this] call AH_fnc_adminLog;
+		[format['You changed the server weather to %1.', toLower _this], 4] call "+_kfc_msg+";
+		format['Changed the server weather to %1', toLower _this] call AH_fnc_adminLog;
 	};
 
 	[] spawn {
@@ -3245,7 +3081,7 @@ diag_log (_diag_prefix + "Staff client compiled successfully");
 /* ********** Server Code (runs on server only) ********** */
 
 //---Define and start server thread
-_AH_Server = ("
+local _AH_Server = ("
 	{
 		if (isNil _x) then {call compile (_x + '= [];')};
 	} forEach ['at_adminlogs', 'at_hacklogs', 'at_newPlayerlogs', 'at_safeZonelogs', 'at_traderlogs', 'at_lockUnlocklogs', 'at_maintenancelogs', 'at_playerlogs', 'at_surveillancelogs', 'at_deathlogs'];
@@ -3263,9 +3099,10 @@ _AH_Server = ("
 ");
 _AH_Server = _AH_Server + ("
 	AH_fnc_alertAdmins = {
-		private '_admins'; _admins = [];
+		local _admins = [];
+		local _puid = getPlayerUID _x;
 		{
-			if ((name _x + getPlayerUID _x) in "+str (_sorted select 4)+") then {
+			if (((name _x + _puid) in "+str (_sorted select 4)+") || {_puid in "+str (_sorted select 4)+"}) then {
 				_admins set [count _admins, _x];
 			};
 		} count playableUnits;
@@ -3273,35 +3110,28 @@ _AH_Server = _AH_Server + ("
 	};
 
 	AH_fnc_deleteObj = {
-		private ['_obj', '_del', '_id', '_uid', '_key'];
+		local _obj = _this select 0;
+		local _del = _this select 1;
 
-		_obj = _this select 0;
-		_del = _this select 1;
-
-		_id = _obj getVariable ['ObjectID', '0'];
-		_uid = _obj getVariable ['ObjectUID', '0'];
+		local _id = _obj getVariable ['ObjectID', '0'];
+		local _uid = _obj getVariable ['ObjectUID', '0'];
 
 		if (_del) then {deleteVehicle _obj};
-		_key = if (parseNumber _id > 0) then {format['CHILD:304:%1:', _id]} else {format['CHILD:310:%1:', _uid]};
+		local _key = if (parseNumber _id > 0) then {format['CHILD:304:%1:', _id]} else {format['CHILD:310:%1:', _uid]};
 		_key call server_hiveWrite;
 
 		['SERVER', 1, format['Deleted object with %1', if (parseNumber _id > 0) then {format['ID: %1', _id]} else {format['UID: %1', _uid]}]] call AH_fnc_log;
 	};
 
 	AH_fnc_grammar = {
-		private '_ret';
-
-		_ret = toArray (toLower _this);
+		local _ret = toArray (toLower _this);
 		_ret set [0, (toArray(toUpper(toString [_ret select 0]))) select 0];
-
 		toString _ret
 	};
 	publicVariable 'AH_fnc_grammar';
 
 	AH_fnc_msg = {
-		private '_send';
-
-		_send = _this select 0;
+		local _send = _this select 0;
 		"+_kfc_msg1+" = toArray (_this select 1);
 
 		if (typeName _send == 'ARRAY') exitWith {
@@ -3318,13 +3148,11 @@ _AH_Server = _AH_Server + ("
 	};
 
 	AH_fnc_uptime = {
-		private ['_serverTime', '_hours', '_minutes', '_seconds'];
+		local _serverTime = if (serverTime > 33666) then {time + 30} else {serverTime};
 
-		_serverTime = if (serverTime > 33666) then {time + 30} else {serverTime};
-
-		_hours = floor(_serverTime / 60 / 60);
-		_minutes = floor((_serverTime / 60) - (_hours * 60));
-		_seconds = floor(_serverTime - (_hours * 60 * 60) - (_minutes * 60));
+		local _hours = floor(_serverTime / 60 / 60);
+		local _minutes = floor((_serverTime / 60) - (_hours * 60));
+		local _seconds = floor(_serverTime - (_hours * 60 * 60) - (_minutes * 60));
 
 		if (_hours < 10) then {
 			_hours = '0' + (str _hours);
@@ -3341,24 +3169,16 @@ _AH_Server = _AH_Server + ("
 	publicVariable 'AH_fnc_uptime';
 
 	AH_fnc_log = {
-		private ['_obj', '_opt', '_log', '_id', '_name', '_puid'];
+		local _obj = _this select 0;
+		local _opt = _this select 1;
+		local _log = _this select 2;
 
-		_obj = _this select 0;
-		_opt = _this select 1;
-		_log = _this select 2;
+		local _name = ''; local _puid = '';
 
-		_name = ''; _puid = '';
+		if (typeName _log == 'ARRAY') then {_log = toString _log};
+		local _id = if (typeName _obj == 'STRING') then {_obj} else {_name = name _obj; _puid = getPlayerUID _obj; format['%1 (%2)', _name, _puid]};
 
-		if (typeName _log == 'ARRAY') then {
-			_log = toString _log;
-		};
-
-		if (typeName _obj == 'STRING') then {_id = _obj} else {
-			_name = name _obj;
-			_puid = getPlayerUID _obj;
-			_id = format['%1 (%2)', name _obj, getPlayerUID _obj];
-		};
-		if (_name + _puid in "+str (_sorted select 6)+") exitWith {};
+		if (((_name + _puid) in "+str (_sorted select 6)+") || {_puid in "+str (_sorted select 6)+"}) exitWith {};
 
 		if !(_opt in [10,11]) then {_log = format['%1: %2', _id, _log]};
 		if ("+str _rptall+") then {
@@ -3370,8 +3190,7 @@ _AH_Server = _AH_Server + ("
 		};
 
 		if (_opt > 1) then {
-			private '_type';
-			_type = call {
+			local _type = call {
 				if (_opt == 2) exitWith {
 					at_adminlogs set [count at_adminlogs, format['%1: %2', call AH_fnc_uptime, _log]];
 					'Admin'
@@ -3419,16 +3238,14 @@ _AH_Server = _AH_Server + ("
 	};
 
 	AH_fnc_ban = {
-		private ['_name', '_puid', '_log', '_dur', '_why', '_id'];
-
-		_name = _this select 0;
-		_puid = _this select 1;
-		_log = _this select 2;
+		local _name = _this select 0;
+		local _puid = _this select 1;
+		local _log = _this select 2;
 
 		if (typeName _log == 'ARRAY') then {_log = toString _log};
 
-		_dur = -1; _why = '';
-		_id = 'AH' + str(100000 + random 899999);
+		local _dur = -1; local _why = '';
+		local _id = 'AH' + str(100000 + random 899999);
 
 		if (count _this < 4) then {
 			_why = format['Antihack Auto-Ban ID: %1', _id];
@@ -3462,26 +3279,22 @@ _AH_Server = _AH_Server + ("
 //---Admin Requests
 _AH_Server = _AH_Server + ("
 	AH_fnc_procAdminReq = {
-		private ['_pobj', '_id', '_param', '_fnc_getKey', '_fnc_sendRE'];
-
-		_pobj = _this select 0;
-		_id = _this select 1;
-		_param = _this select 2;
+		local _pobj = _this select 0;
+		local _id = _this select 1;
+		local _param = _this select 2;
 
 		if (toString(_this select 3) != "+str _kfc_akey+") exitWith {
 			[_pobj, 3, 'Attempted to use server admin function: AH_fnc_procAdminReq'] call AH_fnc_log;
 		};
 
-		_fnc_getKey = {
-			private ['_target', '_key', '_index', '_check'];
+		local _fnc_getKey = {
+			local _target = _this;
+			local _key = '';
 
-			_target = _this;
-			_key = '';
-
-			_index = dayz_serverPUIDArray find (getPlayerUID _target);
+			local _index = dayz_serverPUIDArray find (getPlayerUID _target);
 
 			if !(_index < 0) then {
-				_check = ((dayz_serverClientKeys select _index) select 0) == (owner _target);
+				local _check = ((dayz_serverClientKeys select _index) select 0) == (owner _target);
 				if (_check) then {
 					_key = (dayz_serverClientKeys select _index) select 1;
 				};
@@ -3490,12 +3303,10 @@ _AH_Server = _AH_Server + ("
 			_key
 		};
 
-		_fnc_sendRE = {
-			private ['_target', '_params'];
-
-			_target = (_this select 1) select 0;
+		local _fnc_sendRE = {
+			local _target = (_this select 1) select 0;
 			if (typeName _target == 'STRING') then {{if (name _x + getPlayerUID _x == _target) exitWith {_target = _x}} count playableUnits;};
-			_params = _this;
+			local _params = _this;
 
 			_params set [count _params, toArray(_target call _fnc_getKey)];
 
@@ -3532,8 +3343,7 @@ _AH_Server = _AH_Server + ("
 		if (_id == 21) exitWith {[_pobj, _param, 18] call _fnc_sendRE};
 		if (_id == 22) exitWith {[_pobj, _param, 19] call _fnc_sendRE};
 		if (_id == 23) exitWith {
-			private '_get';
-			_get = call {
+			local _get = call {
 				if ((_param select 0) == 'Admin Logs') exitWith {at_adminlogs};
 				if ((_param select 0) == 'Hack Logs') exitWith {at_hacklogs};
 				if ((_param select 0) == 'New Player Logs') exitWith {at_newPlayerlogs};
@@ -3554,11 +3364,11 @@ _AH_Server = _AH_Server + ("
 			(owner _pobj) publicVariableClient 'AHPV_Logs';
 		};
 		if (_id == 24) exitWith {
-			private ['_type', '_box', '_id', '_toAdd']; _type = _param select 0;
+			local _type = _param select 0;
 
-			_box = 'DZ_CardboardBox' createVehicle (_param select 1);
+			local _box = 'DZ_CardboardBox' createVehicle (_param select 1);
 
-			_id = str ceil(random 8000);
+			local _id = str ceil(random 8000);
 			_box setVariable ['CharacterID', _id, true];
 			_box setVariable ['ObjectUID', _id, true];
 			_box setVariable ['lastUpdate', diag_ticktime, false];
@@ -3569,7 +3379,7 @@ _AH_Server = _AH_Server + ("
 
 			dayz_serverObjectMonitor set [count dayz_serverObjectMonitor, _box];
 
-			_toAdd = call {
+			local _toAdd = call {
 				if (_type == 'Starter Build Box') exitWith {"+str _starterBox+"};
 				if (_type == 'Small Build Box') exitWith {"+str _smallBox+"};
 				if (_type == 'Medium Build Box') exitWith {"+str _mediumBox+"};
@@ -3577,10 +3387,8 @@ _AH_Server = _AH_Server + ("
 			};
 
 			{
-				private ['_item', '_amount'];
-
-				_item = _x;
-				_amount = 1;
+				local _item = _x;
+				local _amount = 1;
 
 				if (typeName _item == 'ARRAY') then {
 					_item = _x select 0;
@@ -3596,17 +3404,16 @@ _AH_Server = _AH_Server + ("
 		};
 		if (_id == 25) exitWith {
 			comment 'Spawns a safe with supplied contents. Safe is persistent and the owner is set to the supplied target';
-			private ['_combo', '_type', '_pos', '_safe', '_uid', '_toAdd', '_inventory', '_weapons', '_magazines', '_backpacks', '_key'];
+			
+			local _combo = _param select 0;
+			local _type = _param select 1;
+			local _pos = _param select 2;
 
-			_combo = _param select 0;
-			_type = _param select 1;
-			_pos = _param select 2;
-
-			_safe = 'VaultStorageLocked' createVehicle [0,0,0];
+			local _safe = 'VaultStorageLocked' createVehicle [0,0,0];
 			_safe setPosATL (_pos select 1);
 			_safe setDir (_pos select 0);
 
-			_uid = _pos call dayz_objectUID2;
+			local _uid = _pos call dayz_objectUID2;
 
 			_safe setVariable ['OEMPos', _pos select 1, true];
 			_safe setVariable ['memDir', _pos select 0, true];
@@ -3617,23 +3424,21 @@ _AH_Server = _AH_Server + ("
 			_safe enableSimulation false;
 			dayz_serverObjectMonitor set [count dayz_serverObjectMonitor, _safe];
 
-			_toAdd = call {
+			local _toAdd = call {
 				if (_type == 'Starter Build Safe') exitWith {"+str _starterSafe+"};
 				if (_type == 'Small Build Safe') exitWith {"+str _smallSafe+"};
 				if (_type == 'Medium Build Safe') exitWith {"+str _mediumSafe+"};
 				if (_type == 'Large Build Safe') exitWith {"+str _largeSafe+"};
 			};
 
-			_inventory = [];
+			local _inventory = [];
 
-			_weapons = [[],[]];
-			_magazines = [[],[]];
-			_backpacks = [[],[]];
+			local _weapons = [[],[]];
+			local _magazines = [[],[]];
+			local _backpacks = [[],[]];
 			{
-				private ['_item', '_amount'];
-
-				_item = _x;
-				_amount = 1;
+				local _item = _x;
+				local _amount = 1;
 
 				if (typeName _item == 'ARRAY') then {
 					_item = _x select 0;
@@ -3670,7 +3475,7 @@ _AH_Server = _AH_Server + ("
 			_safe setVariable ['MagazineCargo', _magazines, false];
 			_safe setVariable ['BackpackCargo', _backpacks, false];
 
-			_key = str formatText['CHILD:308:%1:%2:%3:%4:%5:%6:%7:%8:%9:', dayZ_instance, 'VaultStorageLocked', 0, _combo, _pos call AN_fnc_formatWorldspace, _inventory, [], 0, _uid];
+			local _key = str formatText['CHILD:308:%1:%2:%3:%4:%5:%6:%7:%8:%9:', dayZ_instance, 'VaultStorageLocked', 0, _combo, _pos call AN_fnc_formatWorldspace, _inventory, [], 0, _uid];
 			_key call server_hiveWrite;
 		};
 		if (_id == 26) exitWith {
@@ -3680,12 +3485,11 @@ _AH_Server = _AH_Server + ("
 			setDate dayzSetDate;
 		};
 		if (_id == 27) exitWith {
-			drn_DynamicWeatherEventArgs = _param;
-			publicVariable 'drn_DynamicWeatherEventArgs';
-			drn_DynamicWeatherEventArgs call drn_fnc_DynamicWeather_SetWeatherLocal;
+			PVDZE_SetWeather = _param;
+			publicVariable 'PVDZE_SetWeather';
 		};
 		if (_id == 28) exitWith {
-			private '_cnt'; _cnt = 0;
+			local _cnt = 0;
 			{
 				if (!isPlayer _x && {_x distance _pobj <= _param}) then {
 					_x setDamage 1; _cnt = _cnt + 1;
@@ -3696,11 +3500,9 @@ _AH_Server = _AH_Server + ("
 		if (_id == 29) exitWith {[_pobj, _param, 20] call _fnc_sendRE};
 		if (_id == 30) exitWith {
 			comment 'Spawns a temporary vehicle (not saved to the database)';
-			private ['_type', '_pos', '_dir', '_veh'];
-
-			_veh = toString(_param select 0);
-			_pos = _param select 1;
-			_dir = _param select 2;
+			local _veh = toString(_param select 0);
+			local _pos = _param select 1;
+			local _dir = _param select 2;
 
 			_veh = _veh createVehicle _pos;
 			_veh setDir _dir;
@@ -3725,8 +3527,7 @@ _AH_Server = _AH_Server + ("
 				call compile toString(_param select 0);
 				[_pobj, 2, format['Executed the following code on the server: %1', toString(_param select 0)]] call AH_fnc_log;
 			} else {
-				private '_re';
-				_re = 'HeliHEmpty' createVehicle [100000,100000,100000];
+				local _re = 'HeliHEmpty' createVehicle [100000,100000,100000];
 				_re setVehicleInit str formatText['%1', toString(_param select 0)];
 				processInitCommands; deleteVehicle _re;
 				[_pobj, 2, format['Executed the following code globally: %1', toString(_param select 0)]] call AH_fnc_log;
@@ -3739,17 +3540,15 @@ _AH_Server = _AH_Server + ("
 if (_safezones) then {
 	if (_bubbles) then {
 		_AH_Server = _AH_Server + ("
-			private '_cnt'; _cnt = 0;
+			local _cnt = 0;
 			{
-				private ['_pos', '_rad', '_loc', '_obj'];
-
-				_pos = _x select 0;
-				_rad = _x select 1;
+				local _pos = _x select 0;
+				local _rad = _x select 1;
 
 				for '_i' from 0 to 360 step (1440 / _rad) do
 				{
-					_loc = [(_pos select 0) + ((cos _i) * _rad), (_pos select 1) + ((sin _i) * _rad), 0];
-					_obj = 'Sign_sphere100cm_EP1' createVehicle [0,0,0];
+					local _loc = [(_pos select 0) + ((cos _i) * _rad), (_pos select 1) + ((sin _i) * _rad), 0];
+					local _obj = 'Sign_sphere100cm_EP1' createVehicle [0,0,0];
 					_obj setPosATL _loc;
 					_cnt = _cnt + 1;
 				};
@@ -3760,9 +3559,9 @@ if (_safezones) then {
 	if (_antized) then {
 		_AH_Server = _AH_Server + ("
 			"+_kfc_strd_cfg+" set [count "+_kfc_strd_cfg+", [{
-				private '_cnt'; _cnt = 0;
+				local _cnt = 0;
 				{
-					private '_zed'; _zed = _x;
+					local _zed = _x;
 					{
 						if (_zed distance (_x select 0) <= (_x select 1)) then {deleteVehicle _zed; _cnt = _cnt + 1};
 					} forEach DZE_SafeZonePosArray;
@@ -3777,13 +3576,11 @@ if (_safezones) then {
 if ("day/night" in _chatcmds) then {
 	_AH_Server = _AH_Server + ("
 		AH_fnc_vote = {
-			private ['_vote', '_pobj', '_puid', '_time', '_needed', '_total', '_day', '_night', '_hour'];
+			local _vote = _this select 0;
+			local _pobj = _this select 1;
+			local _puid = getPlayerUID _pobj;
 
-			_vote = _this select 0;
-			_pobj = _this select 1;
-			_puid = getPlayerUID _pobj;
-
-			_time = diag_tickTime - AH_lastVote;
+			local _time = diag_tickTime - AH_lastVote;
 			if (_time < "+str _votedelay+") exitWith {
 				[_pobj, format['Please wait %1 second(s) before a vote can be held.', round("+str _votedelay+" - _time)]] call AH_fnc_msg;
 			};
@@ -3813,10 +3610,10 @@ if ("day/night" in _chatcmds) then {
 
 			[_pobj, 9, format['Cast their vote for %1', if (_vote == 0) then {'night'} else {'day'}]] call AH_fnc_log;
 
-			_needed = round((count playableUnits) * "+str _votepercent+");
-			_total = {typeName _x == 'SCALAR'} count AH_votes;
-			_day = {str _x == '1'} count AH_votes;
-			_night = {str _x == '0'} count AH_votes;
+			local _needed = round((count playableUnits) * "+str _votepercent+");
+			local _total = {typeName _x == 'SCALAR'} count AH_votes;
+			local _day = {str _x == '1'} count AH_votes;
+			local _night = {str _x == '0'} count AH_votes;
 
 			['All', format['Current vote tally: %1 Day | %2 Night', _day, _night]] call AH_fnc_msg;
 
@@ -3824,11 +3621,11 @@ if ("day/night" in _chatcmds) then {
 
 			['All', format['The votes have been tallied! Results: %1 Day | %2 Night', _day, _night]] call AH_fnc_msg;
 
-			_hour = call {
+			local _hour = call {
 				if (_day > _night) exitWith {12};
 				if (_night > _day) exitWith {0};
 				if (_day == _night) exitWith {
-					private '_rnd'; _rnd = [0,12] call BIS_fnc_selectRandom;
+					local _rnd = [0,12] call BIS_fnc_selectRandom;
 					['All', format['The vote was equally divided - server chose %1.', if (_rnd > 0) then {'day'} else {'night'}]] call AH_fnc_msg;
 					_rnd
 				};
@@ -3865,30 +3662,26 @@ _AH_Server = _AH_Server + ("
 		};
 		server_tradeObj1 = server_tradeObj;
 		server_tradeObj = {
-			private ['_bors', '_curr', '_cost', '_qty', '_cont', '_log'];
-
 			_this call server_tradeObj1;
 
-			_bors = _this select 2;
-			_curr = _this select 5;
-			_cost = _this select 6;
+			local _bors = _this select 2;
+			local _curr = _this select 5;
+			local _cost = _this select 6;
 
 			if (typeName _curr == 'STRING') then {_cost = format['%1 %2', _cost, _curr]};
 
-			_qty = 1; _cont = 'gear';
+			local _qty = 1; local _cont = 'gear';
 			if (count _this > 7) then {
 				_qty = _this select 7;
 				_cont = _this select 8;
 			};
 
-			_log = format['%1 %2 ""%3"" %4 %5 @ %6 for %7', if (_bors == 0) then [{'Purchased'}, {'Sold'}], _qty, _this select 3, if (_bors == 0) then [{'into'}, {'from'}], _cont, _this select 4, _cost];
+			local _log = format['%1 %2 ""%3"" %4 %5 @ %6 for %7', if (_bors == 0) then [{'Purchased'}, {'Sold'}], _qty, _this select 3, if (_bors == 0) then [{'into'}, {'from'}], _cont, _this select 4, _cost];
 			[_this select 0, 5, _log] call AH_fnc_log;
 		};
 		local_lockUnlock = {
-			private ['_veh', '_lock'];
-
-			_veh = _this select 0;
-			_lock = if (_this select 1) then {'LOCKED'} else {'UNLOCKED'};
+			local _veh = _this select 0;
+			local _lock = if (_this select 1) then {'LOCKED'} else {'UNLOCKED'};
 
 			if (local _veh) then {
 				_veh setVehicleLock _lock;
@@ -3897,22 +3690,18 @@ _AH_Server = _AH_Server + ("
 		};
 		server_handleSafeGear1 = server_handleSafeGear;
 		server_handleSafeGear = {
-			private ['_obj', '_status', '_fnc_lockCode', '_type', '_code', '_txt', '_log'];
-
 			_this call server_handleSafeGear1;
 
-			_obj = _this select 1;
-			_status = _this select 2;
+			local _obj = _this select 1;
+			local _status = _this select 2;
 
-			_fnc_lockCode = {
-				private ['_color', '_code'];
-
+			local _fnc_lockCode = {
 				if (_this == '') exitWith {0};
 
-				_code = if (typeName _this == 'STRING') then {parseNumber _this} else {_this};
+				local _code = if (typeName _this == 'STRING') then {parseNumber _this} else {_this};
 				if (_code < 10000 || {_code > 10299}) exitWith {0};
 
-				_color = '';
+				local _color = '';
 				_code = _code - 10000;
 
 				if (_code <= 99) then {_color = 'Red';};
@@ -3924,15 +3713,15 @@ _AH_Server = _AH_Server + ("
 				_code
 			};
 
-			_charID = _obj getVariable ['CharacterID', '0'];
-			_code = _charID;
+			local _charID = _obj getVariable ['CharacterID', '0'];
+			local _code = _charID;
 
 			if (count _this > 3) then {
 				_sent = _this select 3;
 				if (_status != 3 && {_status != 6}) then {_code = _sent};
 			};
 
-			_type = typeOf _obj;
+			local _type = typeOf _obj;
 			_type = call {
 				if (_type == 'VaultStorage' || {_type == 'VaultStorageLocked'}) exitWith {'Safe'};
 				if (_type == 'LockboxStorage' || {_type == 'LockboxStorageLocked'}) exitWith {
@@ -3943,7 +3732,7 @@ _AH_Server = _AH_Server + ("
 				_type
 			};
 
-			_txt = switch (_status) do {
+			local _txt = switch (_status) do {
 				case 0: {'UNLOCKED'};
 				case 1: {'LOCKED'};
 				case 2: {'PACKED'};
@@ -3953,7 +3742,7 @@ _AH_Server = _AH_Server + ("
 				case 6: {'FAILED unlocking'};
 			};
 
-			_log = format['%1 a %2 located @ %3 and owned by UID: %4 - Correct Code: %5',
+			local _log = format['%1 a %2 located @ %3 and owned by UID: %4 - Correct Code: %5',
 				_txt call AH_fnc_grammar,
 				_type,
 				mapGridPosition (_obj getVariable ['OEMPos', getPosATL _obj]),
@@ -3965,14 +3754,12 @@ _AH_Server = _AH_Server + ("
 		};
 		server_maintainArea1 = server_maintainArea;
 		server_maintainArea = {
-			private ['_pobj', '_objs', '_log'];
-
 			_this call server_maintainArea1;
 
-			_pobj = _this select 0;
-			_objs = _this select 2;
+			local _pobj = _this select 0;
+			local _objs = _this select 2;
 
-			_log = if ((_this select 1) == 1) then {
+			local _log = if ((_this select 1) == 1) then {
 				format['Maintained %1 objects located @ %2', count _objs, mapGridPosition _pobj];
 			} else {
 				format['Maintained ""%1"" located @ %2', typeOf(_objs select 0), mapGridPosition _pobj];
@@ -3981,31 +3768,29 @@ _AH_Server = _AH_Server + ("
 		};
 		server_playerDied1 = server_playerDied;
 		server_playerDied = {
-			private ['_pname', '_sname', '_wep', '_dis', '_why', '_suicide', '_param'];
-
-			_pname = toString(_this select 4);
-			_sname = toString(_this select 6);
-			_wep = _this select 7;
-			_dis = _this select 8;
-			_why = _this select 9;
+			local _pname = toString(_this select 4);
+			local _sname = toString(_this select 6);
+			local _wep = _this select 7;
+			local _dis = _this select 8;
+			local _why = _this select 9;
 
 			['', 11, format['%1 (%2) died at %3', _pname, _this select 3, mapGridPosition (getPosATL (_this select 2))]] call AH_fnc_log;
 
-			_suicide = _sname == _pname || {_why == 'suicide'};
+			local _suicide = _sname == _pname || {_why == 'suicide'};
 
 			if (_why in ['explosion','melee','shot','shothead','shotheavy','suicide'] && {!(_why == 'explosion' && {_suicide or _sname == 'unknown'})}) then {
 				if (_suicide) then {
-					_param = ['suicide', _pname];
+					local _param = ['suicide', _pname];
 				} else {
 					if (_wep == '') then {_wep = 'unknown weapon'};
-					_param = ['killed', _pname, _sname, _wep, _dis];
+					local _param = ['killed', _pname, _sname, _wep, _dis];
 				};
 			} else {
-				_param = ['died', _pname, _why];
+				local _param = ['died', _pname, _why];
 			};
 
 			if (_pname != 'unknown' || {_sname != 'unknown'}) then {
-				private '_type'; _type = _param select 0;
+				local _type = _param select 0;
 
 				if (_type == 'killed' && {_sname == 'AI'}) then {
 					_param set [2, localize 'STR_PLAYER_AI'];
@@ -4026,13 +3811,10 @@ _AH_Server = _AH_Server + ("
 		if (isNil 'serverTraders') exitWith {
 			['SERVER', 1, 'Bad vehicle check exiting! serverTraders variable does not exist! Trader file moved!'] call AH_fnc_log;
 		};
-		private '_fn_traderVehs';
-		_fn_traderVehs = {
-			private ['_arr', '_ret'];
-
-			_arr = [];
+		local _fn_traderVehs = {
+			local _arr = [];
 			{
-				private '_cat'; _cat = format['menu_%1', _x];
+				local _cat = format['menu_%1', _x];
 				if (!isNil _cat) then {
 					_cat = (call compile _cat) select 0;
 					{_arr set [count _arr, _x]} count _cat;
@@ -4041,21 +3823,17 @@ _AH_Server = _AH_Server + ("
 				};
 			} forEach serverTraders;
 
-			_ret = [];
+			local _ret = [];
 			{
-				private '_inv';
-
-				_inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', _x select 1];
+				local _inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', _x select 1];
 				if (isNumber(_inv >> 'duplicate')) then {
 					_inv = missionConfigFile >> 'CfgTraderCategory' >> format['Category_%1', getNumber(_inv >> 'duplicate')];
 				};
 
 				for '_i' from 0 to (count _inv)-1 do
 				{
-					private ['_item', '_type'];
-
-					_item = configName(_inv select _i);
-					_type = getText(_inv >> _item >> 'type');
+					local _item = configName(_inv select _i);
+					local _type = getText(_inv >> _item >> 'type');
 
 					if (_type == _this && {!(_item in _ret)}) then {
 						_ret set [count _ret, _item];
@@ -4079,13 +3857,13 @@ _AH_Server = _AH_Server + ("
 
 		"+_kfc_strd_cfg+" set [count "+_kfc_strd_cfg+", [{
 			if (isNil 'allowConnection') exitWith {};
-			private '_arr'; _arr = entities 'Air' + entities 'LandVehicle' + entities 'Ship';
+			local _arr = entities 'Air' + entities 'LandVehicle' + entities 'Ship';
 			{
-				private '_type'; _type = typeOf _x;
+				local _type = typeOf _x;
 				if (!(toLower _type in AH_allowedVehs) && {!(_type in DZE_safeVehicle)} && {!(_type isKindOf 'StaticWeapon')} && {!(['Parachute', _type] call fnc_inString)}) then {
-					private ['_veh', '_plrs']; _veh = _x; _plrs = [];
+					local _veh = _x; local _plrs = [];
 					{
-						private '_dis'; _dis = _x distance _veh;
+						local _dis = _x distance _veh;
 						if (_dis < 100) then {
 							_plrs set [count _plrs, format['%1 (%2) [%3m]', name _x, getPlayerUID _x, round _dis]];
 						};
@@ -4101,13 +3879,11 @@ _AH_Server = _AH_Server + ("
 //---Mission Check
 if (_mic) then {_AH_Server = _AH_Server + ("
 	[] spawn {
-		private '_counts'; _counts = [];
+		local _counts = [];
 		['SERVER', 1, 'Processing mission files...'] call AH_fnc_log;
 		{
-			private ['_arr', '_file'];
-
-			_arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
-			_file = toArray(preprocessFile _x);
+			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
+			local _file = toArray(preprocessFile _x);
 
 			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
 			_arr set [128, 0];
@@ -4121,11 +3897,9 @@ if (_mic) then {_AH_Server = _AH_Server + ("
 //---Antihack server PVEH
 _AH_Server = _AH_Server + ("
 	AH_fnc_pveh = {
-		private ['_fnc', '_prm', '_plr'];
-
-		_fnc = toString (_this select 0);
-		_prm = _this select 1;
-		_plr = _this select 2;
+		local _fnc = toString (_this select 0);
+		local _prm = _this select 1;
+		local _plr = _this select 2;
 
 		if (_fnc == 'LOG') exitWith {[_plr, _prm select 1, _prm select 0] call AH_fnc_log};
 		if (_fnc == 'BAN') exitWith {_prm call AH_fnc_ban};
@@ -4136,22 +3910,19 @@ _AH_Server = _AH_Server + ("
 //---Sends appropriate clients to players
 _AH_Server = _AH_Server + ("
 	"+_kfc_re+" = {
-		private '_re';
-		_re = 'HeliHEmpty' createVehicle [0,0,0];
+		local _re = 'HeliHEmpty' createVehicle [0,0,0];
 		_re setVehicleInit str formatText['if (isServer) exitWith {}; if (isNil "+str _kfc_got+") then {"+_kfc_got+" = true; call %1};', "+_kfc_gclnt+"];
 		_re setVariable ["+str _kfc_re+", true];
 		processInitCommands;
 	};
 
 	'"+_kfc_get+"' addPublicVariableEventHandler {
-		private ['_pobj', '_name', '_puid'];
+		local _pobj = _this select 1;
 
-		_pobj = _this select 1;
+		local _name = name _pobj;
+		local _puid = getPlayerUID _pobj;
 
-		_name = name _pobj;
-		_puid = getPlayerUID _pobj;
-
-		if (_name + _puid in ("+str _sorted+" select 4)) then {
+		if (((_name + _puid in ("+str _sorted+" select 4)) || {_puid in ("+str _sorted+" select 4)}) && {!((_name + _puid) in ("+str _sorted+" select 8))}) then {
 			"+_kfc_get+" = "+_kfc_sclnt+";
 			['SERVER', 1, format['Staff client sent to %1 (%2)', _name, _puid]] call AH_fnc_log;
 		} else {

@@ -3,109 +3,107 @@
 /*                By BigEgg and Movinggun                  */
 /* ******************************************************* */
 
-_ver = "1.0.6.2"; //---Change to 1.0.7 for compatibility
-
 /* ***************** Staff Configuration ***************** */
 
-_menuKey = 0x3C; //---Key that will open the menu.
+local _menuKey = 0x3C; //---Key that will open the menu.
 
-_mod = []; //---Add moderators here - don't forget commas!
-_admin = []; //---Add admins here - don't forget commas!
-_headAdmin = []; //---Add head admins here - don't forget commas!
-_owner = [
-	//["BigEgg", "76561198115492831", true, false, true],
-	//[["BigEgg", "FatEgg", "TwinkieDestroyer"], "76561198115492831", true, false, true]
+local _mod = []; //---Add moderators here - don't forget commas!
+local _admin = []; //---Add admins here - don't forget commas!
+local _headAdmin = []; //---Add head admins here - don't forget commas!
+local _owner = [
+	//["", "76561198115492831", true, false, true, "Test"],
+	//[["BigEgg", "FatEgg", "TwinkieDestroyer"], "76561198115492831", true, false, true, ""]
 ]; //---Add owners here - don't forget commas!
 
 /* ***************** Server Configuration **************** */
 
-_diag_prefix = "<Epoch-AH>: "; //---This prefix will appear before all diag_log messages on all clients and the server
-_rptall = true; //---If true, all logs will be sent to the rpt as well as their respective designations
+local _diag_prefix = "<Epoch-AH>: "; //---This prefix will appear before all diag_log messages on all clients and the server
+local _rptall = true; //---If true, all logs will be sent to the rpt as well as their respective designations
 
-_headless = []; //---List UIDs of headless clients here. They will be sent no client code and global code will be terminated
+local _headless = []; //---List UIDs of headless clients here. They will be sent no client code and global code will be terminated
 
-_apj = true; //---If true, announces when a player has connected or disconnected in systemChat
-_bvc = true; //---If true, will delete any vehicles not in server traders or the whitelist below
-_egb = true; //---If true, syncs KFC global bans. Useful for banning hackers from other servers. Please read documentation for more information
+local _apj = true; //---If true, announces when a player has connected or disconnected in systemChat
+local _bvc = true; //---If true, will delete any vehicles not in server traders or the whitelist below
+local _egb = false; //---If true, syncs KFC global bans. Useful for banning hackers from other servers. Will likely be depricated in the future - disabled by default
 
-_vehWhiteList = []; //---Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true
+local _vehWhiteList = []; //---Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true
 
 //---Note: "day/night" must be in _chatcmds in order for these work
-_voteplayers = 15; //---Number of players that must be online before a vote can be held.
-_votedelay = 900; //---Amount of time (in seconds) to wait between day/night votes.
-_votetime = 180; //---Amount of time to wait before cancelling a vote due to lack of majority.
-_votepercent = 0.5; //---Percentage of the server population that must vote before a decision is reached (0-1).
+local _voteplayers = 15; //---Number of players that must be online before a vote can be held.
+local _votedelay = 900; //---Amount of time (in seconds) to wait between day/night votes.
+local _votetime = 180; //---Amount of time to wait before cancelling a vote due to lack of majority.
+local _votepercent = 0.5; //---Percentage of the server population that must vote before a decision is reached (0-1).
 
 /* **************** Client Configuration ***************** */
 
-_chat_prefix = "<Epoch-AH>: "; //---This prefix will appear before all systemChat messages on clients
+local _chat_prefix = "<Epoch-AH>: "; //---This prefix will appear before all systemChat messages on clients
 
-_viewDistance = 1250; //---Default view distance. This will only be set on login (set to -1 to disable)
-_grassLevel = 25; //---Default grass level. Options are: 3.125 (Highest performance hit), 6.25, 12.5, 25 (multiplayer default), and 50 (No grass). This will only be set on login (set to -1 to disable)
+local _viewDistance = 1250; //---Default view distance. This will only be set on login (set to -1 to disable)
+local _grassLevel = 25; //---Default grass level. Options are: 3.125 (Highest performance hit), 6.25, 12.5, 25 (multiplayer default), and 50 (No grass). This will only be set on login (set to -1 to disable)
 
-_bfs = true; //---If true, scans the client's game directory for the files listed in _badFiles below
-_bvs = true; //---If true, checks for bad variables listed in _badVars below
-_oef = true; //---If true, makes sure that onEachFrame isn't modified (esp scripts sometimes use this)
-_bdc = true; //---If true, checks for bad displays listed in _badDisplays
-_bsc = true; //---If true, makes sure the player isn't wearing a forbidden skin listed in _badSkins
-_upc = true; //---If true, prevents urban prone actions near plot poles
-_mic = true; //---If true, checks the integrity of the mission file. If a file is modified, the player is banned
-_bwc = true; //---If true, makes sure the player doesn't have an illegal weapon listed in _badWeapons
-_mev = true; //---If true, monitors unsecure Epoch variables
-_sev = true; //---If true, switches client to 3rd person automatically upon login
+local _bfs = true; //---If true, scans the client's game directory for the files listed in _badFiles below
+local _bvs = true; //---If true, checks for bad variables listed in _badVars below
+local _oef = true; //---If true, makes sure that onEachFrame isn't modified (esp scripts sometimes use this)
+local _bdc = true; //---If true, checks for bad displays listed in _badDisplays
+local _bsc = true; //---If true, makes sure the player isn't wearing a forbidden skin listed in _badSkins
+local _upc = true; //---If true, prevents urban prone actions near plot poles
+local _mic = true; //---If true, checks the integrity of the mission file. If a file is modified, the player is banned
+local _bwc = true; //---If true, makes sure the player doesn't have an illegal weapon listed in _badWeapons
+//local _mev = true; //---If true, monitors unsecure Epoch variables - Removed for 107
+local _sev = true; //---If true, switches client to 3rd person automatically upon login
 
-_badDisplays = [30, 32, 45, 125, 140, 155, 156, 1001, 2929, 3030, 6969, 6970, 6971]; //---List of bad displays
-_badSkins = ["InvisibleManW_EP1", "GoInvisible"]; //---List of forbidden skins
-_badWeapons = ["GAU8", "MaverickLauncher", "SidewinderLaucher_AH1Z", "57mmLauncher", "GSh23L_L39", "ZiS_S_53", "M256", "MLRS", "M134", "AGS30", "MK19BC", "M2"]; //---List of illegal weapons
+local _badDisplays = [30, 32, 45, 125, 140, 155, 156, 1001, 2929, 3030, 6969, 6970, 6971]; //---List of bad displays
+local _badSkins = ["InvisibleManW_EP1", "GoInvisible"]; //---List of forbidden skins
+local _badWeapons = ["GAU8", "MaverickLauncher", "SidewinderLaucher_AH1Z", "57mmLauncher", "GSh23L_L39", "ZiS_S_53", "M256", "MLRS", "M134", "AGS30", "MK19BC", "M2"]; //---List of illegal weapons
 
-_discord = ""; //---This will be displayed when a player types !discord or /discord in chat. Leave empty to disable
-_teamspeak = ""; //---This will be displayed when a player types !teamspeak or /teamspeak in chat. Leave empty to disable
-_website = ""; //---This will be displayed when a player types !website or /website in chat. Leave empty to disable
+local _discord = ""; //---This will be displayed when a player types !discord or /discord in chat. Leave empty to disable
+local _teamspeak = ""; //---This will be displayed when a player types !teamspeak or /teamspeak in chat. Leave empty to disable
+local _website = ""; //---This will be displayed when a player types !website or /website in chat. Leave empty to disable
 
-_chatcmds = ["day/night", "suicide"]; //---List of chat scripts players can use
-_chatbanned = [ //---List of UIDs that are banned from chatting in any channel
+local _chatcmds = ["day/night", "suicide"]; //---List of chat scripts players can use
+local _chatbanned = [ //---List of UIDs that are banned from chatting in any channel
 	//"76561198115492831", //---BigEgg
 	"0"
 ];
 
 /* ******************** Debug Monitor ******************** */
 
-_debug = true; //---Determines if debug monitor will be used (true = enabled | false = disabled)
-_dkey = 0xD2;
-_drestart = 120; //---Restart time in minutes (will be used to calculate time till restart on debug monitor)
-_dtext = "www.epochmod.com"; //---This text will appear at the bottom of the debug monitor
+local _debug = true; //---Determines if debug monitor will be used (true = enabled | false = disabled)
+local _dkey = 0xD2; //---Key used to activate / deactivate debug monitor
+local _drestart = 120; //---Restart time in minutes (will be used to calculate time till restart on debug monitor)
+local _dtext = "www.epochmod.com"; //---This text will appear at the bottom of the debug monitor
 
 /* ********************* Safe Zones ********************** */
 
-_safezones = true; //---If true, enables safe zones
-_bubbles = true; //---If true, marks safe zone boundaries with bubbles
-_antized = true; //---If true, deletes zombies that walk into the safe zone
-_antitheft = true; //---If true, prevents theft of vehicles and gear in the safe zones
-_speedLimit = 30; //---If greater than 0, speed of vehicles in the safe zone will be limited to this number
-_timer = 10; //---If greater than 0, safe zone protection will remain in affect for this number of seconds after leaving
+local _safezones = true; //---If true, enables safe zones
+local _bubbles = true; //---If true, marks safe zone boundaries with bubbles
+local _antized = true; //---If true, deletes zombies that walk into the safe zone
+local _antitheft = true; //---If true, prevents theft of vehicles and gear in the safe zones
+local _speedLimit = 30; //---If greater than 0, speed of vehicles in the safe zone will be limited to this number
+local _timer = 10; //---If greater than 0, safe zone protection will remain in affect for this number of seconds after leaving
 
-_disableWeps = true; //---If true, makes the player drop any weapon listed in _dropWeps while in safe zone
-_dropWeps = [ //---Will remove these weapons from the player if they try to select them in a safe zone
+local _disableWeps = true; //---If true, makes the player drop any weapon listed in _dropWeps while in safe zone
+local _dropWeps = [ //---Will remove these weapons from the player if they try to select them in a safe zone
 	"Vil_RPG29", "Vil_RPO_A", "Vil_RPG16", "Vil_RPG7V_PGO", "Vil_Panzerfaust3", "M136", "RPG7V", "vil_CG84T", "vilas_rpg22", "vilas_rpg26", "MAAWS", "Vil_RPG7d_PGO",
 	"RPG18", "MeleeHatchet", "MeleeCrowbar","MeleeMachete", "MeleeFishingPole", "MeleeSledge", "MeleeBaseBallBatNails", "MeleeBaseBallBatBarbed", "MeleeBaseBallBat"
 ];
 
 /* ********************* Escape Menu ********************* */
 
-_escTopT = "Epoch Server"; //---Text at the top of the escape menu
-_escTopC = [1,1,1,1]; //---Color of the text at the top of the escape menu
+local _escTopT = "Epoch Server"; //---Text at the top of the escape menu
+local _escTopC = [1,1,1,1]; //---Color of the text at the top of the escape menu
 
-_escMidT = "DayZ Epoch"; //---Text in the middle of the escape menu
+local _escMidT = "DayZ Epoch"; //---Text in the middle of the escape menu
 
-_escLUPT = "For the Community"; //---Lower-upper text of the escape menu
-_escLUPC = [1,1,1,1]; //---Color of the lower-upper text of the escape menu
+local _escLUPT = "For the Community"; //---Lower-upper text of the escape menu
+local _escLUPC = [1,1,1,1]; //---Color of the lower-upper text of the escape menu
 
-_escLBOT = "By: BigEgg & MG"; //---Lower-bottom text of the escape menu
-_escLBOC = [1,1,1,1]; //---Color of the lower-bottom text of the escape menu
+local _escLBOT = "By: BigEgg & MG"; //---Lower-bottom text of the escape menu
+local _escLBOC = [1,1,1,1]; //---Color of the lower-bottom text of the escape menu
 
 /* ********************* Build Boxes ********************* */
 
-_starterBox = [ //---Items in the starter build box
+local _starterBox = [ //---Items in the starter build box
 	"plot_pole_kit",
 	["full_cinder_wall_kit", 3],
 	["metal_floor_kit", 2],
@@ -121,7 +119,7 @@ _starterBox = [ //---Items in the starter build box
 	"DZ_Backpack_EP1"
 ];
 
-_smallBox = [ //---Items in the small build box
+local _smallBox = [ //---Items in the small build box
 	"plot_pole_kit",
 	"cinder_door_kit",
 	["half_cinder_wall_kit", 6],
@@ -142,7 +140,7 @@ _smallBox = [ //---Items in the small build box
 	"DZ_Backpack_EP1"
 ];
 
-_mediumBox = [ //---Items in the medium build box
+local _mediumBox = [ //---Items in the medium build box
 	"plot_pole_kit",
 	["cinder_door_kit", 2],
 	["cinder_garage_kit", 2],
@@ -164,7 +162,7 @@ _mediumBox = [ //---Items in the medium build box
 	["DZ_Backpack_EP1", 2]
 ];
 
-_largeBox = [ //---Items in the large build box
+local _largeBox = [ //---Items in the large build box
 	"plot_pole_kit",
 	["cinder_door_kit", 4],
 	["cinder_garage_kit", 4],
@@ -189,18 +187,18 @@ _largeBox = [ //---Items in the large build box
 /* ********************* Build Safes ********************* */
 
 //---Formatting is the same as the boxes above. Condensed down to save space.
-_starterSafe = _starterBox; //---Items in the starter build safe
-_smallSafe = _smallBox; //---Items in the small build safe
-_mediumSafe = _mediumBox; //---Items in the medium build safe
-_largeSafe = _largeBox; //---Items in the large build safe
+local _starterSafe = _starterBox; //---Items in the starter build safe
+local _smallSafe = _smallBox; //---Items in the small build safe
+local _mediumSafe = _mediumBox; //---Items in the medium build safe
+local _largeSafe = _largeBox; //---Items in the large build safe
 
 /* ********************* Large Lists ********************* */
 
-_missionFiles = [ //---List of files within your mission. Antihack will make sure that none have been changed.
+local _missionFiles = [ //---List of files within your mission. Antihack will make sure that none have been changed.
 	"description.ext", "init.sqf", "mission.sqm", "rules.sqf", "server_traders.sqf"
 ];
 
-_badChat = [ //---List of chat commands that will be logged in surveillance log
+local _badChat = [ //---List of chat commands that will be logged in surveillance log
 	".ban",".sqf","/2ndtp","/backpack","/ban","/banall","/bigbullets","/bot","/bot1brief","/bot50brief","/botbuilding","/botcheytac","/botcustom","/botdmr","/botm107","/ccgcode","/code","/delete","/destroy","/esp","/exec","/fini",
 	"/finiactivatere","/finialldance","/finiinfistar","/finikillall","/finitpall","/fixvehicle","/getfile","/getvehkey","/giveammo","/givecoins","/god","/gunbox","/heal","/humanityminus","/humanityminuscurs","/humanityplus",
 	"/humanitypluscurs","/infniteammo","/item","/itemmassspawn","/itemspawn","/keybind","/kickall","/menu","/morph","/nuke","/pammo","/pdel","/pepochbox","/pesp","/pgod","/pgunbox","/playermarker","/pmarkers","/pnuke",
@@ -210,7 +208,7 @@ _badChat = [ //---List of chat commands that will be logged in surveillance log
 	"v3hj3sus","z3dz"
 ];
 
-_badFiles = [ //---List of bad files that will be scanned for in client game directories
+local _badFiles = [ //---List of bad files that will be scanned for in client game directories
 	"!Scripts\de_cba.sqf", "#119.sqf", "#cexeetomer.sqf", "#ekun.sqf", "#gathsah.sqf", "#llabmob.sqf", "#llatropelet.sqf", "#nepo.sqf", "#pse.sqf", "#srekrampam.sqf", "#tegrat.sqf", "#tegratbmob.sqf", "#txet.sqf",
 	"#yekteg.sqf", "001.sqf", "0100100110\start.sqf", "0100100110\Starts.sqf", "1.sqf", "1Brief.sqf", "2.pbo", "2dmap.sqf", "3desp.sqf", "50Brief.sqf", "@Dayz_Namalsk\HP.sqf", "@Dayz_Namalsk\menu.sqf",
 	"@Hak_script\1.GLAVNOYE\000.sqf", "@Hak_script\1.Teleport.sqf", "@mHlopchik\Menu_Scripts\menu\keybind\funmenu", "@mymod\Scripts\ajmenu.sqf", "@SPX\3b.sqf", "@SPX\Spawn Weapon.sqf", "@SPX\SpawnWeapon.sqf",
@@ -297,7 +295,7 @@ _badFiles = [ //---List of bad files that will be scanned for in client game dir
 	"Z__i_n_f_i_S_T_A_R__Z\Run.sqf"
 ];
 
-_badVars = [ //---List of bad files to be checked for
+local _badVars = [ //---List of bad files to be checked for
 	"A11","abcd","abcdefGEH","absol","actid1","activeITEMlist","activeITEMlistanzahl","actualunit","actualunit_vec","ad44234efdzsf","adadadad23444","adadawer24_1337","adadgvdthw54y64","adasdawer4w3r","adawdawe21",
 	"adawedr3q4r3w2qr4","adawredzfdsf","adddaaaaaaaaa","addedPlayers","addgun","AddPlayersToMap","adgnafgnasfnadfgnafgn","admin_animate1","admin_d0","admin_dbclick_ori","admin_debug","Admin_Layout","Admin_Lite_Menu",
 	"admin_low_terrain","admin_toggled","admin_vehicleboost","adminadd","adminAntiAggro","admincrate","AdminDialogList","adminESPicons","admingod","adminicons","adminKeybinds","adminlite","adminlitez","AdminLoadOK",
