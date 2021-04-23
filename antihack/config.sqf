@@ -195,7 +195,7 @@ local _largeSafe = _largeBox; //---Items in the large build safe
 /* ********************* Large Lists ********************* */
 
 local _missionFiles = [ //---List of files within your mission. Antihack will make sure that none have been changed.
-	"description.ext", "init.sqf", "mission.sqm", "rules.sqf", "server_traders.sqf"
+	"description.ext", "init.sqf", "mission.sqm", "rules.sqf"
 ];
 
 local _badChat = [ //---List of chat commands that will be logged in surveillance log

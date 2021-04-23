@@ -72,6 +72,11 @@ dayz_antihack = 0;
 ```
 Note: ```dayz_REsec``` can remain at its default value of 1 (this is also recommended)
 
+Find the line that starts with:
+```call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\server_traders\```
+Cut and paste it below this line:
+```call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\chernarus11.sqf";```
+
 #### Step 7
 Copy the Antihack.dll, Antihack.ini, and Newtonsoft.Json.dll files into your server's root folder.
 
@@ -215,6 +220,7 @@ There are some useful features included in the menu:
 - Updated README.md with more documentation and additional instruction for ```dayz_antihack```.
 - Staff members can now have an empty name field, such that any name grants admin permissions.
 - Staff members can now have a registered player name if their required name field is blank, giving them no powers when on the player name.
+- Added new instruction to give server access to ```server_traders``` variable.
 
 ##### Fixes:
 - Fixed an issue with the "No Zombie Aggro" menu option.
