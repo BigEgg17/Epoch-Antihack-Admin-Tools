@@ -37,7 +37,7 @@ In \z\addons\dayz_server\system\scheduler\sched_sync.sqf:
 
 Find:
 ```
-// RESYNC TIME WITH HIVE DLL SYSTEM CALL
+// Date format [Year,Month,Day of the month,Hour,Minute]
 ```
 Below it, add:
 ```

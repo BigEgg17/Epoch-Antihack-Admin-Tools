@@ -549,7 +549,7 @@ _AH_Global = _AH_Global + ("
 			local _hit = _veh call vehicle_getHitpoints;
 
 			{
-				local _dam = [_veh, _x] call object_getHit;
+				local _dam = ([_veh, _x] call object_getHit) select 0;
 
 				if (_dam > 0) then {
 					local _sel = getText(configFile >> 'CfgVehicles' >> typeOf _veh >> 'HitPoints' >> _x >> 'name');
@@ -3811,6 +3811,7 @@ _AH_Server = _AH_Server + ("
 		if (isNil 'serverTraders') exitWith {
 			['SERVER', 1, 'Bad vehicle check exiting! serverTraders variable does not exist! Trader file moved!'] call AH_fnc_log;
 		};
+		DZE_tradeVehicle = ['trade_any_vehicle','trade_any_vehicle_free','trade_any_vehicle_old','trade_any_bicycle','trade_any_bicycle_old','trade_any_boat','trade_any_boat_old'];
 		local _fn_traderVehs = {
 			local _arr = [];
 			{
