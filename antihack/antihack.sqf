@@ -3773,6 +3773,7 @@ _AH_Server = _AH_Server + ("
 			local _wep = _this select 7;
 			local _dis = _this select 8;
 			local _why = _this select 9;
+			local _param = [];
 
 			['', 11, format['%1 (%2) died at %3', _pname, _this select 3, mapGridPosition (getPosATL (_this select 2))]] call AH_fnc_log;
 
@@ -3780,13 +3781,13 @@ _AH_Server = _AH_Server + ("
 
 			if (_why in ['explosion','melee','shot','shothead','shotheavy','suicide'] && {!(_why == 'explosion' && {_suicide or _sname == 'unknown'})}) then {
 				if (_suicide) then {
-					local _param = ['suicide', _pname];
+					_param = ['suicide', _pname];
 				} else {
 					if (_wep == '') then {_wep = 'unknown weapon'};
-					local _param = ['killed', _pname, _sname, _wep, _dis];
+					_param = ['killed', _pname, _sname, _wep, _dis];
 				};
 			} else {
-				local _param = ['died', _pname, _why];
+				_param = ['died', _pname, _why];
 			};
 
 			if (_pname != 'unknown' || {_sname != 'unknown'}) then {
