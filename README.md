@@ -73,9 +73,13 @@ dayz_antihack = 0;
 Note: ```dayz_REsec``` can remain at its default value of 1 (this is also recommended)
 
 Find the line that starts with:
-```call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\server_traders\```
+```
+call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\server_traders\
+```
 Cut and paste it below this line:
-```call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\chernarus11.sqf";```
+```
+call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\chernarus11.sqf";
+```
 
 #### Step 7
 Copy the Antihack.dll, Antihack.ini, and Newtonsoft.Json.dll files into your server's root folder.
