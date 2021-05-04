@@ -58,7 +58,7 @@ diag_log (_diag_prefix + "Admins sorted successfully");
 
 /* ******************* Random Variables ****************** */
 
-_fnc_random = { //---Generates random variable
+local _fnc_random = { //---Generates random variable
 	local _ret = [];
 
 	local _arr = toArray "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //---Add letters to the beginning
