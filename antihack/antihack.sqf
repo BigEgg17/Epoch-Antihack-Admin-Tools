@@ -3855,13 +3855,14 @@ _AH_Server = _AH_Server + ("
 		{
 			AH_allowedVehs set [count AH_allowedVehs, toLower _x];
 		} count AH_allowedVehs1;
+		AH_allowedVehs1 = nil;
 
 		"+_kfc_strd_cfg+" set [count "+_kfc_strd_cfg+", [{
 			if (isNil 'allowConnection') exitWith {};
 			local _arr = entities 'Air' + entities 'LandVehicle' + entities 'Ship';
 			{
 				local _type = typeOf _x;
-				if (!(toLower _type in AH_allowedVehs) && {!(_type in DZE_safeVehicle)} && {!(_type isKindOf 'StaticWeapon')} && {!(['Parachute', _type] call fnc_inString)}) then {
+				if (!(toLower _type in AH_allowedVehs) && {!(toLower(getText(configFile >> 'CfgVehicles' >> _type >> 'original')) in AH_allowedVehs)} && {!(_type in DZE_safeVehicle)} && {!(_type isKindOf 'StaticWeapon')} && {!(['Parachute', _type] call fnc_inString)}) then {
 					local _veh = _x; local _plrs = [];
 					{
 						local _dis = _x distance _veh;
