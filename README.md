@@ -221,7 +221,7 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
-#### [v1.0.1] - TBD
+#### [v1.0.1] - 5/15/2021 (Updated for 1.0.7)
 ##### Additions:
 - BattlEye Filters
 
