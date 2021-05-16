@@ -18,9 +18,12 @@ It should look something like this:
 ## Installation
 
 #### Step 1
-Copy the antihack folder into your dayz_server folder.
+[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.1.zip)
 
 #### Step 2
+Copy the antihack folder into your dayz_server folder.
+
+#### Step 3
 In \z\addons\dayz_server\init\server_functions.sqf:
 
 Find:
@@ -32,7 +35,7 @@ Below it, add:
 #include "\z\addons\dayz_server\antihack\antihack.sqf"
 ```
 
-#### Step 3
+#### Step 4
 In \z\addons\dayz_server\system\scheduler\sched_sync.sqf:
 
 Find:
@@ -44,10 +47,10 @@ Below it, add:
 if (!isNil "AH_timeOverride") exitWith {objNull};
 ```
 
-#### Step 4
+#### Step 5
 Copy the antihack.hpp file into the root of your mission folder.
 
-#### Step 5
+#### Step 6
 In description.ext:
 
 Find:
@@ -59,7 +62,7 @@ Below it, add:
 #include "antihack.hpp"
 ```
 
-#### Step 6
+#### Step 7
 In init.sqf:
 
 Find:
@@ -81,10 +84,10 @@ Cut and paste it below this line:
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\chernarus11.sqf";
 ```
 
-#### Step 7
+#### Step 8
 Copy the Antihack.dll, Antihack.ini, and Newtonsoft.Json.dll files into your server's root folder.
 
-#### Step 8
+#### Step 9
 Adjust the settings in the Antihack.ini file to fit your server.
 
 Keep in mind the following:
@@ -96,7 +99,7 @@ Keep in mind the following:
 	* This will log you into the global ban system. Once logged in, your server will participate in log sharing. All logs will be sent to our API for us to evaluate. Hackers will be globally banned.
 	* Participation is optional. You can use the global ban system with the default settings and no logs will be sent to us.
 
-#### Step 9
+#### Step 10
 Adjust the ```_missionFiles``` array in your config.sqf to fit your server. There is a tool included that will automatically generate the list of files in your mission.
 
 To use the tool (named ```KFC_Array_Builder.exe```):
@@ -114,6 +117,9 @@ Example:
 ![alt text][pic4]
 
 [pic4]: https://i.imgur.com/ksyDqoY.png "Config Example"
+
+#### Step 11
+Drag all the BattlEye filters from the BattlEye folder into your server's BattlEye folder.
 
 #### Installation completed!
 
@@ -217,7 +223,7 @@ There are some useful features included in the menu:
 ## Change Log
 #### [v1.0.1] - TBD
 ##### Additions:
-- None
+- BattlEye Filters
 
 ##### Changes:
 - Removed all ```private``` arrays and converted to more efficient ```local _var```.
