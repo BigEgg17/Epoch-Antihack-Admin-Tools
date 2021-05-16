@@ -1476,7 +1476,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.1 | Compiled TBD | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.1 | Compiled 05/15/2021 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -3637,7 +3637,7 @@ if ("day/night" in _chatcmds) then {
 			dayz_storeTimeDate = [2012,8,2,_hour,1];
 			publicVariable 'dayzSetDate';
 			setDate dayzSetDate;
-			
+
 			AH_votes = [];
 			AH_voteInit = -1;
 			AH_lastVote = diag_tickTime;
