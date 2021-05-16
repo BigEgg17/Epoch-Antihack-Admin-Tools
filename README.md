@@ -229,6 +229,7 @@ There are some useful features included in the menu:
 ##### Fixes:
 - Fixed an issue with the "No Zombie Aggro" menu option.
 - Fixed multiple incompatibilities with Epoch 1.0.7
+- Fixed an issue with changing time resulting in the time reverting for players after logging back in.
 
 #### [v1.0.0.9] - 8/24/2019 (Final 1.0.6.2 release)
 ##### Additions:

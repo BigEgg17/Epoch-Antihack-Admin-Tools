@@ -3480,6 +3480,7 @@ _AH_Server = _AH_Server + ("
 		if (_id == 26) exitWith {
 			AH_timeOverride = _param;
 			dayzSetDate = [2012, 8, 2, _param, 1];
+			dayz_storeTimeDate = [2012, 8, 2, _param, 1];
 			publicVariable 'dayzSetDate';
 			setDate dayzSetDate;
 		};
@@ -3633,9 +3634,10 @@ if ("day/night" in _chatcmds) then {
 			AH_timeOverride = _hour;
 
 			dayzSetDate = [2012,8,2,_hour,1];
+			dayz_storeTimeDate = [2012,8,2,_hour,1];
 			publicVariable 'dayzSetDate';
 			setDate dayzSetDate;
-
+			
 			AH_votes = [];
 			AH_voteInit = -1;
 			AH_lastVote = diag_tickTime;
