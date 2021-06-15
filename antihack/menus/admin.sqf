@@ -45,6 +45,8 @@ _AH_Admin = _AH_Admin + ("
 	_main set [count _main, ['    Animal Markers', 1, []]];
 	_main set [count _main, ['    Body Markers', 1, []]];
 	_main set [count _main, ['    Plot Markers', 1, []]];
+	_main set [count _main, ['    Vault Markers', 1, []]];
+	_main set [count _main, ['    Lockbox Markers', 1, []]];
 	_main set [count _main, ['    Storage Markers', 1, []]];
 	_main set [count _main, ['    Player Markers', 1, []]];
 	_main set [count _main, ['    Vehicle Markers', 1, []]];

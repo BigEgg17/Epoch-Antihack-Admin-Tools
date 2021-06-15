@@ -899,13 +899,12 @@ if (_mic) then {_AH_Normal = _AH_Normal + ("
 		local _missionFiles = "+str _missionFiles+";
 		local _counts = [];
 		{
-			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
+			local _arr = []; _arr resize 1000; {_arr set [_forEachIndex,0]} forEach _arr;
 			local _file = toArray(preprocessFile _x);
 
-			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
-			_arr set [128, 0];
-
-			_counts set [count _counts, _arr];
+			{_arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
+	
+			_counts set [count _counts, _arr - [0]];
 		} forEach _missionFiles;
 
 		{
@@ -1156,27 +1155,25 @@ local _AH_Admin = ("
 		if (typeName _data == 'SCALAR') exitWith {
 			if (isNil 'admin_targetSpawn') then {admin_targetSpawn = false};
 			if (admin_targetSpawn) then {admin_curTarget = call AH_fnc_getTarget};
-			call {
-				if (_data == 0) exitWith {
-					if (count _opt > 3) then {
-						local _data = _opt select 3;
-						if (typeName _data == 'CODE') then {call _data} else {call compile _data};
-					};
+			if (_data == 0) exitWith {
+				if (count _opt > 3) then {
+					local _data = _opt select 3;
+					if (typeName _data == 'CODE') then {call _data} else {call compile _data};
 				};
-				if (_data == 1) exitWith {_txt call AH_fnc_toggle};
-				if (_data == 2) exitWith {_txt call admin_spawnVeh};
-				if (_data == 3) exitWith {_txt call admin_spawnWep};
-				if (_data == 4) exitWith {_txt call admin_spawnMag};
-				if (_data == 5) exitWith {_txt call admin_spawnBp};
-				if (_data == 6) exitWith {_txt call AH_fnc_target};
-				if (_data == 7) exitWith {_txt call AH_fnc_logs};
-				if (_data == 8) exitWith {_txt call AH_fnc_toChat};
-				if (_data == 9) exitWith {_txt call admin_spawnBox};
-				if (_data == 10) exitWith {_txt call admin_spawnSafe};
-				if (_data == 11) exitWith {_txt call admin_time};
-				if (_data == 12) exitWith {_txt call admin_weather};
-				if (_data == 13) exitWith {_txt call admin_spawnEvent};
 			};
+			if (_data == 1) exitWith {_txt call AH_fnc_toggle};
+			if (_data == 2) exitWith {_txt call admin_spawnVeh};
+			if (_data == 3) exitWith {_txt call admin_spawnWep};
+			if (_data == 4) exitWith {_txt call admin_spawnMag};
+			if (_data == 5) exitWith {_txt call admin_spawnBp};
+			if (_data == 6) exitWith {_txt call AH_fnc_target};
+			if (_data == 7) exitWith {_txt call AH_fnc_logs};
+			if (_data == 8) exitWith {_txt call AH_fnc_toChat};
+			if (_data == 9) exitWith {_txt call admin_spawnBox};
+			if (_data == 10) exitWith {_txt call admin_spawnSafe};
+			if (_data == 11) exitWith {_txt call admin_time};
+			if (_data == 12) exitWith {_txt call admin_weather};
+			if (_data == 13) exitWith {_txt call admin_spawnEvent};
 		};
 	};
 
@@ -2272,15 +2269,49 @@ _AH_Admin = _AH_Admin + ("
 					[2, admin_plots, 'Plot'] call admin_marker;
 				};
 			};
+			if (_this == 'Vault Markers') exitWith {
+				if (_enabled) then {
+					if (_count == 0) then {
+						if (isNil 'admin_vaults') then {admin_vaults = []};
+						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
+							[2, admin_vaults, 'Vault'] call admin_marker;
+							admin_vaults = nearestObjects [getMarkerPos 'center', ['VaultStorage', 'VaultStorageLocked', 'VaultStorage2Locked', 'TallSafeLocked'], ((getMarkerSize 'center') select 1) * 2];
+							[1, admin_vaults, 'Vault', 'ColorPink', 'typeOf _x'] call admin_marker;
+						}, 30 + random 30, 0, true, _this]];
+					} else {
+						[_this, 1] call _fn_alterLoop;
+					};
+				} else {
+					[_this, 2] call _fn_alterLoop;
+					[2, admin_vaults, 'Vault'] call admin_marker;
+				};
+			};
+			if (_this == 'Lockbox Markers') exitWith {
+				if (_enabled) then {
+					if (_count == 0) then {
+						if (isNil 'admin_lockbox') then {admin_lockbox = []};
+						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
+							[2, admin_lockbox, 'Lockbox'] call admin_marker;
+							admin_lockbox = nearestObjects [getMarkerPos 'center', ['LockboxStorage', 'LockboxStorageLocked', 'LockboxStorage2Locked', 'LockboxStorageWinterLocked', 'LockboxStorageWinter2Locked'], ((getMarkerSize 'center') select 1) * 2];
+							[1, admin_lockbox, 'Lockbox', 'ColorPink', 'typeOf _x'] call admin_marker;
+						}, 30 + random 30, 0, true, _this]];
+					} else {
+						[_this, 1] call _fn_alterLoop;
+					};
+				} else {
+					[_this, 2] call _fn_alterLoop;
+					[2, admin_lockbox, 'Lockbox'] call admin_marker;
+				};
+			};
 			if (_this == 'Storage Markers') exitWith {
 				if (_enabled) then {
 					if (_count == 0) then {
 						if (isNil 'admin_storage') then {admin_storage = []};
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
 							[2, admin_storage, 'Storage'] call admin_marker;
-							admin_storage = nearestObjects [getMarkerPos 'center', ['VaultStorage', 'VaultStorageLocked', 'LockboxStorageLocked', 'LockboxStorage'], ((getMarkerSize 'center') select 1) * 2];
+							admin_storage = nearestObjects [getMarkerPos 'center', ['GunRack_DZ', 'GunRack2_DZ', 'Wooden_shed_DZ', 'Wooden_shed2_DZ', 'StorageShed_DZ', 'StorageShed2_DZ', 'WoodCrate_DZ', 'WoodCrate2_DZ', 'StorageCrate_DZ', 'CamoStorageCrate_DZ'], ((getMarkerSize 'center') select 1) * 2];
 							[1, admin_storage, 'Storage', 'ColorPink', 'typeOf _x'] call admin_marker;
-						}, 30, 0, true, _this]];
+						}, 30 + random 30, 0, true, _this]];
 					} else {
 						[_this, 1] call _fn_alterLoop;
 					};
@@ -3886,13 +3917,12 @@ if (_mic) then {_AH_Server = _AH_Server + ("
 		local _counts = [];
 		['SERVER', 1, 'Processing mission files...'] call AH_fnc_log;
 		{
-			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
+			local _arr = []; _arr resize 1000; {_arr set [_forEachIndex,0]} forEach _arr;
 			local _file = toArray(preprocessFile _x);
 
-			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
-			_arr set [128, 0];
-
-			_counts set [count _counts, _arr];
+			{_arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
+	
+			_counts set [count _counts, _arr - [0]];
 		} count "+str _missionFiles+";
 		['SERVER', 1, 'Mission files processed successfully'] call AH_fnc_log;
 		"+_kfc_mic+" = _counts; publicVariable '"+_kfc_mic+"';
