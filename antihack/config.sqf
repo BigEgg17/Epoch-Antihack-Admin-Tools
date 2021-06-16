@@ -78,6 +78,7 @@ local _dtext = "www.epochmod.com"; //---This text will appear at the bottom of t
 local _safezones = true; //---If true, enables safe zones
 local _bubbles = true; //---If true, marks safe zone boundaries with bubbles
 local _antized = true; //---If true, deletes zombies that walk into the safe zone
+local _antiai = true; //---If true, delete AI that walk into the safe zone
 local _antitheft = true; //---If true, prevents theft of vehicles and gear in the safe zones
 local _speedLimit = 30; //---If greater than 0, speed of vehicles in the safe zone will be limited to this number
 local _timer = 10; //---If greater than 0, safe zone protection will remain in affect for this number of seconds after leaving

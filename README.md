@@ -190,6 +190,7 @@ Name of the admin can be anything. Admin powers are not given if name is BillyBo
 |_safezones|If true, enables safe zones|
 |_bubbles|If true, marks safe zone boundaries with bubbles|
 |_antized|If true, deletes zombies that walk into the safe zone|
+|_antiai|If true, deletes AI that walk into the safe zone|
 |_antitheft|If true, prevents theft of vehicles and gear in the safe zones|
 |_speedLimit|If greater than 0, speed of vehicles in the safe zone will be limited to this number|
 |_timer|If greater than 0, safe zone protection will remain in affect for this number of seconds after leaving|
@@ -223,7 +224,7 @@ There are some useful features included in the menu:
 ## Change Log
 #### [v1.0.2] - TBD
 ##### Additions:
-- None
+- Added option to delete AI that walk into safe zone (see _antiai)
 
 ##### Changes:
 - Further optimized mission check.

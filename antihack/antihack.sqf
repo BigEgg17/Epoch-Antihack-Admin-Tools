@@ -3602,6 +3602,21 @@ if (_safezones) then {
 			}, 3.3, 0]];
 		");
 	};
+	if (_antiai) then {
+		_AH_Server = _AH_Server + ("
+			"+_kfc_strd_cfg+" set [count "+_kfc_strd_cfg+", [{
+				local _cnt = 0;
+				{
+					local _ai = _x;
+					{
+						if (!isPlayer _ai && {_ai distance (_x select 0) <= (_x select 1)}) then {_ai setDamage 1; _cnt = _cnt + 1};
+					} forEach DZE_SafeZonePosArray;
+				} count allUnits;
+				if (_cnt < 1) exitWith {};
+				['SERVER', 1, format['Deleted %1 AI from safe zones', _cnt]] call AH_fnc_log;
+			}, 3.3, 0]];
+		");
+	};
 };
 //---Voting
 if ("day/night" in _chatcmds) then {
