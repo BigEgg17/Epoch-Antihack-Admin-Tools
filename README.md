@@ -35,6 +35,11 @@ Below it, add:
 #include "\z\addons\dayz_server\antihack\antihack.sqf"
 ```
 
+Remove the following line:
+```
+#include "mission_check.sqf"
+```
+
 #### Step 4
 In \z\addons\dayz_server\system\scheduler\sched_sync.sqf:
 
@@ -157,6 +162,7 @@ Name of the admin can be anything. Admin powers are not given if name is BillyBo
 |_apj|If true, announces when a player has connected or disconnected in systemChat|
 |_bvc|If true, will delete any vehicles not in server traders or the whitelist below|
 |_egb|If true, syncs KFC global bans. Useful for banning hackers from other servers. Will likely be depricated in the future - disabled by default|
+|_wai|If true, enables compatibility with Wicked AI (https://github.com/f3cuk/WICKED-AI)|
 |_vehWhiteList|Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true|
 |_voteplayers|Number of players that must be online before a vote can be held|
 |_votedelay|Amount of time (in seconds) to wait between day/night votes|
@@ -224,7 +230,8 @@ There are some useful features included in the menu:
 ## Change Log
 #### [v1.0.2] - TBD
 ##### Additions:
-- Added option to delete AI that walk into safe zone (see _antiai)
+- Added option to delete AI that walk into safe zone (see _antiai).
+- Added WAI compatibility.
 
 ##### Changes:
 - Further optimized mission check.
@@ -232,7 +239,7 @@ There are some useful features included in the menu:
 - Adjusted BE filters to kick.
 
 ##### Fixes:
-- General Optimizations
+- General Optimizations.
 
 #### [v1.0.1] - 5/15/2021 (Updated for 1.0.7)
 ##### Additions:

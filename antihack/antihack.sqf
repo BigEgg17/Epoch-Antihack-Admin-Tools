@@ -6,7 +6,7 @@
 #include "config.sqf"
 
 local _cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
-local _bankvar = "bankMoney";
+local _bankvar = "bankMoney"; //---Be sure to change if you customize this value
 
 diag_log (_diag_prefix + "Initializing Epoch Antihack/Admin Tools");
 
@@ -1174,6 +1174,7 @@ local _AH_Admin = ("
 			if (_data == 11) exitWith {_txt call admin_time};
 			if (_data == 12) exitWith {_txt call admin_weather};
 			if (_data == 13) exitWith {_txt call admin_spawnEvent};
+			if (_data == 14) exitWith {_txt call admin_spawnMission};
 		};
 	};
 
@@ -1199,6 +1200,7 @@ _AH_Admin = _AH_Admin + ("
 	AH_fnc_initialize = {
 		admin_toggled = []; admin_spectating = false; admin_tempSpawn = false;
 		admin_tpkeybind = false; admin_flykeybind = false; admin_vehBoost = false;
+		admin_waibandit = false;
 
 		local _rank = player call AH_fnc_rank;
 		[format['Welcome %1! Loading admin tools...', _rank], 2] call "+_kfc_msg+";
@@ -2382,6 +2384,9 @@ _AH_Admin = _AH_Admin + ("
 			if (_this == 'Vehicle Boost') exitWith {
 				admin_vehBoost = if (_enabled) then {true} else {false};
 			};
+			if (_this == 'Spawn Bandit Missions') exitWith {
+				admin_waibandit = if (_enabled) then {true} else {false};
+			};
 		};
 
 		[format['%1 %2.', _this call AH_fnc_grammar, toLower _change], 4] call "+_kfc_msg+";
@@ -2868,6 +2873,13 @@ _AH_Admin = _AH_Admin + ("
 				'Added '+str _qty+' '+str %1+' to their inventory @ '+mapGridPosition player+'' call AH_fnc_adminLog;
 			};
 		"", str _this], 'Spawn', format['Magazine: %1', _this], ''] call AH_fnc_display;
+	};
+
+	admin_spawnMission = {
+		_this = call AH_fnc_removePrefix;
+		[33, [_this, admin_waibandit]] call AH_fnc_adminReq;
+		[format['You spawned %1 mission ""%2.""', if (admin_waibandit) then {'Bandit'} else {'Hero'}, _this], 4] call "+_kfc_msg+";
+		format['Spawned %1 mission ""%2"" @ %3', if (admin_waibandit) then {'Bandit'} else {'Hero'}, _this, mapGridPosition player] call AH_fnc_adminLog;
 	};
 
 	admin_spawnSafe = {
@@ -3564,8 +3576,26 @@ _AH_Server = _AH_Server + ("
 				[_pobj, 2, format['Executed the following code globally: %1', toString(_param select 0)]] call AH_fnc_log;
 			};
 		};
+"); if (_wai) then {_AH_Server = _AH_Server + ("
+		if (_id == 33) exitWith {
+			comment 'Spawns WAI mission as selected by admin';
+			local _type = [];
+			if (_param select 1) then {
+				h_missionsrunning = h_missionsrunning + 1;
+				wai_h_starttime = diag_tickTime;
+				wai_mission_markers set [(count wai_mission_markers), ('MainHero' + str(count wai_mission_data))];
+				_type = ['MainHero','Bandit'];
+			} else {
+				b_missionsrunning = b_missionsrunning + 1;
+				wai_b_starttime = diag_tickTime;
+				wai_mission_markers set [(count wai_mission_markers), ('MainBandit' + str(count wai_mission_data))];
+				_type = ['MainBandit','Hero'];
+			};
+			wai_mission_data = wai_mission_data + [[0,[],[],[],[],[],[]]];
+			_type execVM format ['\z\addons\dayz_server\WAI\missions\missions\%1.sqf', _param select 0];
+		};")}; _AH_Server = _AH_Server + ("
 	};
-	'"+_kfc_pvar+"' addPublicVariableEventHandler {"+_kfc_pvar+" = nil; (_this select 1) call AH_fnc_procAdminReq;};
+	'"+_kfc_pvar+"' addPublicVariableEventHandler {"+_kfc_pvar+" = nil; (_this select 1) call AH_fnc_procAdminReq};
 ");
 //---Safe Zones
 if (_safezones) then {

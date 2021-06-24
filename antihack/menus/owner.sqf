@@ -142,6 +142,23 @@ _AH_Admin = _AH_Admin + ("
 			_spwn set [count _spwn, [format['>> %1', _x select 5], 13, []]];
 		} count "+str EpochEvents+";
 	};
+	if ("+str _wai+") then {
+		_spwn set [count _spwn, ['===============================================================', 0, []]];
+		_spwn set [count _spwn, ['                           Spawn Missions', 0, []]];
+		_spwn set [count _spwn, ['Spawn Bandit Missions', 1, []]];
+		{
+			_spwn set [count _spwn, [format['>> %1', _x], 14, []]];
+		} count [
+			'patrol','black_hawk_crash','armed_vehicle','base',
+			'captured_mv22','scout_patrol','ikea_convoy','medi_camp',
+			'broken_down_ural','sniper_extraction','mayors_mansion',
+			'weapon_cache','gem_tower','cannibal_cave','crop_raider',
+			'drone_pilot','slaughter_house','drugbust','armybase',
+			'abandoned_trader','lumberjack','presidents_mansion',
+			'tankcolumn','macdonald','radioshack','junkyard','outpost',
+			'farmer','firestation','vehicle_drop'
+		];
+	};
 
 	_envi set [count _envi, ['===============================================================', 0, []]];
 	_envi set [count _envi, ['                          Adjust Server Time', 0, []]];
