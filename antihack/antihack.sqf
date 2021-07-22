@@ -88,7 +88,6 @@ local _kfc_ban = "_kfc_ban" call _fnc_random;
 local _kfc_oef = "_kfc_oef" call _fnc_random;
 local _kfc_pvs = "_kfc_pvs" call _fnc_random;
 local _kfc_msg1 = "_kfc_msg1" call _fnc_random;
-local _kfc_pvar = "AHPV_AReq" + ("_kfc_pvar" call _fnc_random);
 local _kfc_gvar = "_kfc_gvar" call _fnc_random;
 local _kfc_init = "_kfc_init" call _fnc_random;
 local _kfc_gtrd = "_kfc_gtrd" call _fnc_random;
@@ -447,7 +446,7 @@ _AH_Global = _AH_Global + ("
 
 		local _sender = _in select 0;
 		local _param = _in select 1;
-		local _id = _in select 2;
+		local _id = toString(_in select 2);
 
 		local _info = name _sender + ' ' + '(' + getPlayerUID _sender + ')';
 
@@ -458,7 +457,7 @@ _AH_Global = _AH_Global + ("
 
 		if (getPlayerUID player in "+str _headless+") exitWith {}; comment 'Admins should not be manipulating headless clients';
 
-		if (_id == 1) exitWith {
+		if (_id == 'TAR_TP2U') exitWith {
 			local _veh = vehicle player;
 
 			_veh setPosATL (_param select 1);
@@ -468,7 +467,7 @@ _AH_Global = _AH_Global + ("
 
 			[format['You were teleported to %1 by admin ""%2.""', mapGridPosition player, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 2) exitWith {
+		if (_id == 'TAR_HEAL') exitWith {
 			[player, _sender] call player_medMorphine;
 			[player, _sender] call player_medBandage;
 			[player, _sender] call player_medPainkiller;
@@ -493,12 +492,12 @@ _AH_Global = _AH_Global + ("
 			call player_forceSave;
 			[format['You were healed by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 3) exitWith {
+		if (_id == 'MAG_GIVE') exitWith {
 			for '_x' from 1 to (_param select 1) do {player addMagazine (_param select 2)};
 			call player_forceSave;
 			[format['You were given %1 ""%2"" by admin ""%3.""', _param select 1, _param select 2, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 4) exitWith {
+		if (_id == 'WEP_GIVE') exitWith {
 			player addWeapon (_param select 1);
 			player selectWeapon (_param select 1);
 
@@ -511,27 +510,27 @@ _AH_Global = _AH_Global + ("
 
 			[format['You were given one ""%1"" with ammo by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 5) exitWith {
+		if (_id == 'BP_GIVE') exitWith {
 			player addBackpack (_param select 1);
 			call player_forceSave;
 			[format['You were given backpack ""%1"" by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 6) exitWith {
+		if (_id == 'TAR_BANK') exitWith {
 			player setVariable ["+str _bankvar+", (player getVariable ["+str _bankvar+", 0]) + (_param select 1), true];
 			call player_forceSave;
 			[format['%1 %2 were added to your bank by admin ""%3.""', [_param select 1] call BIS_fnc_numberText, CurrencyName, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 7) exitWith {
+		if (_id == 'TAR_WALLET') exitWith {
 			player setVariable ["+str _cashvar+", (player getVariable ["+str _cashvar+", 0]) + (_param select 1), true];
 			call player_forceSave;
 			[format['%1 %2 were added to your wallet by admin ""%3.""', [_param select 1] call BIS_fnc_numberText, CurrencyName, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 8) exitWith {
+		if (_id == 'TAR_HUMANITY') exitWith {
 			player setVariable ['humanity', (player getVariable ['humanity', 0]) + (_param select 1), true];
 			call player_forceSave;
 			[format['You were given %1 humanity by admin ""%2.""', [_param select 1] call BIS_fnc_numberText, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 9) exitWith {
+		if (_id == 'TAR_AMMO') exitWith {
 			local _mags = getArray(configFile >> 'CfgWeapons' >> currentWeapon(vehicle player) >> 'magazines');
 			if (count _mags > 0) then {
 				for '_x' from 1 to (_param select 1) do {
@@ -540,11 +539,11 @@ _AH_Global = _AH_Global + ("
 			};
 			[format['You were given %1 mags of ammunition for your current weapon by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 10) exitWith {
+		if (_id == 'TAR_MOVINVEH') exitWith {
 			player moveInCargo (vehicle _sender);
 			[format['You were moved into the vehicle of admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 11) exitWith {
+		if (_id == 'TAR_REPAIR') exitWith {
 			local _veh = vehicle player;
 			local _hit = _veh call vehicle_getHitpoints;
 
@@ -567,52 +566,53 @@ _AH_Global = _AH_Global + ("
 
 			[format['Your vehicle was repaired by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 12) exitWith {
+		if (_id == 'TAR_UNFREEZE') exitWith {
 			if ((_param select 1) == 0) then {disableUserInput false} else {disableUserInput true};
 			[format['You were %1 by admin ""%2.""', if ((_param select 1) == 0) then {'unfrozen'} else {'frozen'}, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 13) exitWith {
+		if (_id == 'TAR_SUICIDE') exitWith {
 			[player, 'suicide'] call player_death;
 		};
-		if (_id == 14) exitWith {
+		if (_id == 'TAR_DISCONNECT') exitWith {
 			call player_forceSave; endMission 'END1';
 		};
-		if (_id == 15) exitWith {
+		if (_id == 'TAR_RMGEAR') exitWith {
 			removeAllWeapons player;
 			removeAllItems player;
 			removeBackpack player;
 			call player_forceSave;
 			[format['Your gear was removed by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 16) exitWith {
+		if (_id == 'TAR_SENDUP') exitWith {
 			local _pos = [vehicle player] call FNC_getPos;
 			(vehicle player) setPos [_pos select 0, _pos select 1, (_pos select 2) + (_param select 1)];
 			[format['You were sent %1 meters into the air by admin ""%2.""', [_param select 1] call BIS_fnc_numberText, _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 17) exitWith {
+		if (_id == 'TAR_SENDOCEAN') exitWith {
 			player setPos [0,0,0];
 			[format['You were sent to the ocean by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 18) exitWith {
+		if (_id == 'TAR_EJECT') exitWith {
 			player action ['Eject', vehicle player];
 			[format['You were ejected from your vehicle by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 19) exitWith {
+		if (_id == 'TAR_LOADOUT') exitWith {
 			removeAllWeapons player; removeAllItems player; removeBackpack player;
-			if (count((_param select 1) select 0) > 0) then {
-				{player addWeapon _x} count ((_param select 1) select 0);
+			local _loadout = "+str _loadouts+" select (_param select 1);
+			if (count(_loadout select 1) > 0) then {
+				{player addWeapon _x} count (_loadout select 1);
 			};
-			if (count((_param select 1) select 1) > 0) then {
+			if (count(_loadout select 2) > 0) then {
 				{
 					if (typeName _x == 'ARRAY') then {for '_i' from 1 to (_x select 1) do {player addMagazine (_x select 0)}} else {player addMagazine _x};
-				} count ((_param select 1) select 1);
+				} count (_loadout select 2);
 			};
-			if (((_param select 1) select 2) != '') then {player addBackpack ((_param select 1) select 2)};
-			player selectWeapon (((_param select 1) select 0) select 0);
-			[format['You were given the %1 loadout by admin ""%2.""', _param select 2, _info], 4] call "+_kfc_msg+";
+			if ((_loadout select 3) != '') then {player addBackpack (_loadout select 3)};
+			player selectWeapon ((_loadout select 1) select 0);
+			[format['You were given the %1 loadout by admin ""%2.""', _loadout select 0, _info], 4] call "+_kfc_msg+";
 			call player_forceSave;
 		};
-		if (_id == 20) exitWith {
+		if (_id == 'MENU_ADJUST') exitWith {
 			if ((_param select 2) == 'USEC_BloodQty') then {r_player_blood = _param select 1};
 			player setVariable [_param select 2, _param select 1, true];
 			call player_forceSave;
@@ -899,12 +899,13 @@ if (_mic) then {_AH_Normal = _AH_Normal + ("
 		local _missionFiles = "+str _missionFiles+";
 		local _counts = [];
 		{
-			local _arr = []; _arr resize 1000; {_arr set [_forEachIndex,0]} forEach _arr;
+			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
 			local _file = toArray(preprocessFile _x);
 
-			{_arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
-	
-			_counts set [count _counts, _arr - [0]];
+			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
+			_arr set [128, 0];
+
+			_counts set [count _counts, _arr];
 		} forEach _missionFiles;
 
 		{
@@ -1091,7 +1092,7 @@ local _AH_Admin = ("
 		local _qty = _this select 0;
 		local _adj = _this select 2;
 
-		[29, [_target, _qty, _this select 1, _adj]] call AH_fnc_adminReq;
+		['MENU_ADJUST', [_target, _qty, _this select 1, _adj]] call AH_fnc_adminReq;
 
 		[format['You adjusted the %1 of ""%2 (%3)"" to %4.', _adj, _name, _puid, [_qty] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
 		['Please wait a few moments and refresh...', 4] call "+_kfc_msg+";
@@ -1101,9 +1102,9 @@ local _AH_Admin = ("
 	AH_fnc_adminLog = {['LOG', [_this, 2]] call "+_kfc_pvs+"};
 
 	AH_fnc_adminReq = {
-		"+_kfc_pvar+" = [player, _this select 0, _this select 1, toArray "+str _kfc_akey+"];
-		publicVariableServer '"+_kfc_pvar+"';
-		"+_kfc_pvar+" = nil;
+		local _id = _this select 0;
+		if (typeName _id == 'STRING') then {_id = toArray _id};
+		["+str _kfc_akey+", [_id, _this select 1]] call "+_kfc_pvs+";
 	};
 
 	AH_fnc_cancelSpec = {
@@ -1378,7 +1379,7 @@ _AH_Admin = _AH_Admin + ("
 		};
 
 		[format['Synchronizing %1, please wait...', toLower _this], 4] call "+_kfc_msg+";
-		[23, [_this, _get]] call AH_fnc_adminReq;
+		['LOG_VIEW', [_this, _get]] call AH_fnc_adminReq;
 	};
 
 	AH_fnc_noBrackets = {
@@ -1475,7 +1476,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.1 | Compiled 05/15/2021 | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.2 | Compiled 07/21/2021 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -1649,9 +1650,7 @@ _AH_Admin = _AH_Admin + ("
 	AH_fnc_switchMenu = {
 		local _opt = [];
 		{
-			if (_this == _forEachIndex) exitWith {
-				_opt = _x;
-			};
+			if (_this == _forEachIndex) exitWith {_opt = _x};
 		} forEach admin_menus;
 
 		local _data = _opt select 1;
@@ -1660,9 +1659,19 @@ _AH_Admin = _AH_Admin + ("
 		call AH_fnc_refresh;
 	};
 
+	AH_fnc_loadouts = {
+		admin_loadouts = [];
+		admin_loadout_index = [];
+		{
+			admin_loadouts set [count admin_loadouts, 'Give ' + (_x select 0) + ' Loadout'];
+			admin_loadout_index set [count admin_loadout_index, _x select 0];
+		} forEach "+str _loadouts+";
+	};
+
 	AH_fnc_target = {
 		local _target = call AH_fnc_getTarget;
 		if (isNull _target) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
+		if (isNil 'admin_loadouts') then {call AH_fnc_loadouts};
 
 		local _name = name _target;
 		local _puid = getPlayerUID _target;
@@ -1694,13 +1703,13 @@ _AH_Admin = _AH_Admin + ("
 
 			_pos = [(_pos select 0) + _dis * sin(_dir), (_pos select 1) + _dis * cos(_dir), _pos select 2];
 
-			[3, [_target, _pos, _dir]] call AH_fnc_adminReq;
+			['TAR_TP2U', [_target, _pos, _dir]] call AH_fnc_adminReq;
 
 			[format['You teleported ""%1 (%2)"" to you.', _name, _puid], 4] call "+_kfc_msg+";
 			format['Teleported to ""%1 (%2)"" @ %3', _name, _puid, mapGridPosition _target] call AH_fnc_adminLog;
 		};
 		if (_this == 'Heal Target') exitWith {
-			[4, [_target]] call AH_fnc_adminReq;
+			['TAR_HEAL', [_target]] call AH_fnc_adminReq;
 			[format['You healed ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Healed ""%1 (%2)"" @ %3', _name, _puid, mapGridPosition _target];
 		};
@@ -1708,7 +1717,7 @@ _AH_Admin = _AH_Admin + ("
 			['Adjusting Bank', 'Amount:', format[""
 				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
-				[8, ['%1%2', _qty]] call AH_fnc_adminReq;
+				['TAR_BANK', ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the bank of """"%1 (%2).""""', 4] call "+_kfc_msg+";
 				'Added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the bank of """"%1 (%2)""""' call AH_fnc_adminLog;
 			"", _name, _puid], 'Adjust', format['Target: %1 (%2)', _name, _puid], format['Current: %1', [_target getVariable ["+str _bankvar+", 0]] call BIS_fnc_numberText]] call AH_fnc_display;
@@ -1717,7 +1726,7 @@ _AH_Admin = _AH_Admin + ("
 			['Adjusting Wallet', 'Amount:', format[""
 				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
-				[9, ['%1%2', _qty]] call AH_fnc_adminReq;
+				['TAR_WALLET', ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the wallet of """"%1 (%2).""""', 4] call "+_kfc_msg+";
 				'Added '+([_qty] call BIS_fnc_numberText)+' '+CurrencyName+' to the wallet of """"%1 (%2)""""' call AH_fnc_adminLog;
 			"", _name, _puid], 'Adjust', format['Target: %1 (%2)', _name, _puid], format['Current: %1', [_target getVariable ["+str _cashvar+", 0]] call BIS_fnc_numberText]] call AH_fnc_display;
@@ -1726,7 +1735,7 @@ _AH_Admin = _AH_Admin + ("
 			['Adjusting Humanity', 'Amount:', format[""
 				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
-				[10, ['%1%2', _qty]] call AH_fnc_adminReq;
+				['TAR_HUMANITY', ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You gave '+([_qty] call BIS_fnc_numberText)+' humanity to """"%1 (%2).""""', 4] call "+_kfc_msg+";
 				'Gave '+([_qty] call BIS_fnc_numberText)+' humanity to """"%1 (%2)""""' call AH_fnc_adminLog;
 			"", _name, _puid], 'Adjust', format['Target: %1 (%2)', _name, _puid], format['Current: %1', [_target getVariable ['humanity', 0]] call BIS_fnc_numberText]] call AH_fnc_display;
@@ -1735,7 +1744,7 @@ _AH_Admin = _AH_Admin + ("
 			['Giving Ammo', 'Amount:', format[""
 				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
-				[11, ['%1%2', _qty]] call AH_fnc_adminReq;
+				['TAR_AMMO', ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You gave '+([_qty] call BIS_fnc_numberText)+' mags to """"%1 (%2).""""', 4] call "+_kfc_msg+";
 				'Gave '+([_qty] call BIS_fnc_numberText)+' mags to """"%1 (%2)""""' call AH_fnc_adminLog;
 			"", _name, _puid], 'Give', format['Target: %1 (%2)', _name, _puid], ''] call AH_fnc_display;
@@ -1773,19 +1782,19 @@ _AH_Admin = _AH_Admin + ("
 		if (_this == 'Move Target into Your Vehicle') exitWith {
 			if (vehicle _target != _target) exitWith {['Target is in a vehicle!', 2] call "+_kfc_msg+"};
 			if (vehicle player == player) exitWith {['You are not in a vehicle!', 2] call "+_kfc_msg+"};
-			[12, [_target]] call AH_fnc_adminReq;
+			['TAR_MOVINVEH', [_target]] call AH_fnc_adminReq;
 			[format['You moved ""%1 (%2)"" into your vehicle.', _name, _puid], 4] call "+_kfc_msg+";
 			format['Moved ""%1 (%2)"" into their vehicle', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Repair Target Vehicle') exitWith {
 			if (vehicle _target == _target) exitWith {['Target is not in a vehicle!', 2] call "+_kfc_msg+"};
-			[13, [_target]] call AH_fnc_adminReq;
+			['TAR_REPAIR', [_target]] call AH_fnc_adminReq;
 			[format['You repaired the vehicle of ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Repaired the vehicle of ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Unfreeze Target') exitWith {
 			if (_target == player) exitWith {['This cannot be used on yourself!', 2] call "+_kfc_msg+"};
-			[14, [_target, 0]] call AH_fnc_adminReq;
+			['TAR_UNFREEZE', [_target, 0]] call AH_fnc_adminReq;
 			[format['You unfroze ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Unfroze ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
@@ -1796,22 +1805,22 @@ _AH_Admin = _AH_Admin + ("
 			format['Froze ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Kill Target') exitWith {
-			[15, [_target]] call AH_fnc_adminReq;
+			['TAR_KILL', [_target]] call AH_fnc_adminReq;
 			[format['You killed ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Killed ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Make Target Commit Suicide') exitWith {
-			[16, [_target]] call AH_fnc_adminReq;
+			['TAR_SUICIDE', [_target]] call AH_fnc_adminReq;
 			[format['You made ""%1 (%2)"" commit suicide.', _name, _puid], 4] call "+_kfc_msg+";
 			format['Made ""%1 (%2)"" commit suicide', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Disconnect Target') exitWith {
-			[17, [_target]] call AH_fnc_adminReq;
+			['TAR_DISCONNECT', [_target]] call AH_fnc_adminReq;
 			[format['You disconnected ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Disconnected ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Remove Target Gear') exitWith {
-			[18, [_target]] call AH_fnc_adminReq;
+			['TAR_RMGEAR', [_target]] call AH_fnc_adminReq;
 			[format['You removed the gear of ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Removed the gear of ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
@@ -1819,93 +1828,28 @@ _AH_Admin = _AH_Admin + ("
 			['Launching', 'Distance:', format[""
 				local _qty = parseNumber(ctrlText 1400);
 				if (_qty == 0) exitWith {['You must enter an amount!', 2] call "+_kfc_msg+"};
-				[19, ['%1%2', _qty]] call AH_fnc_adminReq;
+				['TAR_SENDUP', ['%1%2', _qty]] call AH_fnc_adminReq;
 				['You sent """"%1 (%2)"""" up '+([_qty] call BIS_fnc_numberText)+' meters.', 4] call "+_kfc_msg+";
 				'Sent """"%1 (%2)"""" up '+([_qty] call BIS_fnc_numberText)+' meters' call AH_fnc_adminLog;
 			"", _name, _puid], 'Launch', format['Target: %1 (%2)', _name, _puid], ''] call AH_fnc_display;
 		};
 		if (_this == 'Send Target to Ocean') exitWith {
-			[20, [_target]] call AH_fnc_adminReq;
+			['TAR_SENDOCEAN', [_target]] call AH_fnc_adminReq;
 			[format['You sent ""%1 (%2)"" to the ocean.', _name, _puid], 4] call "+_kfc_msg+";
 			format['Sent ""%1 (%2)"" to the ocean', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Eject Target') exitWith {
 			if (vehicle _target == _target) exitWith {['Target is not in a vehicle!', 2] call "+_kfc_msg+"};
-			[21, [_target]] call AH_fnc_adminReq;
+			['TAR_EJECT', [_target]] call AH_fnc_adminReq;
 			[format['You ejected ""%1 (%2)"" from their vehicle.', _name, _puid], 4] call "+_kfc_msg+";
 			format['Ejected ""%1 (%2)"" from their vehicle', _name, _puid] call AH_fnc_adminLog;
  		};
-		if (_this == 'Give Mk48 Loadout') exitWith {
-			[22, [_target, [
-				['Mk48_CCO_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['100Rnd_762x51_M240', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'Mk48']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the Mk48 loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the Mk48 loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give Anzio Loadout') exitWith {
-			[22, [_target, [
-				['Anzio_20_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['3rnd_Anzio_20x102mm', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'Anzio']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the Anzio loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the Anzio loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give G36K Loadout') exitWith {
-			[22, [_target, [
-				['G36K_Camo_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['30Rnd_556x45_G36', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'G36K']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the G36K loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the G36K loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give DMR Loadout') exitWith {
-			[22, [_target, [
-				['DMR_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['20Rnd_762x51_DMR', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'DMR']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the DMR loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the DMR loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give LeeEnfield Loadout') exitWith {
-			[22, [_target, [
-				['LeeEnfield_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['10Rnd_303British', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'LeeEnfield']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the LeeEnfield loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the LeeEnfield loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give M240 Loadout') exitWith {
-			[22, [_target, [
-				['M240_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['100Rnd_762x51_M240', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'M240']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the M240 loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the M240 loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give M24 Loadout') exitWith {
-			[22, [_target, [
-				['M24_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['5Rnd_762x51_M24', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'M24']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the M24 loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the M24 loadout', _name, _puid] call AH_fnc_adminLog;
-		};
-		if (_this == 'Give M4A1 Loadout') exitWith {
-			[22, [_target, [
-				['M4A1_DZ', 'UZI_SD_EP1', 'ItemFlashlight', 'ItemHatchet', 'ItemRadio', 'ItemMap', 'ItemToolbox', 'ItemKnife', 'ItemGPS', 'Binocular_Vector', 'NVGoggles', 'ItemEtool', 'ItemCrowbar', 'ItemCompass'],
-				['ItemAntibiotic', 'ItemPainkiller', 'ItemMorphine', 'ItemBloodbag', 'FishCookedTuna', 'ItemSodaOrangeSherbet', 'Skin_Sniper1_DZ', ['30Rnd_556x45_Stanag', 4], ['ItemBandage', 4], ['30Rnd_9x19_UZI_SD', 4]],
-				'DZ_Backpack_EP1'
-			], 'M4A1']] call AH_fnc_adminReq;
-			[format['You gave ""%1 (%2)"" the M4A1 loadout.', _name, _puid], 4] call "+_kfc_msg+";
-			format['Gave ""%1 (%2)"" the M4A1 loadout', _name, _puid] call AH_fnc_adminLog;
+		if (_this in admin_loadouts) exitWith {
+			local _loadout = 0; {if (_this == _x) exitWith {_loadout = _forEachIndex}} forEach admin_loadouts;
+			['TAR_LOADOUT', [_target,_loadout]] call AH_fnc_adminReq;
+			_loadout = admin_loadout_index select _loadout;
+			[format['You gave ""%1 (%2)"" the %3 loadout.', _name, _puid, _loadout], 4] call "+_kfc_msg+";
+			format['Gave ""%1 (%2)"" the %3 loadout', _name, _puid, _loadout] call AH_fnc_adminLog;
 		};
 	};
 
@@ -2014,7 +1958,7 @@ _AH_Admin = _AH_Admin + ("
 				};
 			};
 			if (_this == 'Invisibility') exitWith {
-				[1, if (_enabled) then {true} else {false}] call AH_fnc_adminReq;
+				['TOG_INVIS', if (_enabled) then {true} else {false}] call AH_fnc_adminReq;
 			};
 			if (_this == '[Alt + Left Click] Map Teleport') exitWith {
 				disableSerialization;
@@ -2311,7 +2255,7 @@ _AH_Admin = _AH_Admin + ("
 						if (isNil 'admin_storage') then {admin_storage = []};
 						"+_kfc_atrd_cfg+" set [count "+_kfc_atrd_cfg+", [{
 							[2, admin_storage, 'Storage'] call admin_marker;
-							admin_storage = nearestObjects [getMarkerPos 'center', ['GunRack_DZ', 'GunRack2_DZ', 'Wooden_shed_DZ', 'Wooden_shed2_DZ', 'StorageShed_DZ', 'StorageShed2_DZ', 'WoodCrate_DZ', 'WoodCrate2_DZ', 'StorageCrate_DZ', 'CamoStorageCrate_DZ'], ((getMarkerSize 'center') select 1) * 2];
+							admin_storage = nearestObjects [getMarkerPos 'center', ['GunRack_DZ', 'GunRack2_DZ', 'Wooden_shed_DZ', 'Wooden_shed2_DZ', 'StorageShed_DZ', 'StorageShed2_DZ', 'WoodCrate_DZ', 'WoodCrate2_DZ', 'StorageCrate_DZ', 'CamoStorageCrate_DZ', 'TentStorage', 'DomeTentStorage', 'DesertTentStorage', 'TentStorageWinter', 'WinterDomeTentStorage'], ((getMarkerSize 'center') select 1) * 2];
 							[1, admin_storage, 'Storage', 'ColorPink', 'typeOf _x'] call admin_marker;
 						}, 30 + random 30, 0, true, _this]];
 					} else {
@@ -2494,7 +2438,7 @@ _AH_Admin = _AH_Admin + ("
 		if (isNull admin_cursorTarget) exitWith {['Target is null!', 2] call "+_kfc_msg+";};
 
 		local _fnc_delete = {
-			[2, admin_cursorTarget] call AH_fnc_adminReq;
+			['KEY_DEL', admin_cursorTarget] call AH_fnc_adminReq;
 			[format['Deleted ""%1"" successfully.', typeOf admin_cursorTarget], 4] call "+_kfc_msg+";
 			format['Deleted ""%1"" @ %2', typeOf admin_cursorTarget, mapGridPosition player] call AH_fnc_adminLog;
 		};
@@ -2537,7 +2481,7 @@ _AH_Admin = _AH_Admin + ("
 		_ctrl = _display displayCtrl 1700;
 		_ctrl ctrlSetText 'Server';
 		_ctrl buttonSetAction ""
-			[32, [toArray(ctrlText 1400), 1]] call AH_fnc_adminReq;
+			['MENU_CODE', [toArray(ctrlText 1400), 1]] call AH_fnc_adminReq;
 			['Code executed on the server.', 2] call "+_kfc_msg+";
 		"";
 
@@ -2554,7 +2498,7 @@ _AH_Admin = _AH_Admin + ("
 		_ctrl = _display displayCtrl 1702;
 		_ctrl ctrlSetText 'Global';
 		_ctrl buttonSetAction ""
-			[32, [toArray(ctrlText 1400), 2]] call AH_fnc_adminReq;
+			['MENU_CODE', [toArray(ctrlText 1400), 2]] call AH_fnc_adminReq;
 			['Code executed globally.', 2] call "+_kfc_msg+";
 		"";
 
@@ -2697,7 +2641,7 @@ _AH_Admin = _AH_Admin + ("
 		['Killing AI', 'Radius:', ""
 			local _rad = parseNumber(ctrlText 1400);
 			if (_rad == 0) exitWith {['You must enter a radius!', 2] call "+_kfc_msg+"};
-			[28, _rad] call AH_fnc_adminReq;
+			['TOOL_KILLAI', _rad] call AH_fnc_adminReq;
 			[format['You removed all AI within %1 meter(s) of your location.', [_rad] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
 		"", 'Kill', '', ''] call AH_fnc_display;
 	};
@@ -2828,7 +2772,7 @@ _AH_Admin = _AH_Admin + ("
 		_arrow = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
 		['DZ_CardboardBox', _arrow] call fn_waitForObject;
 
-		[24, [_this, _pos]] call AH_fnc_adminReq;
+		['SPWN_BOX', [_this, _pos]] call AH_fnc_adminReq;
 		[format['You spawned a ""%1"" nearby.', _this], 4] call "+_kfc_msg+";
 		format['Spawned a ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 	};
@@ -2836,7 +2780,7 @@ _AH_Admin = _AH_Admin + ("
 	admin_spawnBp = {
 		if (admin_targetSpawn && {isNull admin_curTarget}) exitWith {['No target selected!', 2] call "+_kfc_msg+"};
 		if (admin_targetSpawn) then {
-			[7, [admin_curTarget, _this]] call AH_fnc_adminReq;
+			['BP_GIVE', [admin_curTarget, _this]] call AH_fnc_adminReq;
 			[format['You gave backpack ""%1"" to ""%2 (%3).""', _this, name admin_curTarget, getPlayerUID admin_curTarget], 4] call "+_kfc_msg+";
 			format['Gave backpack ""%1"" to ""%2 (%3)""', _this, name admin_curTarget, getPlayerUID admin_curTarget] call AH_fnc_adminLog;
 		} else {
@@ -2849,7 +2793,7 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_spawnEvent = {
 		_this = call AH_fnc_removePrefix;
-		[31, _this] call AH_fnc_adminReq;
+		['SPWN_EVENT', _this] call AH_fnc_adminReq;
 		[format['You spawned Epoch Event ""%1.""', _this], 4] call "+_kfc_msg+";
 		format['Spawned Epoch Event ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 	};
@@ -2861,7 +2805,7 @@ _AH_Admin = _AH_Admin + ("
 			if (_qty == 0) then {_qty = 1};
 
 			if (admin_targetSpawn) then {
-				[5, [admin_curTarget, _qty, %1]] call AH_fnc_adminReq;
+				['MAG_GIVE', [admin_curTarget, _qty, %1]] call AH_fnc_adminReq;
 				admin_curTarget = name admin_curTarget + ' ' + '('+getPlayerUID admin_curTarget+')';
 				['You gave '+str _qty+' '+str %1+' to '+str admin_curTarget+'.', 4] call "+_kfc_msg+";
 				'Gave '+str _qty+' '+str %1+' to '+str admin_curTarget+' @ '+mapGridPosition player+'' call AH_fnc_adminLog;
@@ -2877,7 +2821,7 @@ _AH_Admin = _AH_Admin + ("
 
 	admin_spawnMission = {
 		_this = call AH_fnc_removePrefix;
-		[33, [_this, admin_waibandit]] call AH_fnc_adminReq;
+		['SPWN_WAI', [_this, admin_waibandit]] call AH_fnc_adminReq;
 		[format['You spawned %1 mission ""%2.""', if (admin_waibandit) then {'Bandit'} else {'Hero'}, _this], 4] call "+_kfc_msg+";
 		format['Spawned %1 mission ""%2"" @ %3', if (admin_waibandit) then {'Bandit'} else {'Hero'}, _this, mapGridPosition player] call AH_fnc_adminLog;
 	};
@@ -2898,7 +2842,7 @@ _AH_Admin = _AH_Admin + ("
 		local _arrow = 'Sign_arrow_down_large_EP1' createVehicleLocal _pos;
 		['VaultStorageLocked', _arrow] call fn_waitForObject;
 
-		[25, [_combo, _this, [_dir, _pos, getPlayerUID _target]]] call AH_fnc_adminReq;
+		['SPWN_VAULT', [_combo, _this, [_dir, _pos, getPlayerUID _target]]] call AH_fnc_adminReq;
 		[format['You spawned a ""%1"" nearby.', _this], 4] call "+_kfc_msg+";
 		format['Spawned a ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 	};
@@ -2914,7 +2858,7 @@ _AH_Admin = _AH_Admin + ("
 		[_this, _arr] call fn_waitForObject;
 
 		if (admin_tempSpawn) then {
-			[30, [toArray _this, _pos, _dir]] call AH_fnc_adminReq;
+			['VEH_TMPSPAWN', [toArray _this, _pos, _dir]] call AH_fnc_adminReq;
 			[format['You spawned temporary vehicle ""%1"" nearby.', _this], 4] call "+_kfc_msg+";
 			format['Spawned a temporary ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 		} else {
@@ -2931,7 +2875,7 @@ _AH_Admin = _AH_Admin + ("
 		local _mags = getArray(configFile >> 'CfgWeapons' >> _this >> 'magazines');
 
 		if (admin_targetSpawn) then {
-			[6, [admin_curTarget, _this, if (count _mags > 0) then {_mags select 0} else {'none'}]] call AH_fnc_adminReq;
+			['WEP_GIVE', [admin_curTarget, _this, if (count _mags > 0) then {_mags select 0} else {'none'}]] call AH_fnc_adminReq;
 			[format['You gave one ""%1"" with ammo to ""%2 (%3)"".', _this, name admin_curTarget, getPlayerUID admin_curTarget], 4] call "+_kfc_msg+";
 			format['Gave one ""%1"" with ammo to ""%2 (%3)""', _this, name admin_curTarget, getPlayerUID admin_curTarget] call AH_fnc_adminLog;
 		} else {
@@ -2968,7 +2912,7 @@ _AH_Admin = _AH_Admin + ("
 			if (_this == '10:00 p.m.') exitWith {22};
 		};
 
-		[26, _hour] call AH_fnc_adminReq;
+		['ENV_TIME', _hour] call AH_fnc_adminReq;
 
 		[format['You adjusted server time to %1', _this], 4] call "+_kfc_msg+";
 		format['Adjusted server time to %1', _this] call AH_fnc_adminLog;
@@ -3106,7 +3050,7 @@ _AH_Admin = _AH_Admin + ("
 			if (_this == 'Stormy Weather') exitWith {[1,0,0.5,0,0,0,'OVERCAST',false]};
 		};
 
-		[27, _sky] call AH_fnc_adminReq;
+		['ENV_WEATHER', _sky] call AH_fnc_adminReq;
 
 		[format['You changed the server weather to %1.', toLower _this], 4] call "+_kfc_msg+";
 		format['Changed the server weather to %1', toLower _this] call AH_fnc_adminLog;
@@ -3325,9 +3269,7 @@ _AH_Server = _AH_Server + ("
 		local _id = _this select 1;
 		local _param = _this select 2;
 
-		if (toString(_this select 3) != "+str _kfc_akey+") exitWith {
-			[_pobj, 3, 'Attempted to use server admin function: AH_fnc_procAdminReq'] call AH_fnc_log;
-		};
+		if (typeName _id != 'ARRAY') exitWith {['SERVER', 1, 'Admin request IDs must be in ARRAY format!'] call AH_fnc_log};
 
 		local _fnc_getKey = {
 			local _target = _this;
@@ -3350,6 +3292,9 @@ _AH_Server = _AH_Server + ("
 			if (typeName _target == 'STRING') then {{if (name _x + getPlayerUID _x == _target) exitWith {_target = _x}} count playableUnits;};
 			local _params = _this;
 
+			local _id = _params select 2;
+			if (typeName _id == 'STRING') then {_id = toArray _id; _params set [2,_id]};
+			
 			_params set [count _params, toArray(_target call _fnc_getKey)];
 
 			"+_kfc_rekey+" = _params;
@@ -3358,33 +3303,33 @@ _AH_Server = _AH_Server + ("
 			['SERVER', 1, format['RE request forwarded to player ""%1 (%2)""', name _target, getPlayerUID _target]] call AH_fnc_log;
 		};
 
-		if (_id == 1) exitWith {
+		if (_id == 'TOG_INVIS') exitWith {
 			if (_param) then {_pobj setVehicleInit 'this hideObject true;'} else {_pobj setVehicleInit 'this hideObject false;'};
 			processInitCommands;
 			clearVehicleInit _pobj;
 		};
-		if (_id == 2) exitWith {[_param, true] call AH_fnc_deleteObj};
-		if (_id == 3) exitWith {[_pobj, _param, 1] call _fnc_sendRE};
-		if (_id == 4) exitWith {[_pobj, _param, 2] call _fnc_sendRE};
-		if (_id == 5) exitWith {[_pobj, _param, 3] call _fnc_sendRE};
-		if (_id == 6) exitWith {[_pobj, _param, 4] call _fnc_sendRE};
-		if (_id == 7) exitWith {[_pobj, _param, 5] call _fnc_sendRE};
-		if (_id == 8) exitWith {[_pobj, _param, 6] call _fnc_sendRE};
-		if (_id == 9) exitWith {[_pobj, _param, 7] call _fnc_sendRE};
-		if (_id == 10) exitWith {[_pobj, _param, 8] call _fnc_sendRE};
-		if (_id == 11) exitWith {[_pobj, _param, 9] call _fnc_sendRE};
-		if (_id == 12) exitWith {[_pobj, _param, 10] call _fnc_sendRE};
-		if (_id == 13) exitWith {[_pobj, _param, 11] call _fnc_sendRE};
-		if (_id == 14) exitWith {[_pobj, _param, 12] call _fnc_sendRE};
-		if (_id == 15) exitWith {(_param select 0) setDamage 1};
-		if (_id == 16) exitWith {[_pobj, _param, 13] call _fnc_sendRE};
-		if (_id == 17) exitWith {[_pobj, _param, 14] call _fnc_sendRE};
-		if (_id == 18) exitWith {[_pobj, _param, 15] call _fnc_sendRE};
-		if (_id == 19) exitWith {[_pobj, _param, 16] call _fnc_sendRE};
-		if (_id == 20) exitWith {[_pobj, _param, 17] call _fnc_sendRE};
-		if (_id == 21) exitWith {[_pobj, _param, 18] call _fnc_sendRE};
-		if (_id == 22) exitWith {[_pobj, _param, 19] call _fnc_sendRE};
-		if (_id == 23) exitWith {
+		if (_id == 'KEY_DEL') exitWith {[_param, true] call AH_fnc_deleteObj};
+		if (_id == 'TAR_TP2U') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_HEAL') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'MAG_GIVE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'WEP_GIVE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'BP_GIVE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_BANK') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_WALLET') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_HUMANITY') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_AMMO') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_MOVINVEH') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_REPAIR') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_UNFREEZE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_KILL') exitWith {(_param select 0) setDamage 1};
+		if (_id == 'TAR_SUICIDE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_DISCONNECT') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_RMGEAR') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_SENDUP') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_SENDOCEAN') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_EJECT') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_LOADOUT') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'LOG_VIEW') exitWith {
 			local _get = call {
 				if ((_param select 0) == 'Admin Logs') exitWith {at_adminlogs};
 				if ((_param select 0) == 'Hack Logs') exitWith {at_hacklogs};
@@ -3405,7 +3350,7 @@ _AH_Server = _AH_Server + ("
 			} forEach _get;
 			(owner _pobj) publicVariableClient 'AHPV_Logs';
 		};
-		if (_id == 24) exitWith {
+		if (_id == 'SPWN_BOX') exitWith {
 			local _type = _param select 0;
 
 			local _box = 'DZ_CardboardBox' createVehicle (_param select 1);
@@ -3444,7 +3389,7 @@ _AH_Server = _AH_Server + ("
 				};
 			} count _toAdd;
 		};
-		if (_id == 25) exitWith {
+		if (_id == 'SPWN_VAULT') exitWith {
 			comment 'Spawns a safe with supplied contents. Safe is persistent and the owner is set to the supplied target';
 			
 			local _combo = _param select 0;
@@ -3520,18 +3465,18 @@ _AH_Server = _AH_Server + ("
 			local _key = str formatText['CHILD:308:%1:%2:%3:%4:%5:%6:%7:%8:%9:', dayZ_instance, 'VaultStorageLocked', 0, _combo, _pos call AN_fnc_formatWorldspace, _inventory, [], 0, _uid];
 			_key call server_hiveWrite;
 		};
-		if (_id == 26) exitWith {
+		if (_id == 'ENV_TIME') exitWith {
 			AH_timeOverride = _param;
 			dayzSetDate = [2012, 8, 2, _param, 1];
 			dayz_storeTimeDate = [2012, 8, 2, _param, 1];
 			publicVariable 'dayzSetDate';
 			setDate dayzSetDate;
 		};
-		if (_id == 27) exitWith {
+		if (_id == 'ENV_WEATHER') exitWith {
 			PVDZE_SetWeather = _param;
 			publicVariable 'PVDZE_SetWeather';
 		};
-		if (_id == 28) exitWith {
+		if (_id == 'TOOL_KILLAI') exitWith {
 			local _cnt = 0;
 			{
 				if (!isPlayer _x && {_x distance _pobj <= _param}) then {
@@ -3540,8 +3485,8 @@ _AH_Server = _AH_Server + ("
 			} count allUnits;
 			[_pobj, 2, format['Deleted %1 AI within %2 meter(s) of %3', _cnt, _param, mapGridPosition _pobj]] call AH_fnc_log;
 		};
-		if (_id == 29) exitWith {[_pobj, _param, 20] call _fnc_sendRE};
-		if (_id == 30) exitWith {
+		if (_id == 'MENU_ADJUST') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'VEH_TMPSPAWN') exitWith {
 			comment 'Spawns a temporary vehicle (not saved to the database)';
 			local _veh = toString(_param select 0);
 			local _pos = _param select 1;
@@ -3562,10 +3507,10 @@ _AH_Server = _AH_Server + ("
 			PVDZE_veh_Init = _veh;
 			publicVariable 'PVDZE_veh_Init';
 		};
-		if (_id == 31) exitWith {
+		if (_id == 'SPWN_EVENT') exitWith {
 			[] execVM '\z\addons\dayz_server\modules\' + _param + '.sqf';
 		};
-		if (_id == 32) exitWith {
+		if (_id == 'MENU_CODE') exitWith {
 			if ((_param select 1) == 1) then {
 				call compile toString(_param select 0);
 				[_pobj, 2, format['Executed the following code on the server: %1', toString(_param select 0)]] call AH_fnc_log;
@@ -3577,7 +3522,7 @@ _AH_Server = _AH_Server + ("
 			};
 		};
 "); if (_wai) then {_AH_Server = _AH_Server + ("
-		if (_id == 33) exitWith {
+		if (_id == 'SPWN_WAI') exitWith {
 			comment 'Spawns WAI mission as selected by admin';
 			local _type = [];
 			if (_param select 1) then {
@@ -3595,7 +3540,6 @@ _AH_Server = _AH_Server + ("
 			_type execVM format ['\z\addons\dayz_server\WAI\missions\missions\%1.sqf', _param select 0];
 		};")}; _AH_Server = _AH_Server + ("
 	};
-	'"+_kfc_pvar+"' addPublicVariableEventHandler {"+_kfc_pvar+" = nil; (_this select 1) call AH_fnc_procAdminReq};
 ");
 //---Safe Zones
 if (_safezones) then {
@@ -3962,12 +3906,13 @@ if (_mic) then {_AH_Server = _AH_Server + ("
 		local _counts = [];
 		['SERVER', 1, 'Processing mission files...'] call AH_fnc_log;
 		{
-			local _arr = []; _arr resize 1000; {_arr set [_forEachIndex,0]} forEach _arr;
+			local _arr = []; for '_i' from 0 to 128 do {_arr set [_i, 0]};
 			local _file = toArray(preprocessFile _x);
 
-			{_arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
-	
-			_counts set [count _counts, _arr - [0]];
+			{_x = _x min 128; _arr set [_x, ((_arr select _x) mod 100) + _forEachIndex]} forEach _file;
+			_arr set [128, 0];
+			
+			_counts set [count _counts, _arr];
 		} count "+str _missionFiles+";
 		['SERVER', 1, 'Mission files processed successfully'] call AH_fnc_log;
 		"+_kfc_mic+" = _counts; publicVariable '"+_kfc_mic+"';
@@ -3983,6 +3928,7 @@ _AH_Server = _AH_Server + ("
 		if (_fnc == 'LOG') exitWith {[_plr, _prm select 1, _prm select 0] call AH_fnc_log};
 		if (_fnc == 'BAN') exitWith {_prm call AH_fnc_ban};
 		if (_fnc == 'VOTE') exitWith {[_prm, _plr] call AH_fnc_vote};
+		if (_fnc == "+str (toUpper _kfc_akey)+") exitWith {[_plr, _prm select 0, _prm select 1] call AH_fnc_procAdminReq};
 	};
 	'AHPV_"+_kfc_pveh+"' addPublicVariableEventHandler {(_this select 1) call AH_fnc_pveh; AHPV_"+_kfc_pveh+" = nil};
 ");

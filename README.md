@@ -18,7 +18,7 @@ It should look something like this:
 ## Installation
 
 #### Step 1
-[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.1.zip)
+[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.2.zip)
 
 #### Step 2
 Copy the antihack folder into your dayz_server folder.
@@ -209,6 +209,7 @@ Name of the admin can be anything. Admin powers are not given if name is BillyBo
 |_escLUPC|Color of the lower-upper text of the escape menu|
 |_escLBOT|Lower-bottom text of the escape menu|
 |_escLBOC|Color of the lower-bottom text of the escape menu|
+|_loadouts|List of defined loadouts that will appear in target menus if configured (by default, only Owner and Head Admin ranks will see)|
 |_starterBox|Items in the starter build box|
 |_smallBox|Items in the small build box|
 |_mediumBox|Items in the medium build box|
@@ -228,15 +229,17 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
-#### [v1.0.2] - TBD
+#### [v1.0.2] - 7/21/2021
 ##### Additions:
 - Added option to delete AI that walk into safe zone (see _antiai).
 - Added WAI compatibility.
 
 ##### Changes:
-- Further optimized mission check.
 - Diversified storage marker options. Special thanks to ZzBombardierzZ for making this easy.
 - Adjusted BE filters to kick.
+- Changed ID method of remote requests to use strings instead of numbers to make it easier to add additions.
+- Moved admin loadouts to config.sqf for easier configuration and to downsize the amount of code needed for these functions.
+- Consolidated admin RE request into the globally available PVS format to remove an unneccessary public variable.
 
 ##### Fixes:
 - General Optimizations.

@@ -101,14 +101,9 @@ _AH_Admin = _AH_Admin + ("
 	_targ set [count _targ, ['    >> Send Target to Ocean', 6, [1,0,0,1]]];
 	_targ set [count _targ, ['', 0, []]];
 	_targ set [count _targ, ['Loadouts:', 0, []]];
-	_targ set [count _targ, ['    >> Give Mk48 Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give Anzio Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give G36K Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give DMR Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give LeeEnfield Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give M240 Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give M24 Loadout', 6, []]];
-	_targ set [count _targ, ['    >> Give M4A1 Loadout', 6, []]];
+	{
+		_targ set [count _targ, ['    >> Give ' + (_x select 0) + ' Loadout', 6, []]];
+	} forEach "+str _loadouts+";
 
 	_logs set [count _logs, ['===============================================================', 0, []]];
 	_logs set [count _logs, ['                      Select which Logs to View', 0, []]];

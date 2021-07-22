@@ -103,6 +103,24 @@ local _escLUPC = [1,1,1,1]; //---Color of the lower-upper text of the escape men
 local _escLBOT = "By: BigEgg & MG"; //---Lower-bottom text of the escape menu
 local _escLBOC = [1,1,1,1]; //---Color of the lower-bottom text of the escape menu
 
+/* ******************** Menu Loadouts ******************** */
+
+local _loadouts = [ //---List of defined loadouts that will appear in target menus if configured (by default, only Owner and Head Admin ranks will see)
+	[
+		"MK48", //---Loadout name - will appear as "Give MK48 Loadout" in admin menus
+		["Mk48_CCO_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"], //---Loadout Weapons
+		["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["100Rnd_762x51_M240", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]], //---Loadout Magazines
+		"DZ_Backpack_EP1" //---Loadout backpack
+	],
+	["Anzio",["Anzio_20_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["3rnd_Anzio_20x102mm", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["G36K",["G36K_Camo_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["30Rnd_556x45_G36", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["DMR",["DMR_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["20Rnd_762x51_DMR", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["LeeEnfield",["Mk48_CCO_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["10Rnd_303British", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["M240",["M240_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["100Rnd_762x51_M240", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["M24",["M24_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["5Rnd_762x51_M24", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"],
+	["M4A1",["M4A1_DZ", "UZI_SD_EP1", "ItemFlashlight", "ItemHatchet", "ItemRadio", "ItemMap", "ItemToolbox", "ItemKnife", "ItemGPS", "Binocular_Vector", "NVGoggles", "ItemEtool", "ItemCrowbar", "ItemCompass"],["ItemAntibiotic", "ItemPainkiller", "ItemMorphine", "ItemBloodbag", "FishCookedTuna", "ItemSodaOrangeSherbet", "Skin_Sniper1_DZ", ["30Rnd_556x45_Stanag", 4], ["ItemBandage", 4], ["30Rnd_9x19_UZI_SD", 4]],"DZ_Backpack_EP1"]
+];
+
 /* ********************* Build Boxes ********************* */
 
 local _starterBox = [ //---Items in the starter build box
