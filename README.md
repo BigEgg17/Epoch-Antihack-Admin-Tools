@@ -18,7 +18,7 @@ It should look something like this:
 ## Installation
 
 #### Step 1
-[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.2.zip)
+[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.2.1.zip)
 
 #### Step 2
 Copy the antihack folder into your dayz_server folder.
@@ -229,6 +229,12 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
+#### [v1.0.2.1] - 7/24/2021
+##### Fixes:
+- Fixed issues that were created during commit of 1.0.2 involving the target menu.
+- Fixed an error that still defined a numerical ID for the freeze function admin request.
+- Fixed an issue with the heal function not logging correctly.
+
 #### [v1.0.2] - 7/21/2021
 ##### Additions:
 - Added option to delete AI that walk into safe zone (see _antiai).

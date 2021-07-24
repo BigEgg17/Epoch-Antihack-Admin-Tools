@@ -566,7 +566,7 @@ _AH_Global = _AH_Global + ("
 
 			[format['Your vehicle was repaired by admin ""%1.""', _info], 4] call "+_kfc_msg+";
 		};
-		if (_id == 'TAR_UNFREEZE') exitWith {
+		if (_id == 'TAR_FREEZE') exitWith {
 			if ((_param select 1) == 0) then {disableUserInput false} else {disableUserInput true};
 			[format['You were %1 by admin ""%2.""', if ((_param select 1) == 0) then {'unfrozen'} else {'frozen'}, _info], 4] call "+_kfc_msg+";
 		};
@@ -1101,11 +1101,7 @@ local _AH_Admin = ("
 
 	AH_fnc_adminLog = {['LOG', [_this, 2]] call "+_kfc_pvs+"};
 
-	AH_fnc_adminReq = {
-		local _id = _this select 0;
-		if (typeName _id == 'STRING') then {_id = toArray _id};
-		["+str _kfc_akey+", [_id, _this select 1]] call "+_kfc_pvs+";
-	};
+	AH_fnc_adminReq = {["+str _kfc_akey+", [toArray(_this select 0), _this select 1]] call "+_kfc_pvs+"};
 
 	AH_fnc_cancelSpec = {
 		if (!admin_spectating) exitWith {};
@@ -1476,7 +1472,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.2 | Compiled 07/21/2021 | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.2.1 | Compiled 07/24/2021 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -1711,7 +1707,7 @@ _AH_Admin = _AH_Admin + ("
 		if (_this == 'Heal Target') exitWith {
 			['TAR_HEAL', [_target]] call AH_fnc_adminReq;
 			[format['You healed ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
-			format['Healed ""%1 (%2)"" @ %3', _name, _puid, mapGridPosition _target];
+			format['Healed ""%1 (%2)"" @ %3', _name, _puid, mapGridPosition _target] call AH_fnc_adminLog;
 		};
 		if (_this == 'Adjust Target Bank') exitWith {
 			['Adjusting Bank', 'Amount:', format[""
@@ -1794,13 +1790,13 @@ _AH_Admin = _AH_Admin + ("
 		};
 		if (_this == 'Unfreeze Target') exitWith {
 			if (_target == player) exitWith {['This cannot be used on yourself!', 2] call "+_kfc_msg+"};
-			['TAR_UNFREEZE', [_target, 0]] call AH_fnc_adminReq;
+			['TAR_FREEZE', [_target, 0]] call AH_fnc_adminReq;
 			[format['You unfroze ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Unfroze ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
 		if (_this == 'Freeze Target') exitWith {
 			if (_target == player) exitWith {['This cannot be used on yourself!', 2] call "+_kfc_msg+"};
-			[14, [_target, 1]] call AH_fnc_adminReq;
+			['TAR_FREEZE', [_target, 1]] call AH_fnc_adminReq;
 			[format['You froze ""%1 (%2).""', _name, _puid], 4] call "+_kfc_msg+";
 			format['Froze ""%1 (%2)""', _name, _puid] call AH_fnc_adminLog;
 		};
@@ -3266,10 +3262,8 @@ _AH_Server = _AH_Server + ("
 _AH_Server = _AH_Server + ("
 	AH_fnc_procAdminReq = {
 		local _pobj = _this select 0;
-		local _id = _this select 1;
+		local _id = toString(_this select 1);
 		local _param = _this select 2;
-
-		if (typeName _id != 'ARRAY') exitWith {['SERVER', 1, 'Admin request IDs must be in ARRAY format!'] call AH_fnc_log};
 
 		local _fnc_getKey = {
 			local _target = _this;
@@ -3293,7 +3287,8 @@ _AH_Server = _AH_Server + ("
 			local _params = _this;
 
 			local _id = _params select 2;
-			if (typeName _id == 'STRING') then {_id = toArray _id; _params set [2,_id]};
+			_id = toArray _id;
+			_params set [2,_id];
 			
 			_params set [count _params, toArray(_target call _fnc_getKey)];
 
@@ -3320,7 +3315,7 @@ _AH_Server = _AH_Server + ("
 		if (_id == 'TAR_AMMO') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
 		if (_id == 'TAR_MOVINVEH') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
 		if (_id == 'TAR_REPAIR') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
-		if (_id == 'TAR_UNFREEZE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
+		if (_id == 'TAR_FREEZE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
 		if (_id == 'TAR_KILL') exitWith {(_param select 0) setDamage 1};
 		if (_id == 'TAR_SUICIDE') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
 		if (_id == 'TAR_DISCONNECT') exitWith {[_pobj, _param, _id] call _fnc_sendRE};
