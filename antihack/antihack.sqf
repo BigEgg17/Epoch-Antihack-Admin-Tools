@@ -501,14 +501,15 @@ _AH_Global = _AH_Global + ("
 			player addWeapon (_param select 1);
 			player selectWeapon (_param select 1);
 
-			if ((_param select 2) != 'none') then {
+			if ((_param select 2) != 'none' && {_param select 3}) then {
 				for '_x' from 1 to 4 do {
 					player addMagazine (_param select 2);
 				};
+				[format['You were given one ""%1"" with ammo by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
+			} else {
+				[format['You were given one ""%1"" by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 			};
 			call player_forceSave;
-
-			[format['You were given one ""%1"" with ammo by admin ""%2.""', _param select 1, _info], 4] call "+_kfc_msg+";
 		};
 		if (_id == 'BP_GIVE') exitWith {
 			player addBackpack (_param select 1);
@@ -1197,7 +1198,7 @@ _AH_Admin = _AH_Admin + ("
 	AH_fnc_initialize = {
 		admin_toggled = []; admin_spectating = false; admin_tempSpawn = false;
 		admin_tpkeybind = false; admin_flykeybind = false; admin_vehBoost = false;
-		admin_waibandit = false;
+		admin_waibandit = false; admin_wmags = false;
 
 		local _rank = player call AH_fnc_rank;
 		[format['Welcome %1! Loading admin tools...', _rank], 2] call "+_kfc_msg+";
@@ -1472,7 +1473,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.2.1 | Compiled 07/24/2021 | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.3 | Compiled N/A | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -2327,6 +2328,9 @@ _AH_Admin = _AH_Admin + ("
 			if (_this == 'Spawn Bandit Missions') exitWith {
 				admin_waibandit = if (_enabled) then {true} else {false};
 			};
+			if (_this == 'Spawn with Mags') exitWith {
+				admin_wmags = if (_enabled) then {true} else {false};
+			};
 		};
 
 		[format['%1 %2.', _this call AH_fnc_grammar, toLower _change], 4] call "+_kfc_msg+";
@@ -2871,22 +2875,34 @@ _AH_Admin = _AH_Admin + ("
 		local _mags = getArray(configFile >> 'CfgWeapons' >> _this >> 'magazines');
 
 		if (admin_targetSpawn) then {
-			['WEP_GIVE', [admin_curTarget, _this, if (count _mags > 0) then {_mags select 0} else {'none'}]] call AH_fnc_adminReq;
-			[format['You gave one ""%1"" with ammo to ""%2 (%3)"".', _this, name admin_curTarget, getPlayerUID admin_curTarget], 4] call "+_kfc_msg+";
-			format['Gave one ""%1"" with ammo to ""%2 (%3)""', _this, name admin_curTarget, getPlayerUID admin_curTarget] call AH_fnc_adminLog;
+			['WEP_GIVE', [admin_curTarget, _this, if (count _mags > 0) then {_mags select 0} else {'none'}, admin_wmags]] call AH_fnc_adminReq;
+			if (admin_wmags && {count _mags > 0}) then {
+				[format['You gave one ""%1"" with ammo to ""%2 (%3)"".', _this, name admin_curTarget, getPlayerUID admin_curTarget], 4] call "+_kfc_msg+";
+				format['Gave one ""%1"" with ammo to ""%2 (%3)""', _this, name admin_curTarget, getPlayerUID admin_curTarget] call AH_fnc_adminLog;
+			} else {
+				[format['You gave one ""%1"" to ""%2 (%3)"".', _this, name admin_curTarget, getPlayerUID admin_curTarget], 4] call "+_kfc_msg+";
+				format['Gave one ""%1"" to ""%2 (%3)""', _this, name admin_curTarget, getPlayerUID admin_curTarget] call AH_fnc_adminLog;
+			};
 		} else {
 			player addWeapon _this;
 			player selectWeapon _this;
 
-			if (count _mags > 0) then {
-				for '_x' from 1 to 4 do {
-					player addMagazine (_mags select 0);
+			if (admin_wmags) then {
+				if (count _mags > 0) then {
+					for '_x' from 1 to 4 do {
+						player addMagazine (_mags select 0);
+					};
+					[format['You added weapon ""%1"" with mags to your inventory.', _this], 4] call "+_kfc_msg+";
+					format['Spawned weapon ""%1"" with mags @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
+				} else {
+					[format['You added weapon ""%1"" to your inventory.', _this], 4] call "+_kfc_msg+";
+					format['Spawned weapon ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 				};
+			} else {
+				[format['You added weapon ""%1"" to your inventory.', _this], 4] call "+_kfc_msg+";
+				format['Spawned weapon ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 			};
 			call player_forceSave;
-
-			[format['You added weapon ""%1"" to your inventory.', _this], 4] call "+_kfc_msg+";
-			format['Spawned weapon ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 		};
 	};
 
@@ -3028,6 +3044,7 @@ _AH_Admin = _AH_Admin + ("
 			admin_wepMenu = [
 				['===============================================================', 0, []],
 				['>> Search', 0, [], admin_search],
+				['Spawn with Mags', 1, []],
 				['Target Spawning', 1, []],
 				['===============================================================', 0, []],
 				['                               Weapons', 0, []]

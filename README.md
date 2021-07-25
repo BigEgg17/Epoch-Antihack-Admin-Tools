@@ -229,6 +229,11 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
+#### [v1.0.3] - N/A
+##### Changes:
+- Admins can now toggle mag spawning within the weapon menu. Previously, spawning a weapon also spawned the mags for said weapon. Now, this is disabled by default and must be enabled (cache this toggle for old functionality).
+- Added quick access section to main menus of owner, head admin, and admin menus.
+
 #### [v1.0.2.1] - 7/24/2021
 ##### Fixes:
 - Fixed issues that were created during commit of 1.0.2 involving the target menu.

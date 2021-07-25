@@ -23,6 +23,10 @@ _AH_Admin = _AH_Admin + ("
 	admin_forceTemp = false; comment 'If true, the admin cannot spawn permanent vehicles';
 
 	_main set [count _main, ['===============================================================', 0, []]];
+	_main set [count _main, ['                             Quick Access', 0, []]];
+	_main set [count _main, ['>> Teleport to Target', 6, []]];
+	_main set [count _main, ['>> Teleport Target to You', 6, []]];
+	_main set [count _main, ['===============================================================', 0, []]];
 	_main set [count _main, ['                            Toggle Scripts', 0, []]];
 	_main set [count _main, ['Keybinds:', 0, []]];
 	_main set [count _main, ['    TP Forward Keybind', 1, []]];
