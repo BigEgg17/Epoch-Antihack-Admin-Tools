@@ -2887,17 +2887,10 @@ _AH_Admin = _AH_Admin + ("
 			player addWeapon _this;
 			player selectWeapon _this;
 
-			if (admin_wmags) then {
-				if (count _mags > 0) then {
-					for '_x' from 1 to 4 do {
-						player addMagazine (_mags select 0);
-					};
-					[format['You added weapon ""%1"" with mags to your inventory.', _this], 4] call "+_kfc_msg+";
-					format['Spawned weapon ""%1"" with mags @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
-				} else {
-					[format['You added weapon ""%1"" to your inventory.', _this], 4] call "+_kfc_msg+";
-					format['Spawned weapon ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
-				};
+			if (admin_wmags && {count _mags > 0}) then {
+				for '_x' from 1 to 4 do {player addMagazine (_mags select 0)};
+				[format['You added weapon ""%1"" with mags to your inventory.', _this], 4] call "+_kfc_msg+";
+				format['Spawned weapon ""%1"" with mags @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
 			} else {
 				[format['You added weapon ""%1"" to your inventory.', _this], 4] call "+_kfc_msg+";
 				format['Spawned weapon ""%1"" @ %2', _this, mapGridPosition player] call AH_fnc_adminLog;
