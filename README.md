@@ -234,6 +234,9 @@ There are some useful features included in the menu:
 - Admins can now toggle mag spawning within the weapon menu. Previously, spawning a weapon also spawned the mags for said weapon. Now, this is disabled by default and must be enabled (cache this toggle for old functionality).
 - Added quick access section to main menus of owner, head admin, and admin menus.
 
+##### Fixes:
+- Fixed an issue where there are two safes with different combos, the admin unlocks both using the admin tools, and then can not lock the first one that was unlocked. @ZzBombardierzZ
+
 #### [v1.0.2.1] - 7/24/2021
 ##### Fixes:
 - Fixed issues that were created during commit of 1.0.2 involving the target menu.
