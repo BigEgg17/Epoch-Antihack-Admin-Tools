@@ -2653,6 +2653,7 @@ _AH_Admin = _AH_Admin + ("
 		if (!isNull _ct && {player distance _ct < 10}) then {
 			if !(locked _ct) then {
 				if (_type in DZE_UnLockedStorage) then {
+					dayz_combination = _ct getVariable ['CharacterID', '0'];
 					_ct spawn player_lockVault;
 				};
 				if (_type in DZE_DoorsLocked) then {
