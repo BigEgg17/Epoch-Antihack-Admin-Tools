@@ -3532,17 +3532,16 @@ _AH_Server = _AH_Server + ("
 			comment 'Spawns WAI mission as selected by admin';
 			local _type = [];
 			if (_param select 1) then {
-				h_missionsrunning = h_missionsrunning + 1;
-				wai_h_starttime = diag_tickTime;
-				wai_mission_markers set [(count wai_mission_markers), ('MainHero' + str(count wai_mission_data))];
-				_type = ['MainHero','Bandit'];
+				WAI_HeroRunning = WAI_HeroRunning + 1;
+				WAI_HeroStartTime = diag_tickTime;
+				_type = ['Bandit'];
 			} else {
-				b_missionsrunning = b_missionsrunning + 1;
-				wai_b_starttime = diag_tickTime;
-				wai_mission_markers set [(count wai_mission_markers), ('MainBandit' + str(count wai_mission_data))];
-				_type = ['MainBandit','Hero'];
+				WAI_BanditRunning = WAI_BanditRunning + 1;
+				WAI_BanditStartTime = diag_tickTime;
+				_type = ['Hero'];
 			};
-			wai_mission_data = wai_mission_data + [[0,[],[],[],[],[],[]]];
+			WAI_MarkerReady = false;
+			WAI_MissionData = WAI_MissionData + [[0,[],[],[],[],[]]];
 			_type execVM format ['\z\addons\dayz_server\WAI\missions\missions\%1.sqf', _param select 0];
 		};")}; _AH_Server = _AH_Server + ("
 	};
