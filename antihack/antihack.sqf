@@ -1473,7 +1473,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.3 | Compiled N/A | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.3 | Compiled 12/19/2021 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];

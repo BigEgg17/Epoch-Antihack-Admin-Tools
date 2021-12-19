@@ -18,7 +18,7 @@ It should look something like this:
 ## Installation
 
 #### Step 1
-[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.2.1.zip)
+[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.3.zip)
 
 #### Step 2
 Copy the antihack folder into your dayz_server folder.
@@ -124,7 +124,19 @@ Example:
 [pic4]: https://i.imgur.com/ksyDqoY.png "Config Example"
 
 #### Step 11
-Drag all the BattlEye filters from the BattlEye folder into your server's BattlEye folder.
+BattlEye:
+
+Add the following to the end of the first line in publicvariable.txt:
+```!AHPV_```
+
+I have also provided the modified publicvariable.txt file as an example (copied from Epoch repository with the above added to the end of the first line)
+
+Due to time constraints in maintaining accurate scripts.txt filters and the work that it creates when modifying the antihack, no other BattlEye filters are provided.
+Please be sure to copy BE filters from the DayZ Epoch repository and modify them following known community examples.
+
+This antihack is designed to aid in server administration and provide insight as to the activities of players. It is by no means a solution to all hacking issues, and is intentionally light weight.
+
+Without properly configured BattlEye filters, your server will still be vulnerable to attack, and this antihack will not aid in such situations.
 
 #### Installation completed!
 
@@ -229,10 +241,11 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
-#### [v1.0.3] - N/A
+#### [v1.0.3] - 12/19/2021
 ##### Changes:
 - Admins can now toggle mag spawning within the weapon menu. Previously, spawning a weapon also spawned the mags for said weapon. Now, this is disabled by default and must be enabled (cache this toggle for old functionality).
 - Added quick access section to main menus of owner, head admin, and admin menus.
+- Removed all BattlEye filters with the exception of publicvariable.txt
 
 ##### Fixes:
 - Fixed an issue where there are two safes with different combos, the admin unlocks both using the admin tools, and then can not lock the first one that was unlocked. @ZzBombardierzZ
