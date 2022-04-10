@@ -241,6 +241,11 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
+#### [v1.0.4] - In Progress (Updating for 1.0.7.1)
+##### Changes:
+- Updated "No Build Restrictions" admin toggle for compatibility with 1.0.7.1
+- Updated check for Z_persistentMoney for compatibility with 1.0.7.1
+
 #### [v1.0.3] - 12/19/2021
 ##### Changes:
 - Admins can now toggle mag spawning within the weapon menu. Previously, spawning a weapon also spawned the mags for said weapon. Now, this is disabled by default and must be enabled (cache this toggle for old functionality).
