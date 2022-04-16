@@ -17,9 +17,6 @@ if (_website != "") then {_chatcmds set [count _chatcmds, "website"]};
 
 diag_log (_diag_prefix + "Config loaded successfully");
 
-//---Antihack global ban system
-if (_egb) then {"Antihack" callExtension "Init"; diag_log (_diag_prefix + "Global ban sync initiated")};
-
 /* ********************* Sort Staff ********************** */
 
 //---Moderators = 0 | Admins = 1 | Head Admins = 2 | Owners = 3
@@ -1473,7 +1470,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.4 | Unofficial - 4/10/2022 | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.4 | Compiled 4/15/2022 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -2064,6 +2061,8 @@ _AH_Admin = _AH_Admin + ("
 					DZE_requireplot1 = DZE_requireplot;
 					DZE_requireplot = 0;
 					dze_buildChecks1 = dze_buildChecks;
+					BIS_fnc_invRemove1 = BIS_fnc_invRemove;
+					BIS_fnc_invRemove = {1};
 
 					dze_buildChecks = {
 						local _item =	_this select 1;
@@ -2073,6 +2072,7 @@ _AH_Admin = _AH_Admin + ("
 						[true, _isPole, objNull]
 					};
 
+					comment 'Compatibility for pre-1071 - remove later';
 					if (!isNil 'BlacklistedBuildings') then {
 						BlacklistedBuildings1 = BlacklistedBuildings;
 						BlacklistedBuildings = [];
@@ -2081,6 +2081,16 @@ _AH_Admin = _AH_Admin + ("
 					if (!isNil 'RestrictedBuildingZones') then {
 						RestrictedBuildingZones1 = RestrictedBuildingZones;
 						RestrictedBuildingZones = [];
+					};
+
+					if (!isNil 'DZE_BlacklistedBuildings') then {
+						DZE_BlacklistedBuildings1 = DZE_BlacklistedBuildings;
+						DZE_BlacklistedBuildings = [];
+					};
+
+					if (!isNil 'DZE_RestrictedBuildingZones') then {
+						DZE_RestrictedBuildingZones1 = DZE_RestrictedBuildingZones;
+						DZE_RestrictedBuildingZones = [];
 					};
 				} else {
 					canbuild = canbuild1;
@@ -2093,6 +2103,7 @@ _AH_Admin = _AH_Admin + ("
 					DZE_limitPlots = DZE_limitPlots1;
 					DZE_requireplot = DZE_requireplot1;
 					dze_buildChecks = dze_buildChecks1;
+					BIS_fnc_invRemove = BIS_fnc_invRemove1;
 
 					{
 						call compile (_x + '= nil;');
@@ -2106,6 +2117,16 @@ _AH_Admin = _AH_Admin + ("
 					if (!isNil 'RestrictedBuildingZones') then {
 						RestrictedBuildingZones = RestrictedBuildingZones1;
 						RestrictedBuildingZones1 = nil;
+					};
+
+					if (!isNil 'DZE_BlacklistedBuildings') then {
+						DZE_BlacklistedBuildings = DZE_BlacklistedBuildings1;
+						DZE_BlacklistedBuildings1 = nil;
+					};
+
+					if (!isNil 'DZE_RestrictedBuildingZones') then {
+						DZE_RestrictedBuildingZones = DZE_RestrictedBuildingZones1;
+						DZE_RestrictedBuildingZones1 = nil;
 					};
 				};
 			};

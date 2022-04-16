@@ -18,7 +18,7 @@ It should look something like this:
 ## Installation
 
 #### Step 1
-[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.3.zip)
+[>> Download Files <<](https://github.com/BigEgg17/Epoch-Antihack-Admin-Tools/archive/refs/tags/1.0.4.zip)
 
 #### Step 2
 Copy the antihack folder into your dayz_server folder.
@@ -100,9 +100,6 @@ Keep in mind the following:
 	* ```antihack\Admin.log``` will send the log file to a folder called "antihack" in your server's root.
 	* ```C:\antihack\Admin.log``` will send the log file to a folder called "antihack" in your C drive.
 * Please make sure the path to your **bans.txt** is correct.
-* The [API] section is disabled until you request login information from Movinggun (contact BigEgg if MG is not available).
-	* This will log you into the global ban system. Once logged in, your server will participate in log sharing. All logs will be sent to our API for us to evaluate. Hackers will be globally banned.
-	* Participation is optional. You can use the global ban system with the default settings and no logs will be sent to us.
 
 #### Step 10
 Adjust the ```_missionFiles``` array in your config.sqf to fit your server. There is a tool included that will automatically generate the list of files in your mission.
@@ -173,7 +170,6 @@ Name of the admin can be anything. Admin powers are not given if name is BillyBo
 |_headless|List UIDs of headless clients here. They will be sent no client code and global code will be terminated|
 |_apj|If true, announces when a player has connected or disconnected in systemChat|
 |_bvc|If true, will delete any vehicles not in server traders or the whitelist below|
-|_egb|If true, syncs KFC global bans. Useful for banning hackers from other servers. Will likely be depricated in the future - disabled by default|
 |_wai|If true, enables compatibility with Wicked AI (https://github.com/f3cuk/WICKED-AI)|
 |_vehWhiteList|Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true|
 |_voteplayers|Number of players that must be online before a vote can be held|
@@ -241,10 +237,16 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
-#### [v1.0.4] - In Progress (Updating for 1.0.7.1)
+#### [v1.0.4] - 4/15/2022 - (Last build backward compatible with 1.0.7)
 ##### Changes:
 - Updated "No Build Restrictions" admin toggle for compatibility with 1.0.7.1
 - Updated check for Z_persistentMoney for compatibility with 1.0.7.1
+- "No Build Restrictions" toggle now keeps the built item in the admin's inventory, meaning one metal floor in the inventory can be used to build several
+- "No Build Restrictions" toggle now keeps items used to upgrade a buildable in the admin's inventory (4 cinder blocks and 1 mortar can be used to upgrade multiple half walls)
+- Removed _egb configuration option as the global ban API is no longer available
+
+##### Fixes:
+- Fixed logging issues due to deprication of the global ban API (new DLL - Antihack.ini updated to remove API login)
 
 #### [v1.0.3] - 12/19/2021
 ##### Changes:

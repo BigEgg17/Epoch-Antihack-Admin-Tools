@@ -24,7 +24,6 @@ local _headless = []; //---List UIDs of headless clients here. They will be sent
 
 local _apj = true; //---If true, announces when a player has connected or disconnected in systemChat
 local _bvc = true; //---If true, will delete any vehicles not in server traders or the whitelist below
-local _egb = false; //---If true, syncs KFC global bans. Useful for banning hackers from other servers. Will likely be depricated in the future - disabled by default
 local _wai = true; //---If true, enables compatibility with Wicked AI (https://github.com/f3cuk/WICKED-AI)
 
 local _vehWhiteList = []; //---Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true
