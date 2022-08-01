@@ -68,7 +68,7 @@ Below it, add:
 ```
 
 #### Step 7
-In init.sqf:
+In configVariables.sqf:
 
 Find:
 ```
@@ -237,6 +237,18 @@ There are some useful features included in the menu:
 * In the log menu, double clicking a log that is listed will automatically paste the log into your chat box, allowing you to easily view the whole log or copy / paste it.
 
 ## Change Log
+#### [v1.0.5] - BETA
+##### Additions:
+- Added DLL source code
+
+##### Changes:
+- Updated WAI support to version 2.3 @ZzBombardierzZ
+- Removed global ban list support and DLL
+
+##### Fixes:
+- Fixed PVDZ_obj_Destroy calls @ZzBombardierzZ
+- Fixed logging issues with DLL
+
 #### [v1.0.4] - 4/15/2022 - (Last build backward compatible with 1.0.7)
 ##### Changes:
 - Updated "No Build Restrictions" admin toggle for compatibility with 1.0.7.1
