@@ -5,7 +5,7 @@
 
 #include "config.sqf"
 
-local _cashvar = if (Z_persistentMoney) then {"globalMoney"} else {"cashMoney"};
+local _cashvar = if (Z_SingleCurrency && {Z_persistentMoney}) then {"globalMoney"} else {"cashMoney"};
 local _bankvar = "bankMoney"; //---Be sure to change if you customize this value
 
 diag_log (_diag_prefix + "Initializing Epoch Antihack/Admin Tools");
@@ -16,9 +16,6 @@ if (_teamspeak != "") then {_chatcmds set [count _chatcmds, "teamspeak"]};
 if (_website != "") then {_chatcmds set [count _chatcmds, "website"]};
 
 diag_log (_diag_prefix + "Config loaded successfully");
-
-//---Antihack global ban system
-if (_egb) then {"Antihack" callExtension "Init"; diag_log (_diag_prefix + "Global ban sync initiated")};
 
 /* ********************* Sort Staff ********************** */
 
@@ -1473,7 +1470,7 @@ _AH_Admin = _AH_Admin + ("
 			[1020, 'AI:'],
 			[1021, 'Vehicles:'],
 			[1022, 'Zombies:'],
-			[1023, 'Antihack v1.0.3 | Compiled N/A | By BigEgg & MG'],
+			[1023, 'Antihack v1.0.4 | Compiled 4/15/2022 | By BigEgg & MG'],
 			[1417, 'Write code and press ""Enter"" to execute!'],
 			[1600, 'X']
 		];
@@ -2064,15 +2061,18 @@ _AH_Admin = _AH_Admin + ("
 					DZE_requireplot1 = DZE_requireplot;
 					DZE_requireplot = 0;
 					dze_buildChecks1 = dze_buildChecks;
+					BIS_fnc_invRemove1 = BIS_fnc_invRemove;
+					BIS_fnc_invRemove = {1};
 
 					dze_buildChecks = {
 						local _item =	_this select 1;
 						local _classname = getText (configFile >> 'CfgMagazines' >> _item >> 'ItemActions' >> 'Build' >> 'create');
 						local _isPole = (_classname == 'Plastic_Pole_EP1_DZ');
 
-						[true, _isPole]
+						[true, _isPole, objNull]
 					};
 
+					comment 'Compatibility for pre-1071 - remove later';
 					if (!isNil 'BlacklistedBuildings') then {
 						BlacklistedBuildings1 = BlacklistedBuildings;
 						BlacklistedBuildings = [];
@@ -2081,6 +2081,16 @@ _AH_Admin = _AH_Admin + ("
 					if (!isNil 'RestrictedBuildingZones') then {
 						RestrictedBuildingZones1 = RestrictedBuildingZones;
 						RestrictedBuildingZones = [];
+					};
+
+					if (!isNil 'DZE_BlacklistedBuildings') then {
+						DZE_BlacklistedBuildings1 = DZE_BlacklistedBuildings;
+						DZE_BlacklistedBuildings = [];
+					};
+
+					if (!isNil 'DZE_RestrictedBuildingZones') then {
+						DZE_RestrictedBuildingZones1 = DZE_RestrictedBuildingZones;
+						DZE_RestrictedBuildingZones = [];
 					};
 				} else {
 					canbuild = canbuild1;
@@ -2093,6 +2103,7 @@ _AH_Admin = _AH_Admin + ("
 					DZE_limitPlots = DZE_limitPlots1;
 					DZE_requireplot = DZE_requireplot1;
 					dze_buildChecks = dze_buildChecks1;
+					BIS_fnc_invRemove = BIS_fnc_invRemove1;
 
 					{
 						call compile (_x + '= nil;');
@@ -2106,6 +2117,16 @@ _AH_Admin = _AH_Admin + ("
 					if (!isNil 'RestrictedBuildingZones') then {
 						RestrictedBuildingZones = RestrictedBuildingZones1;
 						RestrictedBuildingZones1 = nil;
+					};
+
+					if (!isNil 'DZE_BlacklistedBuildings') then {
+						DZE_BlacklistedBuildings = DZE_BlacklistedBuildings1;
+						DZE_BlacklistedBuildings1 = nil;
+					};
+
+					if (!isNil 'DZE_RestrictedBuildingZones') then {
+						DZE_RestrictedBuildingZones = DZE_RestrictedBuildingZones1;
+						DZE_RestrictedBuildingZones1 = nil;
 					};
 				};
 			};
@@ -3532,17 +3553,16 @@ _AH_Server = _AH_Server + ("
 			comment 'Spawns WAI mission as selected by admin';
 			local _type = [];
 			if (_param select 1) then {
-				h_missionsrunning = h_missionsrunning + 1;
-				wai_h_starttime = diag_tickTime;
-				wai_mission_markers set [(count wai_mission_markers), ('MainHero' + str(count wai_mission_data))];
-				_type = ['MainHero','Bandit'];
+				WAI_HeroRunning = WAI_HeroRunning + 1;
+				WAI_HeroStartTime = diag_tickTime;
+				_type = ['Bandit'];
 			} else {
-				b_missionsrunning = b_missionsrunning + 1;
-				wai_b_starttime = diag_tickTime;
-				wai_mission_markers set [(count wai_mission_markers), ('MainBandit' + str(count wai_mission_data))];
-				_type = ['MainBandit','Hero'];
+				WAI_BanditRunning = WAI_BanditRunning + 1;
+				WAI_BanditStartTime = diag_tickTime;
+				_type = ['Hero'];
 			};
-			wai_mission_data = wai_mission_data + [[0,[],[],[],[],[],[]]];
+			WAI_MarkerReady = false;
+			WAI_MissionData = WAI_MissionData + [[0,[],[],[],[],[]]];
 			_type execVM format ['\z\addons\dayz_server\WAI\missions\missions\%1.sqf', _param select 0];
 		};")}; _AH_Server = _AH_Server + ("
 	};
@@ -3783,13 +3803,13 @@ _AH_Server = _AH_Server + ("
 		server_maintainArea = {
 			_this call server_maintainArea1;
 
-			local _pobj = _this select 0;
+			local _pobj = objectfromNetID (_this select 0);
 			local _objs = _this select 2;
 
 			local _log = if ((_this select 1) == 1) then {
 				format['Maintained %1 objects located @ %2', count _objs, mapGridPosition _pobj];
 			} else {
-				format['Maintained ""%1"" located @ %2', typeOf(_objs select 0), mapGridPosition _pobj];
+				format['Maintained ""%1"" located @ %2', typeOf(objectFromNetId(_objs select 0)), mapGridPosition _pobj];
 			};
 			[_pobj, 7, _log] call AH_fnc_log;
 		};
