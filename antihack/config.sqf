@@ -24,7 +24,7 @@ local _headless = []; //---List UIDs of headless clients here. They will be sent
 
 local _apj = true; //---If true, announces when a player has connected or disconnected in systemChat
 local _bvc = true; //---If true, will delete any vehicles not in server traders or the whitelist below
-local _wai = true; //---If true, enables compatibility with Wicked AI (https://github.com/f3cuk/WICKED-AI)
+local _wai = true; //---If true, enables compatibility with Wicked AI version 2.3 (https://github.com/worldwidesorrow/WICKED-AI)
 
 local _vehWhiteList = []; //---Add any additional vehicles that shouldn't be deleted here (special mission vehicles etc...). Only used if _bvc = true
 
