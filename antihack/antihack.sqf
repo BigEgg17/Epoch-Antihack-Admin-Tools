@@ -2758,7 +2758,7 @@ _AH_Admin = _AH_Admin + ("
 			local _nets = nearestObjects [player, ['DesertCamoNet_DZ', 'ForestCamoNet_DZ', 'DesertLargeCamoNet_DZ', 'ForestLargeCamoNet_DZ'], _rad];
 			if (count _nets < 1) exitWith {['There are no camo nets within the defined radius.', 2] call "+_kfc_msg+"};
 			{
-				PVDZ_obj_Destroy = [_x getVariable ['ObjectID', '0'], _x getVariable ['ObjectUID', '0'], player, _x, dayz_authKey];
+				PVDZ_obj_Destroy = [netID player, netID _x, dayz_authKey];
 				publicVariableServer 'PVDZ_obj_Destroy';
 			} count _nets;
 			[format['You removed %1 camo nets within %2 meter(s) of your location.', count _nets, [_rad] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
@@ -2774,7 +2774,7 @@ _AH_Admin = _AH_Admin + ("
 			local _poles = player nearEntities ['Plastic_Pole_EP1_DZ', _rad];
 			if (count _poles < 1) exitWith {['There are no plot poles within the defined radius.', 2] call "+_kfc_msg+"};
 			{
-				PVDZ_obj_Destroy = [_x getVariable ['ObjectID', '0'], _x getVariable ['ObjectUID', '0'], player, _x, dayz_authKey];
+				PVDZ_obj_Destroy = [netID player, netID _x, dayz_authKey];
 				publicVariableServer 'PVDZ_obj_Destroy';
 			} count _poles;
 			[format['You removed %1 plot poles within %2 meter(s) of your location.', count _poles, [_rad] call BIS_fnc_numberText], 4] call "+_kfc_msg+";
