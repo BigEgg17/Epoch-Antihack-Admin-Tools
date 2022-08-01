@@ -148,14 +148,39 @@ _AH_Admin = _AH_Admin + ("
 		{
 			_spwn set [count _spwn, [format['>> %1', _x], 14, []]];
 		} count [
-			'patrol','black_hawk_crash','armed_vehicle','base',
-			'captured_mv22','scout_patrol','ikea_convoy','medi_camp',
-			'broken_down_ural','sniper_extraction','mayors_mansion',
-			'weapon_cache','gem_tower','cannibal_cave','crop_raider',
-			'drone_pilot','slaughter_house','drugbust','armybase',
-			'abandoned_trader','lumberjack','presidents_mansion',
-			'tankcolumn','macdonald','radioshack','junkyard','outpost',
-			'farmer','firestation','vehicle_drop'
+			'patrol',
+			'black_hawk_crash',
+			'armed_vehicle',
+			'base',
+			'captured_mv22',
+			'scout_patrol',
+			'ikea_convoy',
+			'medi_camp',
+			'broken_down_ural',
+			'sniper_extraction',
+			'mayors_mansion',
+			'weapon_cache',
+			'gem_tower',
+			'cannibal_cave',
+			'crop_raider',
+			'drone_pilot',
+			'slaughter_house',
+			'drugbust',
+			'armybase',
+			'abandoned_trader',
+			'lumberjack',
+			'presidents_mansion',
+			'tankcolumn',
+			'macdonald',
+			'radioshack',
+			'junkyard',
+			'outpost',
+			'farmer',
+			'firestation',
+			'vehicle_drop',
+			'castle_grayskull',
+			'wuhan_lab',
+			'apc'
 		];
 	};
 
