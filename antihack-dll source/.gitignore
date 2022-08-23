@@ -1,0 +1,6 @@
+# Common Excludes for Visual Studio, Rider and .NET Generated Files
+\packages
+\.idea
+\.vs
+\bin
+\obj

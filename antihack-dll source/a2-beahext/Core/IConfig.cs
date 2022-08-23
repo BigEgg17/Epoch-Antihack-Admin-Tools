@@ -7,6 +7,7 @@ namespace a2_beahext.Core
         string[] CheckFiles { get; }
         string LogFormat { get; }
         string LogMessageDate { get; }
+        string LogEncoding { get; }
         Dictionary<string, string> Logs { get; }
         string LogFileDate { get; }
         string BansFile { get; }

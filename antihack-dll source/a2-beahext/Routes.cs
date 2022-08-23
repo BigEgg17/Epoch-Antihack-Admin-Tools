@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using a2_beahext.Core;
 
@@ -61,7 +62,7 @@ namespace a2_beahext
             File.AppendAllLines(logPath, new[]
             {
                 string.Format(_config.LogFormat, DateTime.Now.ToString(_config.LogMessageDate), logMessage)
-            });
+            },_config.LogEncoding == "utf8" ? Encoding.UTF8 : Encoding.Default);
         }
 
         public void Ban(string input)

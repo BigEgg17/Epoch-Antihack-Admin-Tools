@@ -10,6 +10,7 @@ namespace a2_beahext.Core
         public string[] CheckFiles { get; }
         public string LogFormat { get; }
         public string LogMessageDate { get; }
+        public string LogEncoding { get; }
         public Dictionary<string, string> Logs { get; }
         public string LogFileDate { get; }
         public string BansFile { get; }
@@ -31,6 +32,7 @@ namespace a2_beahext.Core
             LogFormat = ini.GetSetting("Log", "logformat");
             LogFileDate = ini.GetSetting("Log", "filedate");
             LogMessageDate = ini.GetSetting("Log", "logdate");
+            LogEncoding = ini.GetSetting("Log", "encoding","default");
             Logs = ini.EnumSection("Log")
                 .Where(k => k.StartsWith("log-"))
                 .ToDictionary(key => Regex.Replace(key, "^log-", ""), key => ini.GetSetting("Log", key).PathToAbsolute());
