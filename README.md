@@ -244,6 +244,7 @@ There are some useful features included in the menu:
 ##### Changes:
 - Updated WAI support to version 2.3 @ZzBombardierzZ
 - Removed global ban list support and DLL
+- Updated DLL to support UTF-8 encoding (thanks to [@IsGoose](https://github.com/IsGoose)
 
 ##### Fixes:
 - Fixed PVDZ_obj_Destroy calls @ZzBombardierzZ
