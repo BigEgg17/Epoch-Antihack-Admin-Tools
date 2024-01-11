@@ -80,11 +80,11 @@ dayz_antihack = 0;
 ```
 Note: ```dayz_REsec``` can remain at its default value of 1 (this is also recommended)
 
-Find the line that starts with:
+Find this line in your init.sqf file (replace chernarus11 with your map name if you are using a different map):
 ```
-call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\server_traders\
+call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\server_traders\chernarus11.sqf";
 ```
-Cut and paste it below this line:
+**Cut and paste** it below this line:
 ```
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\system\mission\chernarus11.sqf";
 ```
