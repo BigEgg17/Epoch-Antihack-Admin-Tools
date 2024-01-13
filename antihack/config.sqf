@@ -7,12 +7,25 @@
 
 local _menuKey = 0x3C; //---Key that will open the menu.
 
-local _mod = []; //---Add moderators here - don't forget commas!
-local _admin = []; //---Add admins here - don't forget commas!
-local _headAdmin = []; //---Add head admins here - don't forget commas!
-local _owner = [
-	//["", "76561198115492831", true, false, true, "Test"],
-	//[["BigEgg", "FatEgg", "TwinkieDestroyer"], "76561198115492831", true, false, true, ""]
+local _mod = [
+	//["", "Mod_GUID", true, false, true, ""],
+	//["", "Mod2_GUID", true, false, true, ""]
+]; //---Add moderators here - don't forget commas!
+local _admin = [
+	//["", "Admin_GUID", true, false, true, ""]
+]; //---Add admins here - don't forget commas!
+local _headAdmin = [
+	//["", "HeadAdmin_GUID", true, false, true, ""]
+]; //---Add head admins here - don't forget commas!
+local _owner = [ //Highest permission level
+	//[Admin Name (can be a single string or an array of names) - can be empty to allow admin client on any name, UID (string), Hide from Lower Ranks (bool), Disable Logging (bool), Allow Execution on Dialog (bool), Non-Admin Player Name (or test account name) - only useful if Admin Name field is empty]
+	// Examples:
+	//["", "76561198115492831", true, false, true, "Test"], //With this example, if you are logged into the steam account with 76561198115492831 guid, you get admin UNLESS you are named "Test" (case-sensitive).
+	//[["BigEgg", "FatEgg", "TwinkieDestroyer"], "76561198115492831", true, false, true, ""], //With this example, you ONLY get admin powers if you are named "BigEgg", "FatEgg", or "TwinkieDestroyer" (case-sensitive).
+	// UNCOMMENT THE NEXT LINE AND REPLACE GUID_HERE WITH YOUR SteamGUID (64bit) https://www.steamidfinder.com/. DONT FORGET A COMMA IF YOU ADD MORE ADMINS.
+
+	//["", "GUID_HERE", true, false, true, ""]
+
 ]; //---Add owners here - don't forget commas!
 
 /* ***************** Server Configuration **************** */
